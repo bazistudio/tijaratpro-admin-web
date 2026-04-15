@@ -30,11 +30,11 @@ export function connectSocket(token: string): Socket {
     console.debug("[Socket] Connected:", socket?.id);
   });
 
-  socket.on("disconnect", (reason) => {
+  socket.on("disconnect", (reason: string) => {
     console.debug("[Socket] Disconnected:", reason);
   });
 
-  socket.on("connect_error", (err) => {
+  socket.on("connect_error", (err: Error) => {
     console.warn("[Socket] Connection error:", err.message);
   });
 
