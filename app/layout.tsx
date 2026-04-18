@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
+import { Toaster } from "@/components/ui/sonner";
+import { AppLayoutWrapper } from "@/components/layout/AppLayoutWrapper";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,7 +29,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className="bg-background text-foreground antialiased min-h-screen">
-        <Providers>{children}</Providers>
+        <Providers>
+          <AppLayoutWrapper>{children}</AppLayoutWrapper>
+        </Providers>
+        <Toaster duration={3000} position="top-right" theme="system" richColors />
       </body>
     </html>
   );
