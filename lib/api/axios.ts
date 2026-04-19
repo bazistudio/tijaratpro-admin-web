@@ -10,7 +10,20 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
 
 export function getStoredToken(): string | null {
   if (typeof window === "undefined") return null;
-  return localStorage.getItem("tp_token");
+  // Fallback to localStorage if we use Zustand persist or old system
+  return localStorage.getItem("tp_token") || getCookie("tp_token");
+}
+
+export function getStoredShopId(): string | null {
+   if (typeof window === "undefined") return null;
+   return localStorage.getItem("tp_shopId") || getCookie("tp_shopId");
+}
+
+function getCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  if (match) return match[2];
+  return null;
 }
 
 export function setStoredToken(token: string): void {
@@ -23,7 +36,9 @@ export function setStoredToken(token: string): void {
 export function clearStoredToken(): void {
   if (typeof window === "undefined") return;
   localStorage.removeItem("tp_token");
+  localStorage.removeItem("tp_shopId");
   document.cookie = "tp_token=; path=/; max-age=0; SameSite=Lax";
+  document.cookie = "tp_shopId=; path=/; max-age=0; SameSite=Lax";
 }
 
 // ─── Axios instance ───────────────────────────────────────────────────────────
@@ -45,6 +60,12 @@ axiosInstance.interceptors.request.use(
     if (token && config.headers) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
+    
+    const shopId = getStoredShopId();
+    if (shopId && config.headers) {
+      config.headers["x-shop-id"] = shopId;
+    }
+    
     return config;
   },
   (error) => Promise.reject(error)

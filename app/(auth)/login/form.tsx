@@ -24,7 +24,7 @@ export default function LoginForm() {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
+      identifier: '',
       password: '',
     },
   });
@@ -51,15 +51,15 @@ export default function LoginForm() {
         </div>
       )}
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="identifier">Email / Phone</Label>
         <Input
-          id="email"
-          type="email"
-          placeholder="admin@tijarat.local"
-          {...register('email')}
+          id="identifier"
+          type="text"
+          placeholder="admin@tijarat.local or 0300-0000000"
+          {...register('identifier')}
         />
-        {errors.email && (
-          <p className="text-sm text-destructive">{errors.email.message}</p>
+        {errors.identifier && (
+          <p className="text-sm text-destructive">{errors.identifier.message}</p>
         )}
       </div>
       <div className="space-y-2">

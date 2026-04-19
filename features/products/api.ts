@@ -10,7 +10,7 @@ import type {
   ProductFilter,
 } from "@/types";
 
-const BASE = "/products";
+const BASE = "/api/products";
 
 // ─── Products API ─────────────────────────────────────────────────────────────
 
