@@ -159,7 +159,7 @@ export default function DashboardPage() {
           <CardHeader>
             <CardTitle className="font-heading">Top 5 Selling Products (Inventory Movement)</CardTitle>
           </CardHeader>
-          <CardContent className="h-[250px]">
+          <CardContent className="h-62.5">
              <ResponsiveContainer width="100%" height="100%">
               <BarChart data={topProductsData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="hsl(var(--border))" />
