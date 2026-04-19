@@ -3,11 +3,11 @@
 import * as React from "react"
 import { Plus, Download } from "lucide-react"
 
-import { PageWrapper } from "@/components/layout/PageWrapper"
+import { PageLayout } from "@/components/layout/PageLayout"
+import { PageHeader } from "@/components/ui/PageHeader"
+import { SectionCard } from "@/components/ui/SectionCard"
 import { DataTable } from "@/components/ui/data-table"
-import { Button } from "@/components/ui/button"
-
-import { useCustomersStore } from "@/store/customers.store"
+import { Plus, Download } from "lucide-react"
 import { useEffect } from "react"
 
 export default function CustomersPage() {
@@ -57,13 +57,34 @@ export default function CustomersPage() {
   )
 
   return (
-    <PageWrapper title="Customer & Party Ledger" description="Track all active accounts, credit limits, and balances." actions={ToolbarActions}>
-       <DataTable 
-          columns={columns} 
-          data={customers} 
-          searchKey="name"
-          searchPlaceholder="Search customer or party name..."
+    <PageLayout 
+      breadcrumbs={<span className="flex items-center gap-2">Dashboard <span className="text-muted-foreground/50">/</span> Customers</span>}
+      isLoading={isLoading}
+    >
+       <PageHeader 
+          title="Customer & Party Ledger"
+          subtitle="Track all active accounts, credit limits, and balances."
+          primaryAction={{
+            label: "Register Demo Party",
+            onClick: handleAddDemoCustomer,
+            icon: <Plus className="h-4 w-4" />
+          }}
+          secondaryActions={[
+            {
+              label: "Export",
+              onClick: () => console.log("Exporting..."),
+              icon: <Download className="h-4 w-4" />
+            }
+          ]}
        />
-    </PageWrapper>
+       <SectionCard>
+         <DataTable 
+            columns={columns} 
+            data={customers} 
+            searchKey="name"
+            searchPlaceholder="Search customer or party name..."
+         />
+       </SectionCard>
+    </PageLayout>
   )
 }

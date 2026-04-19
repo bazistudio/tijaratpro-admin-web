@@ -3,12 +3,12 @@
 import * as React from "react"
 import { Plus, Download } from "lucide-react"
 
-import { PageWrapper } from "@/components/layout/PageWrapper"
+import { PageLayout } from "@/components/layout/PageLayout"
+import { PageHeader } from "@/components/ui/PageHeader"
+import { SectionCard } from "@/components/ui/SectionCard"
 import { DataTable } from "@/components/ui/data-table"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-
-import { useProductsStore } from "@/store/products.store"
+import { Download, Plus } from "lucide-react"
 import { useEffect } from "react"
 
 export default function ProductsPage() {
@@ -89,13 +89,34 @@ export default function ProductsPage() {
   )
 
   return (
-    <PageWrapper title="Products Registry" description="Manage your entire retail and wholesale catalog." actions={ToolbarActions}>
-       <DataTable 
-          columns={columnsWithActions} 
-          data={products} 
-          searchKey="name"
-          searchPlaceholder="Search products by name..."
+    <PageLayout 
+      breadcrumbs={<span className="flex items-center gap-2">Dashboard <span className="text-muted-foreground/50">/</span> Products</span>}
+      isLoading={isLoading}
+    >
+       <PageHeader 
+          title="Products Registry"
+          subtitle="Manage your entire retail and wholesale catalog."
+          primaryAction={{
+            label: "Add Demo Product",
+            onClick: handleAddDemoProduct,
+            icon: <Plus className="h-4 w-4" />
+          }}
+          secondaryActions={[
+            {
+              label: "Export Data",
+              onClick: () => console.log("Exporting..."),
+              icon: <Download className="h-4 w-4" />
+            }
+          ]}
        />
-    </PageWrapper>
+       <SectionCard>
+         <DataTable 
+            columns={columnsWithActions} 
+            data={products} 
+            searchKey="name"
+            searchPlaceholder="Search products by name..."
+         />
+       </SectionCard>
+    </PageLayout>
   )
 }

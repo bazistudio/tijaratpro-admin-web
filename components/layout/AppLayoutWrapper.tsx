@@ -14,13 +14,6 @@ export function AppLayoutWrapper({ children }: { children: React.ReactNode }) {
     return <>{children}</>
   }
 
-  return (
-    <div className="flex h-screen overflow-hidden bg-background">
-      <Sidebar />
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <Header />
-        {children}
-      </div>
-    </div>
-  )
+  // Dashboard layout is now handled by individual pages using PageLayout
+  return <>{children}</>
 }

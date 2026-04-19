@@ -4,11 +4,11 @@ import * as React from "react"
 import { useEffect } from "react"
 import { Plus, Download, ReceiptText } from "lucide-react"
 
-import { PageWrapper } from "@/components/layout/PageWrapper"
+import { PageLayout } from "@/components/layout/PageLayout"
+import { PageHeader } from "@/components/ui/PageHeader"
+import { SectionCard } from "@/components/ui/SectionCard"
 import { DataTable } from "@/components/ui/data-table"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { useSalesStore } from "@/store/sales.store"
+import { Plus, Download } from "lucide-react"
 
 export default function SalesHistoryPage() {
   const { sales, isLoading, fetchSales, addSale } = useSalesStore()
@@ -64,13 +64,34 @@ export default function SalesHistoryPage() {
   )
 
   return (
-    <PageWrapper title="Sales History" description="View and manage all retail invoices and service orders." actions={ToolbarActions}>
-       <DataTable 
-          columns={columns} 
-          data={sales} 
-          searchKey="id"
-          searchPlaceholder="Search order ID..."
+    <PageLayout 
+      breadcrumbs={<span className="flex items-center gap-2">Dashboard <span className="text-muted-foreground/50">/</span> Sales</span>}
+      isLoading={isLoading}
+    >
+       <PageHeader 
+          title="Sales History"
+          subtitle="View and manage all retail invoices and service orders."
+          primaryAction={{
+            label: "Create Demo Invoice",
+            onClick: handleAddDemoSale,
+            icon: <Plus className="h-4 w-4" />
+          }}
+          secondaryActions={[
+            {
+              label: "Export PDF",
+              onClick: () => console.log("Exporting PDF..."),
+              icon: <Download className="h-4 w-4" />
+            }
+          ]}
        />
-    </PageWrapper>
+       <SectionCard>
+         <DataTable 
+            columns={columns} 
+            data={sales} 
+            searchKey="id"
+            searchPlaceholder="Search order ID..."
+         />
+       </SectionCard>
+    </PageLayout>
   )
 }

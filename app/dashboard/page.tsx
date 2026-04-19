@@ -6,8 +6,9 @@ import {
   LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from "recharts"
 
-import { PageWrapper } from "@/components/layout/PageWrapper"
+import { PageLayout } from "@/components/layout/PageLayout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { SectionCard } from "@/components/ui/SectionCard"
 import { useDashboardStore } from "@/store/dashboard.store"
 import { useEffect } from "react"
 
@@ -44,7 +45,10 @@ export default function DashboardPage() {
   }, [fetchStats])
 
   return (
-    <PageWrapper title="Business Overview" description="Welcome back, here's what's happening today.">
+    <PageLayout 
+      title="Business Overview" 
+      breadcrumbs={<span className="flex items-center gap-2">Dashboard <span className="text-muted-foreground/50">/</span> Overview</span>}
+    >
       
       {/* KPI Stats */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -113,11 +117,12 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         
         {/* Daily Sales Trend */}
-        <Card className="col-span-1 lg:col-span-4 glass-card bg-muted/20">
-          <CardHeader>
-            <CardTitle className="font-heading">Daily Sales Trend (Last 7 Days)</CardTitle>
-          </CardHeader>
-          <CardContent className="h-[300px]">
+        <SectionCard 
+          title="Daily Sales Trend (Last 7 Days)" 
+          className="col-span-1 lg:col-span-4 bg-muted/20"
+          contentClassName="h-[300px]"
+          headerClassName="pb-2"
+        >
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={dailyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
@@ -133,15 +138,15 @@ export default function DashboardPage() {
                 <Area type="monotone" dataKey="sales" stroke="#2563EB" strokeWidth={3} fillOpacity={1} fill="url(#colorSales)" />
               </AreaChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        </SectionCard>
 
         {/* Monthly Revenue Summary */}
-        <Card className="col-span-1 lg:col-span-3 glass-card bg-muted/20">
-          <CardHeader>
-            <CardTitle className="font-heading">Monthly Revenue summary</CardTitle>
-          </CardHeader>
-          <CardContent className="h-[300px]">
+        <SectionCard 
+          title="Monthly Revenue summary" 
+          className="col-span-1 lg:col-span-3 bg-muted/20"
+          contentClassName="h-[300px]"
+          headerClassName="pb-2"
+        >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={monthlyData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
@@ -151,15 +156,15 @@ export default function DashboardPage() {
                 <Bar dataKey="rev" fill="#16A34A" radius={[4, 4, 0, 0]} barSize={40} />
               </BarChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        </SectionCard>
 
         {/* Top Products */}
-        <Card className="col-span-1 lg:col-span-7 glass-card bg-muted/20">
-          <CardHeader>
-            <CardTitle className="font-heading">Top 5 Selling Products (Inventory Movement)</CardTitle>
-          </CardHeader>
-          <CardContent className="h-62.5">
+        <SectionCard 
+          title="Top 5 Selling Products (Inventory Movement)" 
+          className="col-span-1 lg:col-span-7 bg-muted/20"
+          contentClassName="h-62.5"
+          headerClassName="pb-2"
+        >
              <ResponsiveContainer width="100%" height="100%">
               <BarChart data={topProductsData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="hsl(var(--border))" />
@@ -169,10 +174,9 @@ export default function DashboardPage() {
                 <Bar dataKey="qty" fill="#2563EB" radius={[0, 4, 4, 0]} barSize={24} />
               </BarChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        </SectionCard>
 
       </div>
-    </PageWrapper>
+    </PageLayout>
   )
 }
