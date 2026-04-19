@@ -11,6 +11,7 @@ const routes = [
   { label: "My Shops", icon: Store, href: "/shops" },
   { label: "Orders", icon: ShoppingCart, href: "/orders" },
   { label: "Products", icon: Package, href: "/products" },
+  { label: "Stock", icon: Package, href: "/stock" },
   { label: "Customers", icon: Users, href: "/customers" },
   { label: "Sales & Billing", icon: ReceiptText, href: "/billing" },
   { label: "Analytics", icon: PieChart, href: "/analytics" },

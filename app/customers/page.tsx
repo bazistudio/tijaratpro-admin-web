@@ -7,12 +7,8 @@ import { PageWrapper } from "@/components/layout/PageWrapper"
 import { DataTable } from "@/components/ui/data-table"
 import { Button } from "@/components/ui/button"
 
-const customersData = [
-  { id: "CST-001", name: "Kamran Malik", phone: "0300-1234567", city: "Lahore", creditLimit: 500000, balance: 120000 },
-  { id: "CST-002", name: "Rana Traders", phone: "0321-7654321", city: "Karachi", creditLimit: 1000000, balance: 850000 },
-  { id: "CST-003", name: "Al-Madina Stores", phone: "0333-9876543", city: "Islamabad", creditLimit: 200000, balance: 0 },
-  { id: "CST-004", name: "Zafar Wholesale", phone: "0301-1122334", city: "Faisalabad", creditLimit: 300000, balance: 350000 },
-]
+import { useCustomersStore } from "@/store/customers.store"
+import { useEffect } from "react"
 
 export default function CustomersPage() {
   const columns = [
@@ -37,10 +33,26 @@ export default function CustomersPage() {
     },
   ]
 
+  const { customers, isLoading, fetchCustomers, addCustomer } = useCustomersStore()
+
+  useEffect(() => {
+    fetchCustomers()
+  }, [fetchCustomers])
+
+  const handleAddDemoCustomer = async () => {
+    await addCustomer({
+      name: `New Demo Client ${Math.floor(Math.random() * 1000)}`,
+      phone: "0300-9998887",
+      city: "Gujranwala",
+      creditLimit: 50000,
+      balance: 0,
+    })
+  }
+
   const ToolbarActions = (
     <>
       <Button variant="outline" icon={<Download className="h-4 w-4" />}>Export</Button>
-      <Button variant="default" icon={<Plus className="h-4 w-4" />}>Register Party</Button>
+      <Button variant="default" icon={<Plus className="h-4 w-4" />} onClick={handleAddDemoCustomer}>Register Demo Party</Button>
     </>
   )
 
@@ -48,7 +60,7 @@ export default function CustomersPage() {
     <PageWrapper title="Customer & Party Ledger" description="Track all active accounts, credit limits, and balances." actions={ToolbarActions}>
        <DataTable 
           columns={columns} 
-          data={customersData} 
+          data={customers} 
           searchKey="name"
           searchPlaceholder="Search customer or party name..."
        />

@@ -8,6 +8,8 @@ import {
 
 import { PageWrapper } from "@/components/layout/PageWrapper"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useDashboardStore } from "@/store/dashboard.store"
+import { useEffect } from "react"
 
 const dailyData = [
   { name: "Mon", sales: 45000 },
@@ -35,6 +37,12 @@ const monthlyData = [
 ]
 
 export default function DashboardPage() {
+  const { stats, fetchStats } = useDashboardStore()
+
+  useEffect(() => {
+    fetchStats()
+  }, [fetchStats])
+
   return (
     <PageWrapper title="Business Overview" description="Welcome back, here's what's happening today.">
       
@@ -46,7 +54,9 @@ export default function DashboardPage() {
             <Wallet className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold font-heading text-foreground">Rs 285,450</div>
+            <div className="text-2xl font-bold font-heading text-foreground">
+              Rs {stats ? stats.totalSalesToday.toLocaleString() : "..."}
+            </div>
             <p className="text-xs text-primary mt-1 flex items-center gap-1 font-medium">
               <TrendingUp className="h-3 w-3" /> +12.5% from yesterday
             </p>
@@ -59,7 +69,9 @@ export default function DashboardPage() {
             <TrendingUp className="h-4 w-4 text-success" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold font-heading text-foreground">Rs 1,420,000</div>
+            <div className="text-2xl font-bold font-heading text-foreground">
+              Rs {stats ? stats.monthlyProfit.toLocaleString() : "..."}
+            </div>
             <p className="text-xs text-success mt-1 flex items-center gap-1 font-medium">
                +4.2% from last month
             </p>
@@ -72,7 +84,9 @@ export default function DashboardPage() {
             <Package className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold font-heading text-foreground">24 Items</div>
+            <div className="text-2xl font-bold font-heading text-foreground">
+              {stats ? stats.lowStockItems : "..."} Items
+            </div>
             <p className="text-xs text-destructive mt-1 flex items-center gap-1 font-medium">
               Requires immediate restock!
             </p>
@@ -85,7 +99,9 @@ export default function DashboardPage() {
             <Users className="h-4 w-4 text-info" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold font-heading text-foreground">1,248</div>
+            <div className="text-2xl font-bold font-heading text-foreground">
+              {stats ? stats.activeCustomers.toLocaleString() : "..."}
+            </div>
             <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1 font-medium">
               Across all service & retail customers
             </p>
