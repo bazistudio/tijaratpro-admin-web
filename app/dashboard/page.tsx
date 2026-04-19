@@ -10,21 +10,21 @@ import { PageWrapper } from "@/components/layout/PageWrapper"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 const dailyData = [
-  { name: "Mon", sales: 4000 },
-  { name: "Tue", sales: 3000 },
-  { name: "Wed", sales: 8000 },
-  { name: "Thu", sales: 2780 },
-  { name: "Fri", sales: 5890 },
-  { name: "Sat", sales: 9390 },
-  { name: "Sun", sales: 3490 },
+  { name: "Mon", sales: 45000 },
+  { name: "Tue", sales: 38000 },
+  { name: "Wed", sales: 52000 },
+  { name: "Thu", sales: 47000 },
+  { name: "Fri", sales: 61000 },
+  { name: "Sat", sales: 72000 },
+  { name: "Sun", sales: 39000 },
 ]
 
 const topProductsData = [
-  { name: "Sikander Rice 50kg", qty: 450 },
-  { name: "Mughal Sugar", qty: 320 },
-  { name: "Golden Atta", qty: 280 },
-  { name: "Mezan Oil 5L", qty: 210 },
-  { name: "Lipton Tea 1kg", qty: 150 },
+  { name: "Samsung A12 LCD", qty: 45 },
+  { name: "iPhone 11 Battery", qty: 32 },
+  { name: "Oppo A5 Charging Jack", qty: 28 },
+  { name: "Redmi Note 10 Back Panel", qty: 21 },
+  { name: "Vivo Y20 Touch Glass", qty: 15 },
 ]
 
 const monthlyData = [
@@ -87,7 +87,7 @@ export default function DashboardPage() {
           <CardContent>
             <div className="text-2xl font-bold font-heading text-foreground">1,248</div>
             <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1 font-medium">
-              Across all wholesale networks
+              Across all service & retail customers
             </p>
           </CardContent>
         </Card>
