@@ -61,9 +61,11 @@ axiosInstance.interceptors.request.use(
       config.headers["Authorization"] = `Bearer ${token}`;
     }
     
-    const shopId = getStoredShopId();
-    if (shopId && config.headers) {
-      config.headers["x-shop-id"] = shopId;
+    // Multi-tenant isolation: Always inject active tenant ID
+    const state = JSON.parse(localStorage.getItem("tijaratpro-tenant-context") || "{}");
+    const tenantId = state.state?.activeTenant?.id;
+    if (tenantId && config.headers) {
+      config.headers["x-tenant-id"] = tenantId;
     }
     
     return config;

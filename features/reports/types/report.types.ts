@@ -11,6 +11,7 @@ export interface ReportQueryParams {
   page: number;
   pageSize: number;
   search?: string;
+  tenantId?: string; // Critical for Super Admin cross-shop monitoring
   status?: string;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
@@ -80,6 +81,7 @@ export interface FinancialReportItem {
  */
 export interface AuditLogItem {
   id: string;
+  tenantId: string; // Forensics isolation
   userId: string;
   userName: string;
   action: string;

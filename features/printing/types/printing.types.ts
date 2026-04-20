@@ -16,6 +16,7 @@ export interface Printer {
 
 export interface PrintJob {
   id: string;
+  tenantId: string; // Critical for multi-shop print isolation
   orderId: string;
   customerName: string;
   printerId: string;
