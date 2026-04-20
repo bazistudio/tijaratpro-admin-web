@@ -1,14 +1,14 @@
 "use client"
 
 import * as React from "react"
-import { useEffect } from "react"
-import { Plus, Download, ReceiptText } from "lucide-react"
-
 import { PageLayout } from "@/components/layout/PageLayout"
 import { PageHeader } from "@/components/ui/PageHeader"
 import { SectionCard } from "@/components/ui/SectionCard"
-import { DataTable } from "@/components/ui/data-table"
+import { DataTable } from "@/components/ui/data-table/DataTable"
+import { Badge } from "@/components/ui/badge"
 import { Plus, Download } from "lucide-react"
+import { useSalesStore } from "@/store/sales.store"
+import { useEffect } from "react"
 
 export default function SalesHistoryPage() {
   const { sales, isLoading, fetchSales, addSale } = useSalesStore()
@@ -56,12 +56,7 @@ export default function SalesHistoryPage() {
     },
   ]
 
-  const ToolbarActions = (
-    <>
-      <Button variant="outline" icon={<Download className="h-4 w-4" />}>Export PDF</Button>
-      <Button variant="premium" icon={<Plus className="h-4 w-4" />} onClick={handleAddDemoSale}>Create Demo Invoice</Button>
-    </>
-  )
+
 
   return (
     <PageLayout 
@@ -90,6 +85,11 @@ export default function SalesHistoryPage() {
             data={sales} 
             searchKey="id"
             searchPlaceholder="Search order ID..."
+            onView={(row) => console.log("View sale:", row.id)}
+            onEdit={(row) => console.log("Edit sale:", row.id)}
+            onDelete={(row) => console.log("Delete sale:", row.id)}
+            totalRecords={sales.length}
+            pageSize={10}
          />
        </SectionCard>
     </PageLayout>

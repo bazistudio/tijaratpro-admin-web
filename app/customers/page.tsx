@@ -6,8 +6,9 @@ import { Plus, Download } from "lucide-react"
 import { PageLayout } from "@/components/layout/PageLayout"
 import { PageHeader } from "@/components/ui/PageHeader"
 import { SectionCard } from "@/components/ui/SectionCard"
-import { DataTable } from "@/components/ui/data-table"
+import { DataTable } from "@/components/ui/data-table/DataTable"
 import { Plus, Download } from "lucide-react"
+import { useCustomersStore } from "@/store/customers.store"
 import { useEffect } from "react"
 
 export default function CustomersPage() {
@@ -49,12 +50,7 @@ export default function CustomersPage() {
     })
   }
 
-  const ToolbarActions = (
-    <>
-      <Button variant="outline" icon={<Download className="h-4 w-4" />}>Export</Button>
-      <Button variant="default" icon={<Plus className="h-4 w-4" />} onClick={handleAddDemoCustomer}>Register Demo Party</Button>
-    </>
-  )
+
 
   return (
     <PageLayout 
@@ -83,6 +79,11 @@ export default function CustomersPage() {
             data={customers} 
             searchKey="name"
             searchPlaceholder="Search customer or party name..."
+            onDelete={(row) => deleteCustomer(row.id)}
+            onEdit={(row) => console.log("Edit customer:", row.id)}
+            onView={(row) => console.log("View customer:", row.id)}
+            totalRecords={customers.length}
+            pageSize={10}
          />
        </SectionCard>
     </PageLayout>

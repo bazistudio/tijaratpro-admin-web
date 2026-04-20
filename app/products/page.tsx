@@ -6,9 +6,10 @@ import { Plus, Download } from "lucide-react"
 import { PageLayout } from "@/components/layout/PageLayout"
 import { PageHeader } from "@/components/ui/PageHeader"
 import { SectionCard } from "@/components/ui/SectionCard"
-import { DataTable } from "@/components/ui/data-table"
+import { DataTable } from "@/components/ui/data-table/DataTable"
 import { Badge } from "@/components/ui/badge"
 import { Download, Plus } from "lucide-react"
+import { useProductsStore } from "@/store/products.store"
 import { useEffect } from "react"
 
 export default function ProductsPage() {
@@ -62,22 +63,7 @@ export default function ProductsPage() {
     } as any)
   }
 
-  const columnsWithActions = [
-    ...columns,
-    {
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }: any) => (
-        <Button 
-          variant="destructive" 
-          size="sm" 
-          onClick={() => deleteProduct(row.original.id)}
-        >
-          Delete
-        </Button>
-      )
-    }
-  ]
+
 
   const ToolbarActions = (
     <>
@@ -111,10 +97,15 @@ export default function ProductsPage() {
        />
        <SectionCard>
          <DataTable 
-            columns={columnsWithActions} 
+            columns={columns} 
             data={products} 
             searchKey="name"
             searchPlaceholder="Search products by name..."
+            onDelete={(row) => deleteProduct(row.id)}
+            onEdit={(row) => console.log("Edit product:", row.id)}
+            onView={(row) => console.log("View product:", row.id)}
+            totalRecords={products.length}
+            pageSize={10}
          />
        </SectionCard>
     </PageLayout>
