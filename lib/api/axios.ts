@@ -1,5 +1,6 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import type { ApiError } from "@/types";
+import { useTenantStore } from "@/features/tenancy/store/tenant.store";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
 
@@ -61,11 +62,14 @@ axiosInstance.interceptors.request.use(
       config.headers["Authorization"] = `Bearer ${token}`;
     }
     
-    // Multi-tenant isolation: Always inject active tenant ID
-    const state = JSON.parse(localStorage.getItem("tijaratpro-tenant-context") || "{}");
-    const tenantId = state.state?.activeTenant?.id;
-    if (tenantId && config.headers) {
-      config.headers["x-tenant-id"] = tenantId;
+    // Multi-tenant isolation: Always inject active tenant ID into query params
+    // We use getState() to access the store outside of React components
+    const tenantId = useTenantStore.getState().activeTenant?.id;
+    if (tenantId) {
+      config.params = {
+        ...config.params,
+        tenantId
+      };
     }
     
     return config;

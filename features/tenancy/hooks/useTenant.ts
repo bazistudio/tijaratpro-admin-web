@@ -1,35 +1,28 @@
-import { useQuery } from "@tanstack/react-query";
-import { tenantService } from "../services/tenant.service";
+"use client";
+
 import { useTenantStore } from "../store/tenant.store";
+import type { Tenant } from "../types/tenant.types";
 
 /**
- * useTenant
- * Hook to access active tenant data and status.
+ * useTenant Hook
+ * Direct access to tenancy context and actions.
  */
-export const useTenant = () => {
-  const { activeTenant, isLoading: isStoreLoading } = useTenantStore();
+export function useTenant() {
+  const { activeTenant, tenantList, setActiveTenant, setTenantList, clearTenancy } = useTenantStore();
+
+  const switchTenant = (tenant: Tenant) => {
+    setActiveTenant(tenant);
+    // Note: Page refresh might be needed to clear state of other features,
+    // but the axios interceptor will pick up the new tenantId immediately.
+  };
 
   return {
-    tenant: activeTenant,
+    activeTenant,
+    tenantList,
+    switchTenant,
+    setTenantList,
+    clearTenancy,
+    hasActiveTenant: !!activeTenant,
     tenantId: activeTenant?.id,
-    isTenantActive: activeTenant?.status === "ACTIVE",
-    isLoading: isStoreLoading,
   };
-};
-
-/**
- * useTenantUsers
- * Fetches users belonging to the active tenant.
- */
-export const useTenantUsers = () => {
-  const { activeTenant } = useTenantStore();
-  
-  return useQuery({
-    queryKey: ["tenants", activeTenant?.id, "users"],
-    queryFn: () => {
-      if (!activeTenant?.id) return Promise.resolve([]);
-      return []; // To be implemented with user service
-    },
-    enabled: !!activeTenant?.id
-  });
-};
+}

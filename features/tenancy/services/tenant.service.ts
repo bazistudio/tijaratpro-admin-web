@@ -1,37 +1,25 @@
-import axios from "@/lib/api/axios";
-import { Tenant, TenantListItem } from "../types/tenant.types";
-import { ApiResponse } from "@/types";
+import axiosInstance from "@/lib/api/axios";
+import type { Tenant } from "../types/tenant.types";
+import type { ApiResponse } from "@/types";
 
-const BASE_PATH = "/tenants";
-
+/**
+ * Tenant Service
+ * Handles API calls for managing shops and multi-tenant context.
+ */
 export const tenantService = {
   /**
-   * Fetches all tenants (Super Admin only).
+   * Fetch all shops the current user has access to.
    */
-  fetchTenants: () =>
-    axios.get<ApiResponse<TenantListItem[]>>(BASE_PATH).then(res => res.data),
+  getMyTenants: async (): Promise<ApiResponse<Tenant[]>> => {
+    const response = await axiosInstance.get("/tenants/me");
+    return response.data;
+  },
 
   /**
-   * Fetches the full profile of a specific tenant.
+   * Switch to a specific shop.
    */
-  fetchTenantById: (id: string) =>
-    axios.get<ApiResponse<Tenant>>(`${BASE_PATH}/${id}`).then(res => res.data),
-
-  /**
-   * Creates a new business tenant in the system.
-   */
-  createTenant: (data: Partial<Tenant>) =>
-    axios.post<ApiResponse<Tenant>>(BASE_PATH, data).then(res => res.data),
-
-  /**
-   * Updates tenant-level settings (name, logo, etc.).
-   */
-  updateTenant: (id: string, data: Partial<Tenant>) =>
-    axios.patch<ApiResponse<Tenant>>(`${BASE_PATH}/${id}`, data).then(res => res.data),
-
-  /**
-   * Suspends or activates a shop tenant.
-   */
-  updateTenantStatus: (id: string, status: string) =>
-    axios.patch(`${BASE_PATH}/${id}/status`, { status }).then(res => res.data),
+  switchTenant: async (tenantId: string): Promise<ApiResponse<Tenant>> => {
+    const response = await axiosInstance.post(`/tenants/switch/${tenantId}`);
+    return response.data;
+  },
 };

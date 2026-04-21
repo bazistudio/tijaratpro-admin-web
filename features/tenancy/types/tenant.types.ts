@@ -1,39 +1,22 @@
-// ─── Tenant Types (Shop Isolation) ────────────────────────────────────────────────
-
-export type TenantType = 
-  | "MEDICAL" 
-  | "AUTO" 
-  | "RETAIL" 
-  | "GENERAL"
-  | "PHARMACY"
+export type BusinessType =
+  | "RETAIL"
+  | "MEDICAL"
+  | "AUTO"
   | "WHOLESALE";
-
-export type TenantStatus = "ACTIVE" | "SUSPENDED" | "TRIAL" | "EXPIRED";
 
 export interface Tenant {
   id: string;
   name: string;
-  type: TenantType;
-  status: TenantStatus;
-  logoUrl?: string;
-  settings: TenantSettings;
+  businessType: BusinessType;
+  logo?: string;
+  isActive: boolean;
   createdAt: string;
-  updatedAt: string;
 }
 
-export interface TenantSettings {
-  currency: string;
-  timezone: string;
-  language: string;
-  printFormat: string;
-  taxNumber?: string;
-  contactEmail?: string;
-}
-
-export interface TenantListItem {
-  id: string;
-  name: string;
-  type: TenantType;
-  status: TenantStatus;
-  userCount: number;
+export interface TenantState {
+  activeTenant: Tenant | null;
+  tenantList: Tenant[];
+  setTenantList: (tenants: Tenant[]) => void;
+  setActiveTenant: (tenant: Tenant) => void;
+  clearTenancy: () => void;
 }
