@@ -9,6 +9,7 @@ export interface Shop {
   email?: string;
   phone?: string;
   address?: string;
+  businessType: "RETAIL" | "MEDICAL" | "AUTO" | "WHOLESALE" | "SYSTEM";
   status: ShopStatus;
   isDeleted: boolean;
   createdAt: string;

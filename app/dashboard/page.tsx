@@ -38,7 +38,7 @@ const monthlyData = [
 ]
 
 export default function DashboardPage() {
-  const { stats, fetchStats } = useDashboardStore()
+  const { stats, fetchStats, isLoading } = useDashboardStore()
 
   useEffect(() => {
     fetchStats()
@@ -48,6 +48,7 @@ export default function DashboardPage() {
     <PageLayout 
       title="Business Overview" 
       breadcrumbs={<span className="flex items-center gap-2">Dashboard <span className="text-muted-foreground/50">/</span> Overview</span>}
+      isLoading={isLoading}
     >
       
       {/* KPI Stats */}
@@ -59,7 +60,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold font-heading text-foreground">
-              Rs {stats ? stats.totalSalesToday.toLocaleString() : "..."}
+              Rs {stats?.totalSalesToday?.toLocaleString() || "0"}
             </div>
             <p className="text-xs text-primary mt-1 flex items-center gap-1 font-medium">
               <TrendingUp className="h-3 w-3" /> +12.5% from yesterday
@@ -74,7 +75,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold font-heading text-foreground">
-              Rs {stats ? stats.monthlyProfit.toLocaleString() : "..."}
+              Rs {stats?.monthlyProfit?.toLocaleString() || "0"}
             </div>
             <p className="text-xs text-success mt-1 flex items-center gap-1 font-medium">
                +4.2% from last month
@@ -89,7 +90,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold font-heading text-foreground">
-              {stats ? stats.lowStockItems : "..."} Items
+              {stats?.lowStockItems || "0"} Items
             </div>
             <p className="text-xs text-destructive mt-1 flex items-center gap-1 font-medium">
               Requires immediate restock!
@@ -104,7 +105,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold font-heading text-foreground">
-              {stats ? stats.activeCustomers.toLocaleString() : "..."}
+              {stats?.activeCustomers?.toLocaleString() || "0"}
             </div>
             <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1 font-medium">
               Across all service & retail customers

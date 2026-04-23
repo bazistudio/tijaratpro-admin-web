@@ -7,7 +7,6 @@ import { PageLayout } from "@/components/layout/PageLayout"
 import { PageHeader } from "@/components/ui/PageHeader"
 import { SectionCard } from "@/components/ui/SectionCard"
 import { DataTable } from "@/components/ui/data-table/DataTable"
-import { Plus, Download } from "lucide-react"
 import { useCustomersStore } from "@/store/customers.store"
 import { useEffect } from "react"
 
@@ -34,7 +33,7 @@ export default function CustomersPage() {
     },
   ]
 
-  const { customers, isLoading, fetchCustomers, addCustomer } = useCustomersStore()
+  const { customers, isLoading, fetchCustomers, addCustomer, deleteCustomer } = useCustomersStore()
 
   useEffect(() => {
     fetchCustomers()
