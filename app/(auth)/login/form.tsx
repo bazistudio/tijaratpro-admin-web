@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { loginSchema, LoginFormData } from '@/lib/auth/auth.schema';
 import { useAuthStore } from '@/lib/auth/auth.store';
 import { authService } from '@/lib/auth/auth.service';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 

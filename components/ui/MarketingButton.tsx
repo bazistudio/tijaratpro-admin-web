@@ -1,16 +1,14 @@
 import React from 'react';
 
-type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+type MarketingButtonProps = {
   children: React.ReactNode;
   variant?: "primary" | "outline" | "white" | "white-outline";
+  fullWidth?: boolean;
   className?: string;
+  type?: "button" | "submit" | "reset";
 };
 
-export const buttonVariants = ({ variant }: { variant?: string }) => {
-  return "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2";
-};
-
-export function Button({ children, variant = "primary", className = "", ...props }: ButtonProps) {
+export default function MarketingButton({ children, variant = "primary", fullWidth = false, className = "", type = "button" }: MarketingButtonProps) {
   const base = "px-8 py-4 rounded-xl font-button text-button transition-all flex items-center justify-center gap-2";
 
   let styles = "";
@@ -24,8 +22,10 @@ export function Button({ children, variant = "primary", className = "", ...props
     styles = "bg-transparent border-2 border-white text-white hover:bg-white/10";
   }
 
+  const widthStyle = fullWidth ? "w-full" : "";
+
   return (
-    <button className={`${base} ${styles} ${className}`} {...props}>
+    <button type={type} className={`${base} ${styles} ${widthStyle} ${className}`}>
       {children}
     </button>
   );

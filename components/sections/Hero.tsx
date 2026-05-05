@@ -1,10 +1,12 @@
 import React from 'react';
 import Image from 'next/image';
+import MarketingButton from '../ui/MarketingButton';
+import Container from '../ui/Container';
 
 const Hero = () => {
   return (
-    <section className="relative pt-xl pb-20 px-6 overflow-hidden bg-[#EDEDE9]">
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+    <section className="relative pt-xl pb-20 overflow-hidden bg-[#EDEDE9]">
+      <Container className="grid lg:grid-cols-2 gap-12 items-center">
         <div className="z-10">
           <span className="inline-block px-4 py-1.5 rounded-full bg-[#0077B6]/10 text-[#0077B6] font-label-caps mb-6 uppercase">
             #1 Retail ERP Solution
@@ -16,13 +18,13 @@ const Hero = () => {
             The most reliable management platform for retailers across Pakistan. Scale your business from Lahore to Karachi with ease and precision.
           </p>
           <div className="flex flex-wrap gap-4">
-            <button className="px-8 py-4 bg-[#0077B6] text-white rounded-xl font-button text-button shadow-lg hover:opacity-90 transition-all flex items-center gap-2">
+            <MarketingButton variant="primary">
               Start Free Trial
               <span className="material-symbols-outlined">arrow_forward</span>
-            </button>
-            <button className="px-8 py-4 bg-transparent border-2 border-[#003049] text-[#003049] rounded-xl font-button text-button hover:bg-[#003049]/5 transition-all">
+            </MarketingButton>
+            <MarketingButton variant="outline">
               See Demo
-            </button>
+            </MarketingButton>
           </div>
           <div className="mt-8 flex items-center gap-4 text-sm text-gray-600">
             <div className="flex -space-x-2">
@@ -46,7 +48,7 @@ const Hero = () => {
             />
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 };

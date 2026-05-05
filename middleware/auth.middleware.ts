@@ -34,9 +34,10 @@ export function authMiddleware(request: NextRequest) {
     !isAuthenticated &&
     PROTECTED_PREFIXES.some((prefix) => pathname.startsWith(prefix))
   ) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("from", pathname);
-    return NextResponse.redirect(loginUrl);
+    // TEMP: Disabled redirect for debugging
+    // const loginUrl = new URL("/login", request.url);
+    // loginUrl.searchParams.set("from", pathname);
+    // return NextResponse.redirect(loginUrl);
   }
 
   // ── Rule 3: pass through ──────────────────────────────────────────────────

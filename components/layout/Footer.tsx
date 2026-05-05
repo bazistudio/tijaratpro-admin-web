@@ -1,9 +1,10 @@
 import React from 'react';
+import Container from '../ui/Container';
 
 const Footer = () => {
   return (
     <footer className="bg-gray-50 border-t border-gray-200" id="contact">
-      <div className="max-w-7xl mx-auto px-8 py-16 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-12">
+      <Container className="py-16 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-12">
         <div className="col-span-2">
           <div className="text-xl font-bold text-[#003049] mb-6">TijaratPro</div>
           <p className="text-gray-500 font-manrope text-sm max-w-xs leading-relaxed mb-8">Empowering retailers with the tools they need to manage inventory, sales, and customers in a unified cloud ecosystem.</p>
@@ -51,14 +52,14 @@ const Footer = () => {
             <li><a className="text-gray-500 font-manrope text-sm hover:underline hover:text-[#0077B6]" href="#">Cookie Policy</a></li>
           </ul>
         </div>
-      </div>
-      <div className="max-w-7xl mx-auto px-8 py-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
+      </Container>
+      <Container className="py-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="text-gray-500 font-manrope text-sm">© 2024 TijaratPro ERP. All rights reserved.</p>
         <div className="flex gap-6">
           <span className="text-gray-500 text-sm">English (US)</span>
           <span className="text-gray-500 text-sm">System Status: <span className="text-[#6A994E] font-bold">Operational</span></span>
         </div>
-      </div>
+      </Container>
     </footer>
   );
 };

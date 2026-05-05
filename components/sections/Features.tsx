@@ -1,15 +1,17 @@
 import React from 'react';
+import Container from '../ui/Container';
+import SectionHeading from '../ui/SectionHeading';
 
 const Features = () => {
   return (
     <>
       {/* Features Bento Grid */}
-      <section className="py-xl px-6 bg-white/50" id="features">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="font-h2 text-h2 text-[#003049] mb-4">Everything you need to grow</h2>
-            <p className="font-body-md text-gray-600 max-w-2xl mx-auto">Powerful tools tailored for retail success, from single boutiques to multi-branch chains.</p>
-          </div>
+      <section className="py-xl bg-white/50" id="features">
+        <Container>
+          <SectionHeading 
+            title="Everything you need to grow" 
+            subtitle="Powerful tools tailored for retail success, from single boutiques to multi-branch chains." 
+          />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
             {/* Feature Card 1 */}
             <div className="bg-white p-8 rounded-xl shadow-soft border border-gray-100 hover:scale-[1.02] transition-transform">
@@ -60,16 +62,16 @@ const Features = () => {
               <p className="font-body-md text-gray-600">Your data is safe and accessible from anywhere. Secure cloud backups happen automatically.</p>
             </div>
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* How it Works Section */}
-      <section className="py-xl px-6" id="about">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
-            <h2 className="font-h2 text-h2 text-[#003049] mb-4">Start selling in minutes</h2>
-            <p className="font-body-md text-gray-600 max-w-2xl mx-auto">Getting started with TijaratPro is simple. Follow these three easy steps.</p>
-          </div>
+      <section className="py-xl" id="about">
+        <Container>
+          <SectionHeading 
+            title="Start selling in minutes" 
+            subtitle="Getting started with TijaratPro is simple. Follow these three easy steps." 
+          />
           <div className="grid md:grid-cols-3 gap-12 relative">
             <div className="hidden md:block absolute top-1/4 left-0 right-0 h-0.5 bg-gray-200 -z-10"></div>
             <div className="flex flex-col items-center text-center">
@@ -88,7 +90,7 @@ const Features = () => {
               <p className="font-body-md text-gray-600">Open your register and begin processing orders with our lightning-fast POS.</p>
             </div>
           </div>
-        </div>
+        </Container>
       </section>
     </>
   );
