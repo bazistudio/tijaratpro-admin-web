@@ -1,7 +1,5 @@
-import { redirect } from "next/navigation";
+import Home from "@/app/pages/Home";
 
-export default function Home() {
-  // Redirect root domain to the dashboard.
-  // Middleware will intercept this and redirect to /login if unauthenticated.
-  redirect("/dashboard");
+export default function Page() {
+  return <Home />;
 }

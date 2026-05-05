@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import MarketingButton from '../ui/MarketingButton';
 import Container from '../ui/Container';
 
@@ -12,8 +13,8 @@ const Navbar = () => {
         <a className="font-manrope text-sm font-semibold text-gray-600 hover:text-[#0077B6] transition-colors" href="#contact">Contact</a>
       </div>
       <div className="flex items-center gap-4">
-        <button className="px-5 py-2 text-sm font-semibold text-gray-600 hover:text-[#0077B6] transition-colors">Login</button>
-        <MarketingButton className="!px-5 !py-2 !text-sm">Get Started</MarketingButton>
+        <Link href="/login" className="px-5 py-2 text-sm font-semibold text-gray-600 hover:text-[#0077B6] transition-colors">Log in</Link>
+        <MarketingButton href="/signup" className="!px-5 !py-2 !text-sm">Sign up</MarketingButton>
       </div>
     </Container>
   );

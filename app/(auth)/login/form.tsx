@@ -5,9 +5,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { loginSchema, LoginFormData } from '@/lib/auth/auth.schema';
-import { useAuthStore } from '@/lib/auth/auth.store';
+import { useAuthStore } from '@/store';
 import { authService } from '@/lib/auth/auth.service';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -34,8 +34,12 @@ export default function LoginForm() {
     setError(null);
     try {
       const response = await authService.login(data);
-      setAuth(response.user, response.token, response.shopId);
-      router.push('/dashboard'); // Or read 'from' query param and redirect there
+      setAuth(response.user as any, response.token);
+      
+      // Delay redirect to ensure persistence has time to save
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 100);
     } catch (err: any) {
       setError(err.message || 'Failed to login');
     } finally {

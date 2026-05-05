@@ -25,19 +25,16 @@ export function authMiddleware(request: NextRequest) {
   const isAuthenticated = Boolean(token);
 
   // ── Rule 1: authenticated user visiting auth pages ────────────────────────
-  if (isAuthenticated && AUTH_ROUTES.some((r) => pathname.startsWith(r))) {
+  if (isAuthenticated && pathname === '/login') {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   // ── Rule 2: unauthenticated user visiting a protected route ───────────────
-  if (
-    !isAuthenticated &&
-    PROTECTED_PREFIXES.some((prefix) => pathname.startsWith(prefix))
-  ) {
-    // TEMP: Disabled redirect for debugging
-    // const loginUrl = new URL("/login", request.url);
-    // loginUrl.searchParams.set("from", pathname);
-    // return NextResponse.redirect(loginUrl);
+  const isProtectedRoute = PROTECTED_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+  if (!isAuthenticated && pathname !== '/login' && isProtectedRoute) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("from", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
   // ── Rule 3: pass through ──────────────────────────────────────────────────

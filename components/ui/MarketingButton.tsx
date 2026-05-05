@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 type MarketingButtonProps = {
   children: React.ReactNode;
@@ -6,9 +7,10 @@ type MarketingButtonProps = {
   fullWidth?: boolean;
   className?: string;
   type?: "button" | "submit" | "reset";
+  href?: string;
 };
 
-export default function MarketingButton({ children, variant = "primary", fullWidth = false, className = "", type = "button" }: MarketingButtonProps) {
+export default function MarketingButton({ children, variant = "primary", fullWidth = false, className = "", type = "button", href }: MarketingButtonProps) {
   const base = "px-8 py-4 rounded-xl font-button text-button transition-all flex items-center justify-center gap-2";
 
   let styles = "";
@@ -24,8 +26,18 @@ export default function MarketingButton({ children, variant = "primary", fullWid
 
   const widthStyle = fullWidth ? "w-full" : "";
 
+  const combinedClasses = `${base} ${styles} ${widthStyle} ${className}`;
+
+  if (href) {
+    return (
+      <Link href={href} className={combinedClasses}>
+        {children}
+      </Link>
+    );
+  }
+
   return (
-    <button type={type} className={`${base} ${styles} ${widthStyle} ${className}`}>
+    <button type={type} className={combinedClasses}>
       {children}
     </button>
   );

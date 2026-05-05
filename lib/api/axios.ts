@@ -82,6 +82,8 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error: AxiosError<ApiError>) => {
+    // TEMP: Disabled 401 redirect for debugging mock logins
+    /*
     if (error.response?.status === 401) {
       clearStoredToken();
       // Client-side redirect to login
@@ -89,6 +91,7 @@ axiosInstance.interceptors.response.use(
         window.location.href = "/login";
       }
     }
+    */
 
     // Normalize backend error shape: { success, message, errors[] }
     const backendError: ApiError = error.response?.data ?? {

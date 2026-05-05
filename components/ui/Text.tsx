@@ -4,7 +4,7 @@ type TextProps = {
   children: React.ReactNode;
   variant?: "body-lg" | "body-md" | "body-sm" | "label";
   className?: string;
-  as?: keyof JSX.IntrinsicElements;
+  as?: React.ElementType;
 };
 
 export default function Text({ children, variant = "body-md", className = "", as: Tag = "p" }: TextProps) {

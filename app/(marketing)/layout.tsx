@@ -10,7 +10,7 @@ export default function MarketingLayout({
   return (
     <div className="min-h-screen bg-[#EDEDE9] font-body-md text-on-surface antialiased flex flex-col">
       <Header />
-      <main className="flex-grow">
+      <main className="flex-grow w-full overflow-x-hidden">
         {children}
       </main>
       <Footer />
