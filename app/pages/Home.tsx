@@ -1,22 +1,18 @@
 import React from 'react';
 import Header from '../../components/layout/Header';
-import Hero from '../../components/layout/Hero';
-import Features from '../../components/layout/Features';
-import Pricing from '../../components/layout/Pricing';
 import Footer from '../../components/layout/Footer';
+import Hero from '../../components/sections/Hero';
+import Features from '../../components/sections/Features';
+import Pricing from '../../components/sections/Pricing';
 
-const Home = () => {
+export default function Home() {
   return (
-    <div className="font-body-md text-on-surface antialiased bg-[#EDEDE9] min-h-screen">
+    <>
       <Header />
-      <main>
-        <Hero />
-        <Features />
-        <Pricing />
-      </main>
+      <Hero />
+      <Features />
+      <Pricing />
       <Footer />
-    </div>
+    </>
   );
-};
-
-export default Home;
+}
