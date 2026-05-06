@@ -5,23 +5,44 @@
 export const api = async (url: string, options: any = {}) => {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const baseUrl = "http://localhost:5000/api";
+  const fullUrl = url.startsWith("http") ? url : `${baseUrl}${url}`;
+
+  const headers = {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...options.headers,
+  };
 
   try {
-    const response = await fetch(`${baseUrl}${url}`, {
+    let response = await fetch(fullUrl, {
       ...options,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : "",
-        ...options.headers,
-      },
+      headers,
     });
 
-    // Global Error Interception
-    if (response.status === 401) {
-      // Token expired or invalid
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("token");
-        window.location.href = "/login";
+    // Global 401 Error Interception & Token Refresh
+    if (response.status === 401 && !url.includes("/auth/refresh-token")) {
+      const refreshRes = await fetch(`${baseUrl}/auth/refresh-token`, {
+        method: "POST",
+      });
+
+      if (refreshRes.ok) {
+        const { token: newToken } = await refreshRes.json();
+        if (typeof window !== "undefined") {
+          localStorage.setItem("token", newToken);
+        }
+        
+        // Retry original request with new token
+        response = await fetch(fullUrl, {
+          ...options,
+          headers: { ...headers, Authorization: `Bearer ${newToken}` },
+        });
+      } else {
+        // Refresh failed -> logout
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+        }
+        throw new Error("Session expired. Please login again.");
       }
       throw new Error("Session expired. Please login again.");
     }
