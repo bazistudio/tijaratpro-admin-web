@@ -1,8 +1,9 @@
 "use client";
 
 import { Sidebar } from "./Sidebar";
-import { Header } from "./Header";
+import { DashboardHeader } from "./DashboardHeader";
 import { useUiStore } from "@/store";
+
 import { cn } from "@/lib/utils";
 
 // ─── DashboardLayout Component ────────────────────────────────────────────────
@@ -23,7 +24,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       <div className="flex flex-1 flex-col min-w-0 transition-all duration-300">
         
         {/* Header Shell */}
-        <Header />
+        <DashboardHeader />
+
 
         {/* Global Loading Overlay (if triggered by mutations/routing) */}
         {globalLoading && (

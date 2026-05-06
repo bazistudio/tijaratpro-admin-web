@@ -51,6 +51,10 @@ export function DataTable<TData, TValue>({
   onRowClick,
   totalRecords = 0,
   pageSize = 10,
+  pageIndex = 0,
+  pageCount,
+  onPageChange,
+  onPageSizeChange,
   isLoading = false,
   className,
 }: DataTableProps<TData, TValue>) {
@@ -58,6 +62,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+
 
   // 1. Process Columns: Inject Actions if handlers exist
   const finalColumns = React.useMemo(() => {
@@ -142,11 +147,18 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    manualPagination: true,
+    pageCount: pageCount,
     state: {
       sorting,
       columnFilters,
+      pagination: {
+        pageIndex,
+        pageSize,
+      }
     },
   });
+
 
   if (isLoading) {
     return <DataTableSkeleton columnsCount={columns.length + (onView || onEdit || onDelete ? 1 : 0)} />;
@@ -212,7 +224,14 @@ export function DataTable<TData, TValue>({
       </div>
 
       {/* Pagination (Conditional) */}
-      <DataTablePagination table={table} totalRecords={totalRecords || data.length} pageSize={pageSize} />
+      <DataTablePagination 
+        table={table} 
+        totalRecords={totalRecords || data.length} 
+        pageSize={pageSize}
+        onPageChange={onPageChange}
+        onPageSizeChange={onPageSizeChange}
+      />
+
     </div>
   );
 }

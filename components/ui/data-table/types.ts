@@ -4,7 +4,8 @@ export interface RowAction<TData> {
   label: string;
   icon?: React.ReactNode;
   onClick: (row: TData) => void;
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "premium";
+  variant?: "primary" | "secondary" | "outline" | "white" | "white-outline" | "ghost" | "destructive" | "premium";
+
   className?: string;
   isDisabled?: (row: TData) => boolean;
   isHidden?: (row: TData) => boolean;
@@ -32,6 +33,11 @@ export interface DataTableProps<TData, TValue> {
   // Pagination State
   totalRecords?: number;
   pageSize?: number;
+  pageIndex?: number;
+  pageCount?: number;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (size: number) => void;
+
   
   // Utilities
   isLoading?: boolean;

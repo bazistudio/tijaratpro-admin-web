@@ -32,20 +32,46 @@ export default function LoginForm() {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     setError(null);
+    
     try {
-      const response = await authService.login(data);
-      setAuth(response.user as any, response.token);
-      
-      // Delay redirect to ensure persistence has time to save
-      setTimeout(() => {
-        router.push('/dashboard');
-      }, 100);
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          identifier: data.identifier, 
+          password: data.password 
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Invalid credentials");
+      }
+
+      const responseData = await res.json();
+
+      if (responseData.token) {
+        // Simple predictable storage as requested
+        localStorage.setItem("token", responseData.token);
+        
+        // Update Zustand store so the UI (Header, etc.) reflects the login
+        if (responseData.user) {
+          setAuth(responseData.user, responseData.token);
+        }
+        
+        router.push("/dashboard");
+      }
     } catch (err: any) {
-      setError(err.message || 'Failed to login');
+      setError(err.message || "Login failed");
     } finally {
       setIsLoading(false);
     }
   };
+
+
+
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

@@ -10,13 +10,18 @@ interface DataTablePaginationProps<TData> {
   table: Table<TData>
   totalRecords: number
   pageSize: number
+  onPageChange?: (page: number) => void
+  onPageSizeChange?: (size: number) => void
 }
 
 export function DataTablePagination<TData>({
   table,
   totalRecords,
   pageSize,
+  onPageChange,
+  onPageSizeChange,
 }: DataTablePaginationProps<TData>) {
+
   // Only show pagination if there's more than one page worth of data
   if (totalRecords <= pageSize) {
     return null
@@ -33,8 +38,8 @@ export function DataTablePagination<TData>({
           <Button
             variant="outline"
             className="hidden h-8 w-8 p-0 lg:flex"
-            onClick={() => table.setPageIndex(0)}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => onPageChange ? onPageChange(0) : table.setPageIndex(0)}
+            disabled={!table.getCanPreviousPage() && !onPageChange}
           >
             <span className="sr-only">Go to first page</span>
             <ChevronsLeft className="h-4 w-4" />
@@ -42,7 +47,7 @@ export function DataTablePagination<TData>({
           <Button
             variant="outline"
             className="h-8 w-8 p-0"
-            onClick={() => table.previousPage()}
+            onClick={() => onPageChange ? onPageChange(table.getState().pagination.pageIndex - 1) : table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
             <span className="sr-only">Go to previous page</span>
@@ -55,7 +60,7 @@ export function DataTablePagination<TData>({
           <Button
             variant="outline"
             className="h-8 w-8 p-0"
-            onClick={() => table.nextPage()}
+            onClick={() => onPageChange ? onPageChange(table.getState().pagination.pageIndex + 1) : table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">Go to next page</span>
@@ -64,12 +69,13 @@ export function DataTablePagination<TData>({
           <Button
             variant="outline"
             className="hidden h-8 w-8 p-0 lg:flex"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            onClick={() => onPageChange ? onPageChange(table.getPageCount() - 1) : table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">Go to last page</span>
             <ChevronsRight className="h-4 w-4" />
           </Button>
+
         </div>
       </div>
     </div>

@@ -1,7 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
+
 import { LayoutDashboard, ShoppingCart, Package, Users, ReceiptText, PieChart, Settings, LogOut, Store } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -20,6 +21,12 @@ const routes = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/login");
+  };
 
   return (
     <aside className="w-64 h-screen flex flex-col border-r border-border bg-background lg:flex hidden">
@@ -49,7 +56,10 @@ export function Sidebar() {
       </div>
 
       <div className="p-4 border-t border-border shrink-0">
-        <button className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors">
+        <button 
+          onClick={handleLogout}
+          className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
+        >
           <LogOut className="h-4 w-4" />
           Logout
         </button>
@@ -57,3 +67,4 @@ export function Sidebar() {
     </aside>
   )
 }
+
