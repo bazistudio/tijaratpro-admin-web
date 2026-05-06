@@ -14,12 +14,16 @@ export const useTenantStore = create<TenantState>()(
     (set) => ({
       activeTenant: null,
       tenantList: [],
+      isLoading: false,
 
       setTenantList: (tenantList) => set({ tenantList }),
 
       setActiveTenant: (activeTenant) => set({ activeTenant }),
 
+      setLoading: (isLoading) => set({ isLoading }),
+
       clearTenancy: () => set({ activeTenant: null, tenantList: [] }),
+
     }),
     {
       name: "tp_tenant_context",

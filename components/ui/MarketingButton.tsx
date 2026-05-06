@@ -8,9 +8,18 @@ type MarketingButtonProps = {
   className?: string;
   type?: "button" | "submit" | "reset";
   href?: string;
+  onClick?: () => void;
 };
 
-export default function MarketingButton({ children, variant = "primary", fullWidth = false, className = "", type = "button", href }: MarketingButtonProps) {
+export default function MarketingButton({ 
+  children, 
+  variant = "primary", 
+  fullWidth = false, 
+  className = "", 
+  type = "button", 
+  href,
+  onClick
+}: MarketingButtonProps) {
   const base = "px-8 py-4 rounded-xl font-button text-button transition-all flex items-center justify-center gap-2";
 
   let styles = "";
@@ -30,14 +39,14 @@ export default function MarketingButton({ children, variant = "primary", fullWid
 
   if (href) {
     return (
-      <Link href={href} className={combinedClasses}>
+      <Link href={href} className={combinedClasses} onClick={onClick}>
         {children}
       </Link>
     );
   }
 
   return (
-    <button type={type} className={combinedClasses}>
+    <button type={type} className={combinedClasses} onClick={onClick}>
       {children}
     </button>
   );

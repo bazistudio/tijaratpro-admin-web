@@ -1,9 +1,20 @@
-import React from 'react';
+"use client";
+
+import React, { useState } from 'react';
 import Image from 'next/image';
 import MarketingButton from '../ui/MarketingButton';
 import Container from '../ui/Container';
+import EarlyAccessModal from './EarlyAccessModal';
 
 const Hero = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState("Get Early Access");
+
+  const openModal = (title: string) => {
+    setModalTitle(title);
+    setIsModalOpen(true);
+  };
+
   return (
     <section className="relative pt-xl pb-20 overflow-hidden bg-[#EDEDE9]">
       <Container className="grid lg:grid-cols-2 gap-12 items-center">
@@ -18,14 +29,28 @@ const Hero = () => {
             The most reliable management platform for retailers across Pakistan. Scale your business from Lahore to Karachi with ease and precision.
           </p>
           <div className="flex flex-wrap gap-4">
-            <MarketingButton variant="primary">
-              Start Free Trial
+            <MarketingButton variant="primary" onClick={() => openModal("Get Early Access")}>
+              Get Early Access
               <span className="material-symbols-outlined">arrow_forward</span>
             </MarketingButton>
-            <MarketingButton variant="outline">
-              See Demo
+            <MarketingButton variant="outline" onClick={() => openModal("Request Demo")}>
+              Request Demo
             </MarketingButton>
+            <a 
+              href="https://wa.me/9203325220620?text=I%20want%20demo%20of%20TijaratPro"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#25D366] text-white font-medium hover:bg-[#128C7E] transition-colors"
+            >
+              <Image src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" width={20} height={20} />
+              Chat on WhatsApp
+            </a>
           </div>
+          <EarlyAccessModal 
+            isOpen={isModalOpen} 
+            onClose={() => setIsModalOpen(false)} 
+            title={modalTitle}
+          />
           <div className="mt-8 flex items-center gap-4 text-sm text-gray-600">
             <div className="flex -space-x-2">
               <div className="w-8 h-8 rounded-full bg-gray-300 border-2 border-white"></div>

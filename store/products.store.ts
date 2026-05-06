@@ -50,7 +50,7 @@ export const useProductsStore = create<ProductsState>((set, get) => ({
       const res = await api.updateProduct(id, payload);
       if (res.data) {
         set((state) => ({
-          products: state.products.map((p) => (p.id === id ? (res.data as Product) : p)),
+          products: state.products.map((p) => (p._id === id ? (res.data as Product) : p)),
           isLoading: false,
         }));
       }
@@ -65,7 +65,8 @@ export const useProductsStore = create<ProductsState>((set, get) => ({
     try {
       await api.deleteProduct(id);
       set((state) => ({
-        products: state.products.filter((p) => p.id !== id),
+        products: state.products.filter((p) => p._id !== id),
+
         isLoading: false,
       }));
     } catch (err: any) {

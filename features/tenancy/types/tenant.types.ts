@@ -5,7 +5,7 @@ export type BusinessType =
   | "WHOLESALE";
 
 export interface Tenant {
-  id: string;
+  _id: string;
   name: string;
   businessType: BusinessType;
   logo?: string;
@@ -16,7 +16,10 @@ export interface Tenant {
 export interface TenantState {
   activeTenant: Tenant | null;
   tenantList: Tenant[];
+  isLoading: boolean;
   setTenantList: (tenants: Tenant[]) => void;
   setActiveTenant: (tenant: Tenant) => void;
+  setLoading: (isLoading: boolean) => void;
   clearTenancy: () => void;
 }
+

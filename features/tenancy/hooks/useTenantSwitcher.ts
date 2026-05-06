@@ -12,9 +12,9 @@ export const useTenantSwitcher = () => {
   const { setActiveTenant, setLoading } = useTenantStore();
 
   const switchTenantMutation = useMutation({
-    mutationFn: (tenantId: string) => tenantService.fetchTenantById(tenantId),
+    mutationFn: (tenantId: string) => tenantService.switchTenant(tenantId),
     onMutate: () => setLoading(true),
-    onSuccess: (response) => {
+    onSuccess: (response: any) => {
       if (response.data) {
         setActiveTenant(response.data);
         // Clear all cached data to ensure total isolation during switch
@@ -27,6 +27,7 @@ export const useTenantSwitcher = () => {
     },
     onSettled: () => setLoading(false),
   });
+
 
   return {
     switchTenant: (id: string) => switchTenantMutation.mutate(id),
