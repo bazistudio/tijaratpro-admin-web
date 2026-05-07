@@ -1,6 +1,5 @@
-import { ComingSoon } from "@/components/ui/ComingSoon";
-import { LifeBuoy } from "lucide-react";
+import FeatureComingSoon from '@/components/ui/FeatureComingSoon';
 
 export default function SupportPage() {
-  return <ComingSoon title="Support" icon={LifeBuoy} />;
+  return <FeatureComingSoon title='Support' />;
 }

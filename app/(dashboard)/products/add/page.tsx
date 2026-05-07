@@ -1,6 +1,5 @@
-import { ComingSoon } from "@/components/ui/ComingSoon";
-import { PackagePlus } from "lucide-react";
+import FeatureComingSoon from '@/components/ui/FeatureComingSoon';
 
-export default function AddProductPage() {
-  return <ComingSoon title="Add Product" icon={PackagePlus} />;
+export default function Products AddPage() {
+  return <FeatureComingSoon title='Products Add' />;
 }

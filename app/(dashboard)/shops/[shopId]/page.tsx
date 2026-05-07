@@ -1,11 +1,5 @@
-import { ComingSoon } from "@/components/ui/ComingSoon";
-import { Store } from "lucide-react";
+import FeatureComingSoon from '@/components/ui/FeatureComingSoon';
 
-export default async function ShopDetailsPage({ 
-  params 
-}: { 
-  params: Promise<{ shopId: string }> 
-}) {
-  const { shopId } = await params;
-  return <ComingSoon title={`Shop: ${shopId}`} icon={Store} />;
+export default function ShopDetailPage() {
+  return <FeatureComingSoon title="Shop Details" />;
 }

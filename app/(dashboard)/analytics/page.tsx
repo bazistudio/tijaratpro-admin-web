@@ -1,3 +1,5 @@
+import FeatureComingSoon from '@/components/ui/FeatureComingSoon';
+
 export default function AnalyticsPage() {
-  return <div>Analytics Page (Under Construction)</div>
+  return <FeatureComingSoon title='Analytics' />;
 }

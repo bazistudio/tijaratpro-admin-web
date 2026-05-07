@@ -1,6 +1,5 @@
-import { ComingSoon } from "@/components/ui/ComingSoon";
-import { Repeat } from "lucide-react";
+import FeatureComingSoon from '@/components/ui/FeatureComingSoon';
 
 export default function SubscriptionsPage() {
-  return <ComingSoon title="Subscriptions" icon={Repeat} />;
+  return <FeatureComingSoon title='Subscriptions' />;
 }

@@ -1,6 +1,5 @@
-import { ComingSoon } from "@/components/ui/ComingSoon";
-import { Layout } from "lucide-react";
+import FeatureComingSoon from '@/components/ui/FeatureComingSoon';
 
-export default function CustomDashboardPage() {
-  return <ComingSoon title="Custom Dashboard" icon={Layout} />;
+export default function Dashboard CustomPage() {
+  return <FeatureComingSoon title='Dashboard Custom' />;
 }

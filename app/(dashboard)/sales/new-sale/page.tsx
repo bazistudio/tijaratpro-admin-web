@@ -1,6 +1,5 @@
-import { ComingSoon } from "@/components/ui/ComingSoon";
-import { Receipt } from "lucide-react";
+import FeatureComingSoon from '@/components/ui/FeatureComingSoon';
 
-export default function NewSalePage() {
-  return <ComingSoon title="New Sale" icon={Receipt} />;
+export default function Sales New-SalePage() {
+  return <FeatureComingSoon title='Sales New-Sale' />;
 }
