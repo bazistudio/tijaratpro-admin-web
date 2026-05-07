@@ -1,98 +1,78 @@
 import React from 'react';
-import Container from '../ui/Container';
-import SectionHeading from '../ui/SectionHeading';
+import { Package, CreditCard, BarChart3, Users, Cloud, Bell, ArrowRight } from 'lucide-react';
 
 const Features = () => {
-  return (
-    <>
-      {/* Features Bento Grid */}
-      <section className="py-xl bg-white/50" id="features">
-        <Container>
-          <SectionHeading 
-            title="Everything you need to grow" 
-            subtitle="Powerful tools tailored for retail success, from single boutiques to multi-branch chains." 
-          />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
-            {/* Feature Card 1 */}
-            <div className="bg-white p-8 rounded-xl shadow-soft border border-gray-100 hover:scale-[1.02] transition-transform">
-              <div className="w-12 h-12 rounded-lg bg-[#0077B6]/10 text-[#0077B6] flex items-center justify-center mb-6">
-                <span className="material-symbols-outlined text-3xl">inventory_2</span>
-              </div>
-              <h3 className="font-h3 text-h3 text-[#003049] mb-3">Inventory</h3>
-              <p className="font-body-md text-gray-600">Real-time stock tracking with automated low-stock alerts and smart reordering suggestions.</p>
-            </div>
-            {/* Feature Card 2 */}
-            <div className="bg-white p-8 rounded-xl shadow-soft border border-gray-100 hover:scale-[1.02] transition-transform">
-              <div className="w-12 h-12 rounded-lg bg-[#0077B6]/10 text-[#0077B6] flex items-center justify-center mb-6">
-                <span className="material-symbols-outlined text-3xl">point_of_sale</span>
-              </div>
-              <h3 className="font-h3 text-h3 text-[#003049] mb-3">Sales</h3>
-              <p className="font-body-md text-gray-600">Fast, intuitive POS system that works offline and handles complex promotions effortlessly.</p>
-            </div>
-            {/* Feature Card 3 */}
-            <div className="bg-white p-8 rounded-xl shadow-soft border border-gray-100 hover:scale-[1.02] transition-transform">
-              <div className="w-12 h-12 rounded-lg bg-[#0077B6]/10 text-[#0077B6] flex items-center justify-center mb-6">
-                <span className="material-symbols-outlined text-3xl">storefront</span>
-              </div>
-              <h3 className="font-h3 text-h3 text-[#003049] mb-3">Multi-Shop</h3>
-              <p className="font-body-md text-gray-600">Manage multiple locations from a single dashboard. Synchronize pricing and stock across branches.</p>
-            </div>
-            {/* Feature Card 4 */}
-            <div className="bg-white p-8 rounded-xl shadow-soft border border-gray-100 hover:scale-[1.02] transition-transform">
-              <div className="w-12 h-12 rounded-lg bg-[#0077B6]/10 text-[#0077B6] flex items-center justify-center mb-6">
-                <span className="material-symbols-outlined text-3xl">group</span>
-              </div>
-              <h3 className="font-h3 text-h3 text-[#003049] mb-3">Customers</h3>
-              <p className="font-body-md text-gray-600">Built-in CRM to track purchase history, manage loyalty programs, and drive repeat visits.</p>
-            </div>
-            {/* Feature Card 5 */}
-            <div className="bg-white p-8 rounded-xl shadow-soft border border-gray-100 hover:scale-[1.02] transition-transform">
-              <div className="w-12 h-12 rounded-lg bg-[#0077B6]/10 text-[#0077B6] flex items-center justify-center mb-6">
-                <span className="material-symbols-outlined text-3xl">bar_chart</span>
-              </div>
-              <h3 className="font-h3 text-h3 text-[#003049] mb-3">Reports</h3>
-              <p className="font-body-md text-gray-600">Deep insights with automated financial reports, sales trends, and tax-ready documentation.</p>
-            </div>
-            {/* Feature Card 6 */}
-            <div className="bg-white p-8 rounded-xl shadow-soft border border-gray-100 hover:scale-[1.02] transition-transform">
-              <div className="w-12 h-12 rounded-lg bg-[#0077B6]/10 text-[#0077B6] flex items-center justify-center mb-6">
-                <span className="material-symbols-outlined text-3xl">cloud_done</span>
-              </div>
-              <h3 className="font-h3 text-h3 text-[#003049] mb-3">Cloud</h3>
-              <p className="font-body-md text-gray-600">Your data is safe and accessible from anywhere. Secure cloud backups happen automatically.</p>
-            </div>
-          </div>
-        </Container>
-      </section>
+  const features = [
+    {
+      title: 'Inventory Management',
+      description: 'Track stock levels, suppliers, categories, and automated low stock alerts in real-time.',
+      icon: <Package className="text-primary" />,
+      color: 'bg-primary/10'
+    },
+    {
+      title: 'Smart Billing POS',
+      description: 'Fast checkout system with barcode support, digital receipts, and WhatsApp integration.',
+      icon: <CreditCard className="text-success" />,
+      color: 'bg-success/10'
+    },
+    {
+      title: 'Profit Analytics',
+      description: 'Understand your revenue, daily profit, expenses, and business growth with visual insights.',
+      icon: <BarChart3 className="text-blue-500" />,
+      color: 'bg-blue-500/10'
+    },
+    {
+      title: 'Customer Records',
+      description: 'Manage customer dues, purchase history, and personalized reminders to drive repeat sales.',
+      icon: <Users className="text-indigo-500" />,
+      color: 'bg-indigo-500/10'
+    },
+    {
+      title: 'Cloud Backup',
+      description: 'Your business data stays secure, synced, and accessible from anywhere, anytime.',
+      icon: <Cloud className="text-sky-500" />,
+      color: 'bg-sky-500/10'
+    },
+    {
+      title: 'Smart Alerts',
+      description: 'Get notified about expired stock, low inventory, and pending payments instantly.',
+      icon: <Bell className="text-warning" />,
+      color: 'bg-warning/10'
+    }
+  ];
 
-      {/* How it Works Section */}
-      <section className="py-xl" id="about">
-        <Container>
-          <SectionHeading 
-            title="Start selling in minutes" 
-            subtitle="Getting started with TijaratPro is simple. Follow these three easy steps." 
-          />
-          <div className="grid md:grid-cols-3 gap-12 relative">
-            <div className="hidden md:block absolute top-1/4 left-0 right-0 h-0.5 bg-gray-200 -z-10"></div>
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-[#0077B6] text-white flex items-center justify-center text-h3 font-bold mb-6 border-8 border-white shadow-md">1</div>
-              <h3 className="font-h3 text-h3 text-[#003049] mb-3">Create Shop</h3>
-              <p className="font-body-md text-gray-600">Register your business and set up your profile in just a few clicks.</p>
+  return (
+    <section className="section-padding relative overflow-hidden" id="features">
+      <div className="container-width">
+        <div className="text-center max-w-3xl mx-auto mb-20 flex flex-col gap-6">
+          <h2 className="text-4xl md:text-5xl font-black">
+            Everything Your <span className="gradient-text">Shop Needs</span>
+          </h2>
+          <p className="text-lg text-text-soft">
+            Inventory, billing, analytics, and business automation in one place. 
+            Built specifically to modernize Pakistani businesses.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature) => (
+            <div key={feature.title} className="glass-card p-8 group">
+              <div className={`w-14 h-14 rounded-2xl ${feature.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                {React.cloneElement(feature.icon as React.ReactElement, { size: 28 })}
+              </div>
+              <h3 className="text-xl font-bold text-text mb-4">{feature.title}</h3>
+              <p className="text-text-soft leading-relaxed mb-6">
+                {feature.description}
+              </p>
+              <div className="flex items-center gap-2 text-sm font-bold text-primary group-hover:gap-4 transition-all opacity-0 group-hover:opacity-100 cursor-pointer">
+                Learn more
+                <ArrowRight size={16} />
+              </div>
             </div>
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-[#0077B6] text-white flex items-center justify-center text-h3 font-bold mb-6 border-8 border-white shadow-md">2</div>
-              <h3 className="font-h3 text-h3 text-[#003049] mb-3">Add Products</h3>
-              <p className="font-body-md text-gray-600">Upload your inventory via Excel or use our easy manual entry tool.</p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-[#0077B6] text-white flex items-center justify-center text-h3 font-bold mb-6 border-8 border-white shadow-md">3</div>
-              <h3 className="font-h3 text-h3 text-[#003049] mb-3">Start Selling</h3>
-              <p className="font-body-md text-gray-600">Open your register and begin processing orders with our lightning-fast POS.</p>
-            </div>
-          </div>
-        </Container>
-      </section>
-    </>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 
