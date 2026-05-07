@@ -1,53 +1,66 @@
-import React from 'react';
-import { cn } from '@/lib/utils';
+import * as React from "react"
+import { Slot } from "@radix-ui/react-slot"
+import { cva, type VariantProps } from "class-variance-authority"
+import { cn } from "@/lib/utils"
 
-type ButtonVariant = "primary" | "secondary" | "outline" | "white" | "white-outline" | "ghost" | "destructive" | "premium";
-type ButtonSize = "sm" | "md" | "lg" | "icon";
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl text-sm font-bold transition-all active:scale-95 disabled:pointer-events-none disabled:opacity-50 [&>svg]:pointer-events-none [&>svg]:size-4 [&>svg]:shrink-0",
+  {
+    variants: {
+      variant: {
+        primary:
+          "bg-primary text-white shadow-lg shadow-primary/20 hover:bg-primary-dark hover:shadow-primary/30 hover:-translate-y-0.5",
+        secondary:
+          "bg-[var(--bg-secondary)] text-[var(--text)] border border-[var(--border)] hover:bg-[var(--card-hover)] hover:border-primary/30",
+        outline:
+          "border border-[var(--border)] bg-transparent text-[var(--text)] hover:bg-[var(--bg-secondary)] hover:border-primary/50",
+        ghost: "hover:bg-[var(--bg-secondary)] text-[var(--text)]",
+        link: "text-primary underline-offset-4 hover:underline",
+        danger: "bg-danger text-white shadow-lg shadow-danger/20 hover:bg-danger/90 hover:-translate-y-0.5",
+      },
+      size: {
+        default: "h-14 px-8 py-2",
+        sm: "h-10 rounded-xl px-4 text-xs",
+        lg: "h-16 rounded-[20px] px-10 text-lg",
+        icon: "h-12 w-12 rounded-xl",
+      },
+    },
+    defaultVariants: {
+      variant: "primary",
+      size: "default",
+    },
+  }
+)
 
-type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  children: React.ReactNode;
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  className?: string;
-  icon?: React.ReactNode;
-};
-
-export function Button({ 
-  children, 
-  variant = "primary", 
-  size = "md",
-  className = "", 
-  icon,
-  ...props 
-}: ButtonProps) {
-  
-  const base = "inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] whitespace-nowrap";
-
-  const variants = {
-    primary: "bg-[#0077B6] text-white shadow-lg hover:bg-[#0077B6]/90",
-    secondary: "bg-muted text-muted-foreground hover:bg-muted/80",
-    outline: "bg-transparent border-2 border-[#003049] text-[#003049] hover:bg-[#003049]/5",
-    white: "bg-white text-[#0077B6] shadow-sm hover:bg-gray-50",
-    "white-outline": "bg-transparent border-2 border-white text-white hover:bg-white/10",
-    ghost: "bg-transparent hover:bg-accent hover:text-accent-foreground border-transparent",
-    destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
-    premium: "bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md hover:shadow-lg hover:opacity-95",
-  };
-
-  const sizes = {
-    sm: "h-8 px-3 text-xs rounded-lg",
-    md: "h-11 px-6 text-sm rounded-xl",
-    lg: "h-14 px-8 text-base rounded-2xl",
-    icon: "h-9 w-9 p-0",
-  };
-
-  return (
-    <button 
-      className={cn(base, variants[variant], sizes[size], className)} 
-      {...props}
-    >
-      {icon && <span className="shrink-0">{icon}</span>}
-      {children}
-    </button>
-  );
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean
+  isLoading?: boolean
 }
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild = false, isLoading, children, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button"
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        disabled={isLoading || props.disabled}
+        {...props}
+      >
+        {isLoading ? (
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            <span>Processing...</span>
+          </div>
+        ) : (
+          children
+        )}
+      </Comp>
+    )
+  }
+)
+Button.displayName = "Button"
+
+export { Button, buttonVariants }

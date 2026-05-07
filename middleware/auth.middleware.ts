@@ -1,21 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const AUTH_ROUTES       = ["/login", "/register", "/forgot-password"];
+const AUTH_ROUTES = ["/login", "/signup", "/forgot-password", "/verify-otp", "/reset-password"];
 const PROTECTED_PREFIXES = [
   "/dashboard",
-  "/shops",
-  "/plans",
-  "/subscriptions",
+  "/analytics",
   "/billing",
-  "/reports",
   "/notifications",
-  "/products",
-  "/orders",
-  "/customers",
-  "/inventory",
-  "/sales",
-  "/suppliers",
+  "/reports",
   "/settings",
+  "/stock",
+  "/subscriptions",
+  "/suppliers",
+  "/support",
+  "/customers",
+  "/expenses",
+  "/orders",
+  "/products",
+  "/sales",
+  "/shops"
 ];
 
 export function authMiddleware(request: NextRequest) {
@@ -24,19 +26,18 @@ export function authMiddleware(request: NextRequest) {
   const token = request.cookies.get("tp_token")?.value;
   const isAuthenticated = Boolean(token);
 
-  // ── Rule 1: authenticated user visiting auth pages ────────────────────────
-  if (isAuthenticated && pathname === '/login') {
+  // 1. Authenticated user trying to access auth pages -> Redirect to dashboard
+  if (isAuthenticated && AUTH_ROUTES.some(route => pathname.startsWith(route))) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  // ── Rule 2: unauthenticated user visiting a protected route ───────────────
+  // 2. Unauthenticated user trying to access protected route -> Redirect to login
   const isProtectedRoute = PROTECTED_PREFIXES.some((prefix) => pathname.startsWith(prefix));
-  if (!isAuthenticated && pathname !== '/login' && isProtectedRoute) {
+  if (!isAuthenticated && isProtectedRoute) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("from", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  // ── Rule 3: pass through ──────────────────────────────────────────────────
   return NextResponse.next();
 }

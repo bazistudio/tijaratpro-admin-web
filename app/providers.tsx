@@ -33,22 +33,22 @@ function makeQueryClient() {
   });
 }
 
+import { ThemeProvider } from "next-themes";
+
 export default function Providers({ children }: { children: ReactNode }) {
-  // useState ensures a single QueryClient instance per browser tab.
-  // Do NOT create it at module level — that would share cache across SSR requests.
   const [queryClient] = useState(makeQueryClient);
 
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
-      {/* Toaster: bottom-right, dark theme to match dashboard aesthetic */}
-      <Toaster
-        position="bottom-right"
-        richColors
-        closeButton
-        duration={4000}
-        theme="dark"
-      />
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+        {children}
+        <Toaster
+          position="bottom-right"
+          richColors
+          closeButton
+          duration={4000}
+        />
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

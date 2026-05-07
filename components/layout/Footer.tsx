@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Facebook, Linkedin, Youtube, MessageCircle, Mail, Phone } from 'lucide-react';
+import { Globe, Share2, PlayCircle, MessageCircle, Mail, Phone } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -33,26 +33,31 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Brand Column */}
           <div className="flex flex-col gap-6">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-black text-sm">T</span>
+            <Link href="/" className="flex items-center gap-2 group">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20 transition-transform">
+                <span className="text-white font-black text-lg">T</span>
               </div>
-              <span className="text-xl font-extrabold gradient-text">TijaratPro</span>
+              <span className="text-xl font-black gradient-text tracking-tighter">TijaratPro</span>
             </Link>
-            <p className="text-sm text-text-soft leading-relaxed">
-              Smart ERP & POS solution designed specifically for Pakistani businesses. 
+            <p className="text-sm text-text-soft leading-relaxed max-w-xs">
+              Pakistan's smartest ERP and POS system for modern retail management. 
               Modernize your inventory, billing, and growth with cloud technology.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-text-soft hover:bg-primary hover:text-white transition-all">
-                <Facebook size={18} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-text-soft hover:bg-primary hover:text-white transition-all">
-                <Linkedin size={18} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-text-soft hover:bg-primary hover:text-white transition-all">
-                <Youtube size={18} />
-              </a>
+              {[
+                { icon: <Globe size={20} />, label: 'Facebook' },
+                { icon: <Share2 size={20} />, label: 'LinkedIn' },
+                { icon: <PlayCircle size={20} />, label: 'YouTube' },
+              ].map((social) => (
+                <Link 
+                  key={social.label}
+                  href="#" 
+                  className="w-10 h-10 rounded-sm border border-white/10 bg-white/5 flex items-center justify-center text-text-soft hover:text-primary hover:border-primary/50 transition-all"
+                  aria-label={social.label}
+                >
+                  {social.icon}
+                </Link>
+              ))}
             </div>
           </div>
 

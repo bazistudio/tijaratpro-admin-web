@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { 
@@ -13,35 +14,39 @@ import {
   LogOut, 
   Store,
   ChevronRight,
-  ShieldCheck
+  ShieldCheck,
+  TrendingUp,
+  CreditCard,
+  Bell
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navigation = [
   {
-    title: "Core",
+    title: "Intelligence",
     items: [
-      { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-      { label: "My Shops", icon: Store, href: "/shops" },
-    ]
-  },
-  {
-    title: "Inventory & CRM",
-    items: [
-      { label: "Orders", icon: ShoppingCart, href: "/orders" },
-      { label: "Products", icon: Package, href: "/products" },
-      { label: "Customers", icon: Users, href: "/customers" },
-    ]
-  },
-  {
-    title: "Business Intelligence",
-    items: [
-      { label: "Sales & Billing", icon: ReceiptText, href: "/billing" },
+      { label: "Overview", icon: LayoutDashboard, href: "/dashboard" },
       { label: "Analytics", icon: PieChart, href: "/analytics" },
     ]
   },
   {
-    title: "System",
+    title: "Operations",
+    items: [
+      { label: "Orders", icon: ShoppingCart, href: "/orders" },
+      { label: "Products", icon: Package, href: "/products" },
+      { label: "Inventory", icon: Store, href: "/stock" },
+    ]
+  },
+  {
+    title: "Finance & CRM",
+    items: [
+      { label: "Billing", icon: ReceiptText, href: "/billing" },
+      { label: "Customers", icon: Users, href: "/customers" },
+      { label: "Expenses", icon: CreditCard, href: "/expenses" },
+    ]
+  },
+  {
+    title: "Management",
     items: [
       { label: "Settings", icon: Settings, href: "/settings" },
     ]
@@ -54,17 +59,23 @@ export function Sidebar() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    // Clear cookies logic would go here in integration phase
     router.push("/login");
   };
 
   return (
-    <aside className="w-72 h-screen flex flex-col border-r border-border bg-white lg:flex hidden relative z-30 shadow-sm">
+    <aside className="w-72 h-screen flex flex-col bg-[var(--card)] border-r border-[var(--border)] backdrop-blur-xl sticky top-0 z-50">
       {/* Brand Section */}
-      <div className="h-20 flex items-center px-8 border-b border-border/50 shrink-0">
-        <div className="h-10 w-10 rounded-xl bg-[#003049] flex items-center justify-center mr-3 shadow-lg shadow-blue-900/20">
-          <ShieldCheck className="h-6 w-6 text-white" />
-        </div>
-        <span className="text-xl font-bold tracking-tight text-[#003049]">TijaratPro</span>
+      <div className="h-20 flex items-center px-8 border-b border-[var(--border)] shrink-0">
+        <Link href="/dashboard" className="flex items-center gap-3 group">
+          <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 group-hover:rotate-6 transition-all duration-300">
+            <span className="text-white font-black text-xl">T</span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xl font-black gradient-text tracking-tighter">TijaratPro</span>
+            <span className="text-[9px] text-[var(--text-soft)] font-black uppercase tracking-[0.2em] leading-none">Admin Panel</span>
+          </div>
+        </Link>
       </div>
       
       {/* Navigation Section */}
@@ -72,7 +83,7 @@ export function Sidebar() {
         <nav className="space-y-8">
           {navigation.map((group) => (
             <div key={group.title} className="space-y-2">
-              <h4 className="px-4 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+              <h4 className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-soft)] opacity-60">
                 {group.title}
               </h4>
               <div className="space-y-1">
@@ -83,17 +94,17 @@ export function Sidebar() {
                       key={route.href}
                       href={route.href}
                       className={cn(
-                        "group flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200",
+                        "group flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all duration-300",
                         isActive 
-                          ? "bg-[#003049] text-white shadow-md shadow-blue-900/10" 
-                          : "text-muted-foreground hover:bg-muted/50 hover:text-[#003049]"
+                          ? "bg-primary text-white shadow-lg shadow-primary/20" 
+                          : "text-[var(--text-soft)] hover:bg-primary/5 hover:text-primary"
                       )}
                     >
                       <div className="flex items-center gap-3">
-                        <route.icon className={cn("h-4 w-4", isActive ? "text-white" : "text-muted-foreground group-hover:text-[#003049]")} />
+                        <route.icon className={cn("h-5 w-5", isActive ? "text-white" : "text-[var(--text-soft)] group-hover:text-primary")} />
                         {route.label}
                       </div>
-                      {isActive && <ChevronRight className="h-3 w-3 opacity-50" />}
+                      {isActive && <div className="w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]" />}
                     </Link>
                   );
                 })}
@@ -103,21 +114,28 @@ export function Sidebar() {
         </nav>
       </div>
 
-      {/* Footer Section */}
-      <div className="p-6 border-t border-border/50 shrink-0">
-        <div className="mb-6 p-4 rounded-2xl bg-muted/30 border border-border/50">
-          <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Signed in as</p>
-          <p className="text-sm font-bold text-[#003049] truncate">Admin User</p>
+      {/* Footer Section: User Profile Short */}
+      <div className="p-4 border-t border-[var(--border)] shrink-0">
+        <div className="mb-4 p-4 rounded-2xl bg-primary/5 border border-primary/10 group cursor-pointer hover:bg-primary/10 transition-all">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white font-black text-sm shadow-md">
+              AD
+            </div>
+            <div className="flex flex-col min-w-0">
+              <p className="text-sm font-black text-[var(--text)] truncate">Admin User</p>
+              <p className="text-[10px] font-bold text-[var(--text-soft)] uppercase tracking-wider">Super Admin</p>
+            </div>
+          </div>
         </div>
+        
         <button 
           onClick={handleLogout}
-          className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-bold text-destructive hover:bg-destructive/5 transition-all active:scale-95 border border-transparent hover:border-destructive/10"
+          className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-black text-danger hover:bg-danger/5 transition-all active:scale-95 border border-transparent hover:border-danger/10"
         >
-          <LogOut className="h-4 w-4" />
-          Sign Out
+          <LogOut className="h-5 w-5" />
+          Terminate Session
         </button>
       </div>
     </aside>
   );
 }
-

@@ -2,146 +2,143 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, ChevronRight } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { Menu, X, Sun, Moon, LogIn, ChevronRight } from 'lucide-react';
 
 interface NavbarClientProps {
   isAuthenticated: boolean;
 }
 
 const NavbarClient = ({ isAuthenticated }: NavbarClientProps) => {
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Avoid hydration mismatch
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
+    setMounted(true);
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const navLinks = [
-    { name: 'Products', href: '/products' },
+    { name: 'Home', href: '/' },
     { name: 'Features', href: '/#features' },
     { name: 'Pricing', href: '/#pricing' },
     { name: 'About', href: '/about' },
+    { name: 'Contact', href: '/contact' },
   ];
+
+  if (!mounted) return null;
 
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${
         isScrolled 
-          ? 'py-3 bg-background/80 backdrop-blur-lg border-b border-white/10 shadow-2xl' 
-          : 'py-5 bg-transparent'
+          ? 'h-[72px] bg-[var(--glass-navbar)] backdrop-blur-[18px] border-b border-[var(--border)] shadow-lg' 
+          : 'h-[88px] bg-transparent'
       }`}
     >
-      <div className="container-width flex justify-between items-center">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
-            <span className="text-white font-black text-xl">T</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xl font-extrabold gradient-text">TijaratPro</span>
-            <span className="text-[10px] text-text-soft font-medium tracking-wider uppercase leading-none">Smart ERP System</span>
-          </div>
-        </Link>
+      <div className="container-width h-full flex justify-between items-center">
+        {/* Left Side: Logo + Nav */}
+        <div className="flex items-center gap-12">
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 group-hover:rotate-[10deg] transition-all duration-500">
+              <span className="text-white font-black text-xl">T</span>
+            </div>
+            <span className="text-2xl font-black gradient-text tracking-tighter">TijaratPro</span>
+          </Link>
 
-        {/* Desktop Links */}
-        <nav className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <Link 
-              key={link.name} 
-              href={link.href} 
-              className="text-sm font-semibold text-text-soft hover:text-primary transition-colors"
-            >
-              {link.name}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Auth Buttons */}
-        <div className="hidden md:flex items-center gap-4">
-          {isAuthenticated ? (
-            <Link 
-              href="/dashboard" 
-              className="px-6 py-2.5 rounded-sm font-bold text-sm bg-primary hover:bg-primary-dark text-white transition-all shadow-lg shadow-primary/20 hover:scale-105 active:scale-95"
-            >
-              Dashboard
-            </Link>
-          ) : (
-            <>
+          <nav className="hidden lg:flex items-center gap-8">
+            {navLinks.map((link) => (
               <Link 
-                href="/login" 
-                className="text-sm font-bold text-text-soft hover:text-white transition-colors"
+                key={link.name} 
+                href={link.href} 
+                className="text-sm font-bold text-[var(--text-soft)] hover:text-primary transition-colors relative group"
               >
-                Login
+                {link.name}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
               </Link>
-              <Link 
-                href="/signup" 
-                className="px-6 py-2.5 rounded-sm font-bold text-sm bg-primary hover:bg-primary-dark text-white transition-all shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 flex items-center gap-2"
-              >
-                Start Free Trial
-                <ChevronRight size={16} />
-              </Link>
-            </>
-          )}
+            ))}
+          </nav>
         </div>
 
-        {/* Mobile Toggle */}
-        <button 
-          className="md:hidden text-text p-2 hover:bg-white/5 rounded-lg"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        {/* Right Side: Theme + Login */}
+        <div className="flex items-center gap-4">
+          {/* Theme Toggle */}
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="w-10 h-10 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border)] flex items-center justify-center text-[var(--text)] hover:border-primary/50 transition-all hover:scale-110 active:scale-95 group"
+            aria-label="Toggle Theme"
+          >
+            {theme === 'dark' ? (
+              <Sun size={18} className="group-hover:rotate-[45deg] transition-transform duration-500" />
+            ) : (
+              <Moon size={18} className="group-hover:rotate-[15deg] transition-transform duration-500" />
+            )}
+          </button>
+
+          {/* Login Button */}
+          <div className="hidden md:block">
+            {isAuthenticated ? (
+              <Link 
+                href="/dashboard" 
+                className="px-6 py-2.5 rounded-xl font-bold text-sm bg-primary hover:bg-primary-dark text-white transition-all shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 flex items-center gap-2"
+              >
+                Dashboard
+                <ChevronRight size={16} />
+              </Link>
+            ) : (
+              <Link 
+                href="/login" 
+                className="px-6 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-br from-primary to-primary-dark text-white transition-all shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 active:scale-95 flex items-center gap-2 group"
+              >
+                <LogIn size={16} className="group-hover:-translate-x-0.5 transition-transform" />
+                Login
+              </Link>
+            )}
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <button 
+            className="lg:hidden w-10 h-10 flex items-center justify-center text-[var(--text)]"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Menu */}
       <div 
-        className={`fixed inset-0 top-[70px] bg-background/95 backdrop-blur-xl z-[90] md:hidden transition-all duration-300 ${
-          mobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[-100%] pointer-events-none'
+        className={`fixed inset-0 top-0 h-screen bg-[var(--background)] z-[-1] lg:hidden transition-all duration-500 ease-in-out ${
+          mobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none'
         }`}
       >
-        <div className="flex flex-col p-8 gap-6">
+        <div className="flex flex-col pt-32 p-8 gap-8">
           {navLinks.map((link) => (
             <Link 
               key={link.name} 
               href={link.href} 
-              className="text-xl font-bold text-text hover:text-primary"
+              className="text-3xl font-black text-[var(--text)] hover:text-primary transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               {link.name}
             </Link>
           ))}
-          <hr className="border-white/10" />
+          
+          <div className="h-px bg-[var(--border)] my-4" />
+          
           <div className="flex flex-col gap-4">
-            {isAuthenticated ? (
-              <Link 
-                href="/dashboard" 
-                className="w-full py-4 rounded-sm font-bold text-center bg-primary text-white"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Go to Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link 
-                  href="/login" 
-                  className="w-full py-4 rounded-sm font-bold text-center border border-white/10 text-text"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Login
-                </Link>
-                <Link 
-                  href="/signup" 
-                  className="w-full py-4 rounded-sm font-bold text-center bg-primary text-white"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Start Free Trial
-                </Link>
-              </>
-            )}
+            <Link 
+              href="/login" 
+              className="w-full py-5 rounded-2xl font-black text-center bg-primary text-white shadow-xl shadow-primary/20 text-lg"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Login to Account
+            </Link>
           </div>
         </div>
       </div>
