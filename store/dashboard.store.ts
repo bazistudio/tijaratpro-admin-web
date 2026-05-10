@@ -30,10 +30,20 @@ interface TopProduct {
   sold: number;
 }
 
+interface RecentActivity {
+  id: string;
+  type: 'order' | 'stock' | 'customer' | 'expense';
+  title: string;
+  description: string;
+  timestamp: string;
+  status?: string;
+}
+
 interface DashboardState {
   stats: DashboardStats | null;
   salesChart: ChartItem[];
   topProducts: TopProduct[];
+  recentActivities: RecentActivity[];
   isLoading: boolean;
   error: string | null;
 
@@ -44,6 +54,7 @@ export const useDashboardStore = create<DashboardState>((set) => ({
   stats: null,
   salesChart: [],
   topProducts: [],
+  recentActivities: [],
   isLoading: false,
   error: null,
 
@@ -85,10 +96,38 @@ export const useDashboardStore = create<DashboardState>((set) => ({
         sold: p.sold
       }));
 
+      // Mock Recent Activities
+      const mockActivities: RecentActivity[] = [
+        {
+          id: 'act1',
+          type: 'order',
+          title: 'New Wholesale Order',
+          description: 'Order #ORD-9921 placed by Green Mart',
+          timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
+          status: 'pending'
+        },
+        {
+          id: 'act2',
+          type: 'stock',
+          title: 'Stock Depleted',
+          description: 'Organic Honey (500g) is now out of stock',
+          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+          status: 'warning'
+        },
+        {
+          id: 'act3',
+          type: 'customer',
+          title: 'New Partner Registered',
+          description: 'Metro Cash & Carry joined as a distributor',
+          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
+        }
+      ];
+
       set({ 
         stats: normalizedStats, 
         salesChart: normalizedChart,
         topProducts: normalizedTopProducts,
+        recentActivities: mockActivities,
         isLoading: false 
       });
     } catch (err: any) {

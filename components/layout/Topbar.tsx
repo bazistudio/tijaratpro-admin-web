@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { Button } from "@/components/ui/button";
+import { NotificationDropdown } from "@/components/layout/NotificationDropdown";
 
 export function Topbar() {
   return (
@@ -46,10 +47,7 @@ export function Topbar() {
           <span className="text-[10px] font-black uppercase tracking-[0.1em]">Engine Online</span>
         </div>
 
-        <button className="w-10 h-10 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border)] flex items-center justify-center text-[var(--text-soft)] hover:text-primary transition-all relative">
-          <Bell size={18} />
-          <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-danger border-2 border-[var(--card)]" />
-        </button>
+        <NotificationDropdown />
 
         <ThemeToggle />
 
