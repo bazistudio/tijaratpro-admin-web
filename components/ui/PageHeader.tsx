@@ -11,7 +11,7 @@ interface PageHeaderProps {
     label: string;
     onClick: () => void;
     icon?: React.ReactNode;
-    variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "premium";
+    variant?: "primary" | "secondary" | "outline" | "ghost" | "link" | "danger";
     loading?: boolean;
     disabled?: boolean;
   };
@@ -19,7 +19,7 @@ interface PageHeaderProps {
     label: string;
     onClick: () => void;
     icon?: React.ReactNode;
-    variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "premium";
+    variant?: "primary" | "secondary" | "outline" | "ghost" | "link" | "danger";
     loading?: boolean;
     disabled?: boolean;
   }>;
@@ -38,16 +38,19 @@ export function PageHeader({
   className,
 }: PageHeaderProps) {
   return (
-    <div className={cn("flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8", className)}>
+    <div
+      className={cn(
+        "flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8",
+        className,
+      )}
+    >
       {/* Left Area: Title & Subtitle */}
       <div className="space-y-1">
         <h1 className="text-2xl font-bold font-heading text-foreground tracking-tight">
           {title}
         </h1>
         {subtitle && (
-          <p className="text-sm text-muted-foreground max-w-2xl">
-            {subtitle}
-          </p>
+          <p className="text-sm text-muted-foreground max-w-2xl">{subtitle}</p>
         )}
       </div>
 
@@ -59,20 +62,20 @@ export function PageHeader({
             variant={action.variant || "outline"}
             onClick={action.onClick}
             icon={action.icon}
-            loading={action.loading}
+            isLoading={action.loading}
             disabled={action.disabled}
             size="sm"
           >
             {action.label}
           </Button>
         ))}
-        
+
         {primaryAction && (
           <Button
-            variant={primaryAction.variant || "premium"}
+            variant={primaryAction.variant || "primary"}
             onClick={primaryAction.onClick}
             icon={primaryAction.icon}
-            loading={primaryAction.loading}
+            isLoading={primaryAction.loading}
             disabled={primaryAction.disabled}
             size="sm"
           >
