@@ -73,6 +73,12 @@ export default function ProductEditPage() {
     formState: { errors },
   } = useForm<Product>({
     resolver: zodResolver(productSchema),
+    defaultValues: {
+      tags: [],
+      variants: [],
+      gallery: [],
+      industryMetadata: {},
+    } as any
   })
 
   const { fields: variantFields, append: appendVariant, remove: removeVariant } = useFieldArray({

@@ -16,9 +16,8 @@ import {
   ArrowUpRight,
   ShieldCheck,
   Tag,
-  Zap,
   MoreVertical,
-  Edit2
+  Plus
 } from "lucide-react"
 
 import { useNotificationStore } from "@/hooks/use-notifications"

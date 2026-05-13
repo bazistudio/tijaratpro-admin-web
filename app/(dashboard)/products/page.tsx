@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
 import { 
   Package, 
   AlertTriangle, 
@@ -46,7 +47,6 @@ import {
 import { cn } from "@/lib/utils"
 import { api } from "@/lib/api"
 import { useNotificationStore } from "@/hooks/use-notifications"
-import { useRouter } from "next/navigation"
 import { Skeleton } from "@/components/ui/skeleton"
 
 // ─── Mock Data ───────────────────────────────────────────────────────────────
@@ -126,7 +126,7 @@ export default function ProductsPage() {
     try {
       const response = await api("/products")
       const data = await response.json()
-      setProducts(data)
+      setProducts(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error("Failed to fetch products:", error)
       // Fallback to mock for UI demonstration if API fails
@@ -158,6 +158,7 @@ export default function ProductsPage() {
       addNotification({ title: "Error", description: "Failed to delete product.", type: "error" })
     }
   }
+
   return (
     <div className="space-y-8 animate-in fade-in duration-1000">
       {/* Header */}
@@ -182,7 +183,7 @@ export default function ProductsPage() {
             <Truck size={16} />
             Stock Intake
           </Button>
-          <Button variant="primary" size="sm" className="h-10 rounded-xl font-bold gap-2 shadow-lg shadow-primary/20">
+          <Button onClick={() => router.push("/products/create")} variant="primary" size="sm" className="h-10 rounded-xl font-bold gap-2 shadow-lg shadow-primary/20">
             <Plus size={16} />
             Add New Product
           </Button>
@@ -244,7 +245,13 @@ export default function ProductsPage() {
                     <TableHead className="font-bold text-xs uppercase tracking-wider h-12">SKU</TableHead>
                     <TableHead className="font-bold text-xs uppercase tracking-wider h-12">Category</TableHead>
                     <TableHead className="font-bold text-xs uppercase tracking-wider h-12 text-center">Stock</TableHead>
-                    <TableHead className="font-bol                  {isLoading ? (
+                    <TableHead className="font-bold text-xs uppercase tracking-wider h-12">Pricing</TableHead>
+                    <TableHead className="font-bold text-xs uppercase tracking-wider h-12">Status</TableHead>
+                    <TableHead className="font-bold text-xs uppercase tracking-wider h-12 text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
                     Array.from({ length: 5 }).map((_, i) => (
                       <TableRow key={i}>
                         <TableCell><Skeleton className="h-12 w-12 rounded-lg" /></TableCell>
@@ -286,7 +293,9 @@ export default function ProductsPage() {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className="font-bold text-sm text-[var(--text-main)]">{product.name}</TableCell>
+                        <TableCell className="font-bold text-sm text-[var(--text-main)] cursor-pointer hover:text-primary transition-colors" onClick={() => router.push(`/products/${product.id}`)}>
+                          {product.name}
+                        </TableCell>
                         <TableCell className="text-xs font-mono font-bold text-[var(--text-soft)] uppercase tracking-tighter">{product.sku}</TableCell>
                         <TableCell className="text-xs font-bold text-[var(--text-soft)]">{product.category || "General"}</TableCell>
                         <TableCell className="text-center">
@@ -330,6 +339,13 @@ export default function ProductsPage() {
                                 <FileText size={14} className="text-primary" />
                                 <span className="font-bold text-sm">Edit Details</span>
                               </DropdownMenuItem>
+                              <DropdownMenuItem 
+                                onClick={() => router.push(`/products/${product.id}`)}
+                                className="gap-2 px-3 py-2 rounded-lg cursor-pointer"
+                              >
+                                <History size={14} className="text-info" />
+                                <span className="font-bold text-sm">Stock Ledger</span>
+                              </DropdownMenuItem>
                               <DropdownMenuItem className="gap-2 px-3 py-2 rounded-lg cursor-pointer text-danger focus:text-danger" onClick={() => handleDelete(product.id)}>
                                 <XCircle size={14} />
                                 <span className="font-bold text-sm">Remove Product</span>
@@ -340,23 +356,14 @@ export default function ProductsPage() {
                       </TableRow>
                     ))
                   )}
-anger focus:text-danger">
-                              <XCircle size={14} />
-                              <span className="font-bold text-sm">Remove Product</span>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
                 </TableBody>
               </Table>
             </div>
             <div className="p-4 border-t border-[var(--border)] flex items-center justify-between bg-[var(--bg-secondary)]/10">
-              <span className="text-xs font-bold text-[var(--text-soft)]">Total 1,284 Products found</span>
+              <span className="text-xs font-bold text-[var(--text-soft)]">Total {products.length} Items Displayed</span>
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" className="h-8 rounded-lg text-xs font-bold px-4">Previous</Button>
-                <Button variant="outline" size="sm" className="h-8 rounded-lg text-xs font-bold px-4">Next</Button>
+                <Button variant="outline" size="sm" className="h-8 rounded-lg text-xs font-bold px-4" disabled>Previous</Button>
+                <Button variant="outline" size="sm" className="h-8 rounded-lg text-xs font-bold px-4" disabled>Next</Button>
               </div>
             </div>
           </SectionCard>
@@ -423,7 +430,7 @@ anger focus:text-danger">
           </Card>
 
           {/* Quick Stats Widget */}
-          <Card className="bg-gradient-to-br from-info to-info-dark text-white p-6 rounded-3xl shadow-xl shadow-info/20 border-none relative overflow-hidden group">
+          <Card className="bg-gradient-to-br from-blue-600 to-blue-800 text-white p-6 rounded-3xl shadow-xl shadow-blue-500/20 border-none relative overflow-hidden group">
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-4">
                 <div className="p-2 rounded-xl bg-white/20 backdrop-blur-sm">
@@ -435,7 +442,7 @@ anger focus:text-danger">
               <p className="text-sm text-white/80 leading-relaxed mb-6 font-medium">
                 Your average stock turnover is 14 days. This is 20% faster than last month. Keep optimizing your inventory levels.
               </p>
-              <Button variant="secondary" className="w-full bg-white text-info font-black uppercase tracking-widest text-[10px] h-10 hover:bg-white/90">
+              <Button variant="secondary" className="w-full bg-white text-blue-600 font-black uppercase tracking-widest text-[10px] h-10 hover:bg-white/90">
                 View Trends
               </Button>
             </div>
