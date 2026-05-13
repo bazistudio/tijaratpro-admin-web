@@ -29,9 +29,12 @@ import {
   Laptop,
   Save,
   Package,
-  AlertCircle,
-  Plus
+  Plus,
+  ArrowRight,
+  Sparkles,
+  AlertCircle
 } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -88,6 +91,7 @@ const ToggleItem = ({ label, description, icon: Icon, checked, onCheckedChange }
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function SettingsPage() {
+  const router = useRouter()
   const [activeTab, setActiveTab] = React.useState("business")
 
   const sidebarItems = [
@@ -250,50 +254,59 @@ export default function SettingsPage() {
                 </SettingSection>
               )}
 
-              {/* Theme Settings */}
-              {activeTab === "theme" && (
-                <SettingSection title="Visual Appearance" description="Customize how TijaratPro looks and feels for your organization.">
-                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                      {[
-                        { id: "default", name: "Default (Clean)", colors: ["#6a994e", "#ffffff"] },
-                        { id: "modern", name: "Modern (Slate)", colors: ["#0f172a", "#334155"] },
-                        { id: "classic", name: "Classic (Blue)", colors: ["#1e40af", "#3b82f6"] },
-                        { id: "futuristic", name: "Futuristic (Neon)", colors: ["#a855f7", "#ec4899"] },
-                        { id: "glassy", name: "Glassy (Translucent)", colors: ["#f8fafc", "#e2e8f0"] },
-                      ].map((theme) => (
-                        <div 
-                          key={theme.id}
-                          className={cn(
-                            "cursor-pointer group p-4 rounded-2xl border-2 transition-all",
-                            activeTab === theme.id ? "border-primary bg-primary/5" : "border-[var(--border)] hover:border-primary/30"
-                          )}
-                        >
-                          <div className="h-20 rounded-xl mb-3 overflow-hidden flex gap-0.5">
-                             <div className="flex-1" style={{ backgroundColor: theme.colors[0] }} />
-                             <div className="flex-1" style={{ backgroundColor: theme.colors[1] }} />
+               {/* Theme Settings */}
+               {activeTab === "theme" && (
+                 <SettingSection title="Visual Appearance" description="Customize how TijaratPro looks and feels for your organization.">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                       <Card className="rounded-[32px] border-none bg-primary text-white p-8 relative overflow-hidden group cursor-pointer" onClick={() => router.push("/settings/appearance")}>
+                          <div className="relative z-10 space-y-4">
+                             <div className="p-3 rounded-2xl bg-white/20 w-fit backdrop-blur-md">
+                                <Sparkles size={24} />
+                             </div>
+                             <h4 className="text-xl font-black font-heading tracking-tight">Advanced Theme Engine</h4>
+                             <p className="text-xs text-white/80 font-medium">Configure glassmorphism, animation intensity, and custom typography.</p>
+                             <Button variant="link" className="text-white p-0 h-auto text-[10px] font-black uppercase tracking-widest gap-2">
+                                Launch Theme Designer <ArrowRight size={14} />
+                             </Button>
                           </div>
-                          <p className="text-xs font-black text-center uppercase tracking-tight">{theme.name}</p>
-                        </div>
-                      ))}
-                   </div>
-                   
-                   <div className="p-6 rounded-3xl bg-slate-900 text-white mt-8 relative overflow-hidden group">
-                      <div className="relative z-10">
-                        <div className="flex items-center justify-between mb-4">
-                           <div className="flex items-center gap-2">
-                              <Moon size={20} className="text-blue-400" />
-                              <h4 className="font-black text-sm uppercase tracking-widest">Dark Mode Support</h4>
-                           </div>
-                           <Switch defaultChecked />
-                        </div>
-                        <p className="text-sm text-slate-400 font-medium leading-relaxed">
-                           Switch to the high-contrast dark theme for better visibility in low-light environments and reduced eye strain.
-                        </p>
-                      </div>
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:scale-110 transition-transform duration-1000" />
-                   </div>
-                </SettingSection>
-              )}
+                          <div className="absolute -bottom-8 -right-8 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-all duration-1000" />
+                       </Card>
+
+                       <div className="space-y-4">
+                          <h4 className="text-xs font-black uppercase tracking-widest text-[var(--text-soft)] mb-2">Quick Presets</h4>
+                          <div className="grid grid-cols-2 gap-3">
+                             {[
+                               { id: "clean", name: "Forest Clean", color: "#6a994e" },
+                               { id: "glassy", name: "Glassmorphism", color: "#3b82f6" },
+                               { id: "neon", name: "Cyber Neon", color: "#a855f7" },
+                               { id: "slate", name: "Modern Slate", color: "#0f172a" },
+                             ].map((t) => (
+                               <div key={t.id} className="flex items-center gap-3 p-3 rounded-2xl border border-[var(--border)] hover:border-primary/50 transition-all cursor-pointer group">
+                                  <div className="w-8 h-8 rounded-lg shadow-inner" style={{ backgroundColor: t.color }} />
+                                  <span className="text-[10px] font-black uppercase tracking-tight text-[var(--text-soft)] group-hover:text-[var(--text-main)]">{t.name}</span>
+                               </div>
+                             ))}
+                          </div>
+                       </div>
+                    </div>
+                    
+                    <div className="p-6 rounded-3xl bg-slate-900 text-white mt-8 relative overflow-hidden group">
+                       <div className="relative z-10">
+                         <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-2">
+                               <Moon size={20} className="text-blue-400" />
+                               <h4 className="font-black text-sm uppercase tracking-widest">Dark Mode Support</h4>
+                            </div>
+                            <Switch defaultChecked />
+                         </div>
+                         <p className="text-sm text-slate-400 font-medium leading-relaxed">
+                            Switch to the high-contrast dark theme for better visibility in low-light environments and reduced eye strain.
+                         </p>
+                       </div>
+                       <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:scale-110 transition-transform duration-1000" />
+                    </div>
+                 </SettingSection>
+               )}
 
               {/* Notifications */}
               {activeTab === "notifications" && (

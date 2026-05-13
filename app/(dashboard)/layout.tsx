@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Topbar } from "@/components/layout/Topbar";
+import { Omnisearch } from "@/components/Omnisearch";
 import { usePathname } from "next/navigation";
 
 export default function DashboardLayout({
@@ -44,6 +45,7 @@ export default function DashboardLayout({
           </p>
         </footer>
       </div>
+      <Omnisearch />
     </div>
   );
 }

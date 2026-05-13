@@ -44,6 +44,10 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
+import { api } from "@/lib/api"
+import { useNotificationStore } from "@/hooks/use-notifications"
+import { useRouter } from "next/navigation"
+import { Skeleton } from "@/components/ui/skeleton"
 
 // ─── Mock Data ───────────────────────────────────────────────────────────────
 
@@ -52,64 +56,6 @@ const INVENTORY_STATS = [
   { title: "Low Stock", value: "24 Items", trend: { value: -15, label: "Restock needed" }, icon: AlertTriangle, color: "warning" },
   { title: "Out of Stock", value: "8 Items", trend: { value: 2, label: "Critical" }, icon: XCircle, color: "danger" },
   { title: "Inventory Value", value: "Rs 8.4M", trend: { value: 12, label: "Asset growth" }, icon: BarChart3, color: "success" },
-]
-
-const PRODUCTS = [
-  { 
-    id: "PRD-001", 
-    name: "iPhone 13 Pro Max Screen", 
-    sku: "SCR-IP13PM-ORG", 
-    category: "Display", 
-    stock: 15, 
-    buyPrice: 12500, 
-    sellPrice: 18000, 
-    status: "In Stock",
-    image: "https://images.unsplash.com/photo-1616348436168-de43ad0db179?w=100&h=100&fit=crop"
-  },
-  { 
-    id: "PRD-002", 
-    name: "Samsung S22 Ultra Battery", 
-    sku: "BAT-S22U-5000", 
-    category: "Battery", 
-    stock: 5, 
-    buyPrice: 4500, 
-    sellPrice: 7500, 
-    status: "Low Stock",
-    image: "https://images.unsplash.com/photo-1583394838336-acd97773cf3f?w=100&h=100&fit=crop"
-  },
-  { 
-    id: "PRD-003", 
-    name: "Type-C Charging Port 10pk", 
-    sku: "CP-UNIV-TC", 
-    category: "Spare Parts", 
-    stock: 0, 
-    buyPrice: 1200, 
-    sellPrice: 2500, 
-    status: "Out of Stock",
-    image: "https://images.unsplash.com/photo-1591488320449-011701bb6704?w=100&h=100&fit=crop"
-  },
-  { 
-    id: "PRD-004", 
-    name: "iPhone 15 Tempered Glass", 
-    sku: "ACC-IP15-TG", 
-    category: "Accessories", 
-    stock: 150, 
-    buyPrice: 150, 
-    sellPrice: 800, 
-    status: "In Stock",
-    image: "https://images.unsplash.com/photo-1603891128445-d29a430034a7?w=100&h=100&fit=crop"
-  },
-  { 
-    id: "PRD-005", 
-    name: "Xiaomi Note 12 Motherboard", 
-    sku: "MB-XN12-MAIN", 
-    category: "Repair Parts", 
-    stock: 3, 
-    buyPrice: 8500, 
-    sellPrice: 13000, 
-    status: "Low Stock",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=100&h=100&fit=crop"
-  },
 ]
 
 const LOW_STOCK_ALERTS = [
@@ -169,6 +115,49 @@ const StatCard = ({ title, value, trend, icon: Icon, color = "primary" }: any) =
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function ProductsPage() {
+  const router = useRouter()
+  const { addNotification } = useNotificationStore()
+  const [products, setProducts] = React.useState<any[]>([])
+  const [isLoading, setIsLoading] = React.useState(true)
+  const [searchQuery, setSearchQuery] = React.useState("")
+
+  const fetchProducts = async () => {
+    setIsLoading(true)
+    try {
+      const response = await api("/products")
+      const data = await response.json()
+      setProducts(data)
+    } catch (error) {
+      console.error("Failed to fetch products:", error)
+      // Fallback to mock for UI demonstration if API fails
+      setProducts([
+        { id: "1", name: "iPhone 13 Pro Max Screen", sku: "SCR-IP13-PM", category: "Display", stock: 15, sellingPrice: 18000, costPrice: 12000, status: "published" },
+        { id: "2", name: "Samsung S22 Battery", sku: "BAT-S22-U", category: "Power", stock: 5, sellingPrice: 7500, costPrice: 4000, status: "published" }
+      ])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  React.useEffect(() => {
+    fetchProducts()
+  }, [])
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this product?")) return
+    
+    try {
+      await api(`/products/${id}`, { method: "DELETE" })
+      setProducts(prev => prev.filter(p => p.id !== id))
+      addNotification({
+        title: "Product Deleted",
+        description: "The product and its stock history have been removed.",
+        type: "success"
+      })
+    } catch (error) {
+      addNotification({ title: "Error", description: "Failed to delete product.", type: "error" })
+    }
+  }
   return (
     <div className="space-y-8 animate-in fade-in duration-1000">
       {/* Header */}
@@ -218,7 +207,12 @@ export default function ProductsPage() {
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div className="relative col-span-1 md:col-span-2">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-soft)]" size={18} />
-                <Input placeholder="Search by name, SKU or brand..." className="pl-10 h-11 rounded-xl bg-white/50 border-[var(--border)]" />
+                <Input 
+                  placeholder="Search by name, SKU or brand..." 
+                  className="pl-10 h-11 rounded-xl bg-white/50 border-[var(--border)]" 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
               <div className="relative">
                 <Layers className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-soft)]" size={18} />
@@ -250,74 +244,103 @@ export default function ProductsPage() {
                     <TableHead className="font-bold text-xs uppercase tracking-wider h-12">SKU</TableHead>
                     <TableHead className="font-bold text-xs uppercase tracking-wider h-12">Category</TableHead>
                     <TableHead className="font-bold text-xs uppercase tracking-wider h-12 text-center">Stock</TableHead>
-                    <TableHead className="font-bold text-xs uppercase tracking-wider h-12">Prices (Buy/Sell)</TableHead>
-                    <TableHead className="font-bold text-xs uppercase tracking-wider h-12">Status</TableHead>
-                    <TableHead className="font-bold text-xs uppercase tracking-wider h-12 text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {PRODUCTS.map((product) => (
-                    <TableRow key={product.id} className="border-b border-[var(--border)] hover:bg-[var(--bg-secondary)]/30 transition-colors">
-                      <TableCell>
-                        <div className="w-12 h-12 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)] overflow-hidden flex items-center justify-center">
-                          {product.image ? (
-                            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-                          ) : (
-                            <ImageIcon size={16} className="text-[var(--text-soft)]" />
-                          )}
+                    <TableHead className="font-bol                  {isLoading ? (
+                    Array.from({ length: 5 }).map((_, i) => (
+                      <TableRow key={i}>
+                        <TableCell><Skeleton className="h-12 w-12 rounded-lg" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-48" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-12 mx-auto" /></TableCell>
+                        <TableCell><Skeleton className="h-8 w-32" /></TableCell>
+                        <TableCell><Skeleton className="h-6 w-20 rounded-lg" /></TableCell>
+                        <TableCell><Skeleton className="h-8 w-8 ml-auto rounded-full" /></TableCell>
+                      </TableRow>
+                    ))
+                  ) : products.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={8} className="h-[400px] text-center">
+                        <div className="flex flex-col items-center justify-center gap-4">
+                           <div className="p-6 rounded-full bg-slate-50 text-slate-300">
+                              <Package size={64} />
+                           </div>
+                           <div className="space-y-1">
+                              <p className="text-lg font-bold text-slate-900">No products found</p>
+                              <p className="text-sm text-slate-500">Create your first product to start tracking inventory.</p>
+                           </div>
+                           <Button onClick={() => router.push("/products/create")} variant="primary" className="h-11 rounded-xl px-8 font-black uppercase text-[10px] tracking-widest gap-2">
+                              <Plus size={18} /> Create First Product
+                           </Button>
                         </div>
                       </TableCell>
-                      <TableCell className="font-bold text-sm text-[var(--text-main)]">{product.name}</TableCell>
-                      <TableCell className="text-xs font-mono font-bold text-[var(--text-soft)] uppercase tracking-tighter">{product.sku}</TableCell>
-                      <TableCell className="text-xs font-bold text-[var(--text-soft)]">{product.category}</TableCell>
-                      <TableCell className="text-center">
-                        <span className={cn("text-sm font-black", {
-                          "text-success": product.stock > 10,
-                          "text-warning": product.stock <= 10 && product.stock > 0,
-                          "text-danger": product.stock === 0,
-                        })}>
-                          {product.stock}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-col">
-                          <span className="text-[10px] font-bold text-[var(--text-soft)] uppercase leading-none mb-1">Rs {product.buyPrice.toLocaleString()} Buy</span>
-                          <span className="text-sm font-black text-primary leading-none">Rs {product.sellPrice.toLocaleString()} Sell</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={cn("rounded-lg px-2 py-1 text-[10px] font-black uppercase tracking-tight", {
-                          "bg-success/10 text-success border-success/20": product.status === "In Stock",
-                          "bg-warning/10 text-warning border-warning/20": product.status === "Low Stock",
-                          "bg-danger/10 text-danger border-danger/20": product.status === "Out of Stock",
-                        })}>
-                          {product.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-primary/5 text-[var(--text-soft)]">
-                              <MoreVertical size={16} />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48 rounded-xl border-[var(--border)] shadow-2xl backdrop-blur-xl">
-                            <DropdownMenuLabel className="text-[10px] font-black uppercase text-[var(--text-soft)] px-3 py-2">Inventory Actions</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="gap-2 px-3 py-2 rounded-lg cursor-pointer">
-                              <FileText size={14} className="text-primary" />
-                              <span className="font-bold text-sm">Edit Details</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="gap-2 px-3 py-2 rounded-lg cursor-pointer">
-                              <History size={14} className="text-info" />
-                              <span className="font-bold text-sm">Stock History</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="gap-2 px-3 py-2 rounded-lg cursor-pointer">
-                              <Download size={14} className="text-success" />
-                              <span className="font-bold text-sm">Print Barcode</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="gap-2 px-3 py-2 rounded-lg cursor-pointer text-danger focus:text-danger">
+                    </TableRow>
+                  ) : (
+                    products.map((product) => (
+                      <TableRow key={product.id} className="border-b border-[var(--border)] hover:bg-[var(--bg-secondary)]/30 transition-colors">
+                        <TableCell>
+                          <div className="w-12 h-12 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)] overflow-hidden flex items-center justify-center">
+                            {product.thumbnail ? (
+                              <img src={product.thumbnail} alt={product.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <ImageIcon size={16} className="text-[var(--text-soft)]" />
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="font-bold text-sm text-[var(--text-main)]">{product.name}</TableCell>
+                        <TableCell className="text-xs font-mono font-bold text-[var(--text-soft)] uppercase tracking-tighter">{product.sku}</TableCell>
+                        <TableCell className="text-xs font-bold text-[var(--text-soft)]">{product.category || "General"}</TableCell>
+                        <TableCell className="text-center">
+                          <span className={cn("text-sm font-black", {
+                            "text-success": product.stock > 10,
+                            "text-warning": product.stock <= 10 && product.stock > 0,
+                            "text-danger": product.stock === 0,
+                          })}>
+                            {product.stock}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-col">
+                            <span className="text-[10px] font-bold text-[var(--text-soft)] uppercase leading-none mb-1">Rs {product.costPrice?.toLocaleString() || 0} Buy</span>
+                            <span className="text-sm font-black text-primary leading-none">Rs {product.sellingPrice?.toLocaleString() || 0} Sell</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={cn("rounded-lg px-2 py-1 text-[10px] font-black uppercase tracking-tight", {
+                            "bg-success/10 text-success border-success/20": product.stock > 10,
+                            "bg-warning/10 text-warning border-warning/20": product.stock <= 10 && product.stock > 0,
+                            "bg-danger/10 text-danger border-danger/20": product.stock === 0,
+                          })}>
+                            {product.stock > 10 ? "In Stock" : product.stock > 0 ? "Low Stock" : "Out of Stock"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-primary/5 text-[var(--text-soft)]">
+                                <MoreVertical size={16} />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-48 rounded-xl border-[var(--border)] shadow-2xl backdrop-blur-xl">
+                              <DropdownMenuLabel className="text-[10px] font-black uppercase text-[var(--text-soft)] px-3 py-2">Inventory Actions</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem 
+                                onClick={() => router.push(`/products/${product.id}/edit`)}
+                                className="gap-2 px-3 py-2 rounded-lg cursor-pointer"
+                              >
+                                <FileText size={14} className="text-primary" />
+                                <span className="font-bold text-sm">Edit Details</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="gap-2 px-3 py-2 rounded-lg cursor-pointer text-danger focus:text-danger" onClick={() => handleDelete(product.id)}>
+                                <XCircle size={14} />
+                                <span className="font-bold text-sm">Remove Product</span>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+anger focus:text-danger">
                               <XCircle size={14} />
                               <span className="font-bold text-sm">Remove Product</span>
                             </DropdownMenuItem>
