@@ -452,7 +452,7 @@ export default function DashboardPage() {
               </div>
               <h3 className="text-xl font-bold mb-2">AI Insights Ready</h3>
               <p className="text-sm text-white/80 leading-relaxed mb-6 font-medium">
-                Our analysis shows that "Premium Saffron" has 40% higher ROI than other products. Increase stock for the upcoming week.
+                Our analysis shows that "iPhone 13 Pro Max Screen" has 40% higher ROI than other products. Increase stock for the upcoming week.
               </p>
               <Button variant="secondary" className="w-full bg-white text-primary font-black uppercase tracking-widest text-[10px] h-10 hover:bg-white/90">
                 Check Inventory Strategy

@@ -1,5 +1,5 @@
 import FeatureComingSoon from '@/components/ui/FeatureComingSoon';
 
-export default function Sales New-SalePage() {
+export default function SalesNewSalePage() {
   return <FeatureComingSoon title='Sales New-Sale' />;
 }

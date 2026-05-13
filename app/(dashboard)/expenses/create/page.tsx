@@ -1,5 +1,5 @@
 import FeatureComingSoon from '@/components/ui/FeatureComingSoon';
 
-export default function Expenses CreatePage() {
+export default function ExpensesCreatePage() {
   return <FeatureComingSoon title='Expenses Create' />;
 }

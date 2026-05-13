@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./card";
 
 interface SectionCardProps {
   title?: string;
+  description?: string;
   action?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
@@ -21,6 +22,7 @@ interface SectionCardProps {
  */
 export function SectionCard({
   title,
+  description,
   action,
   children,
   className,
@@ -32,9 +34,16 @@ export function SectionCard({
       {(title || action) && (
         <CardHeader className={cn("flex flex-row items-center justify-between space-y-0 pb-4", headerClassName)}>
           {title && (
-            <CardTitle className="text-lg font-semibold font-heading text-foreground">
-              {title}
-            </CardTitle>
+            <div className="space-y-1">
+              <CardTitle className="text-lg font-semibold font-heading text-foreground">
+                {title}
+              </CardTitle>
+              {description && (
+                <p className="text-sm text-muted-foreground font-medium">
+                  {description}
+                </p>
+              )}
+            </div>
           )}
           {action && <div className="shrink-0">{action}</div>}
         </CardHeader>

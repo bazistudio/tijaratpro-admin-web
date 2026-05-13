@@ -213,7 +213,7 @@ export default function NotificationsPage() {
                         {n.message}
                       </p>
                       
-                      {n.data?.orderId && (
+                      {!!n.data?.orderId && (
                         <div className="pt-3">
                           <Button variant="secondary" size="sm" className="h-8 text-[11px] font-bold uppercase tracking-wider">
                             View Order Details
