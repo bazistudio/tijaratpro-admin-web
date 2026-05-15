@@ -206,39 +206,33 @@ export default function POSPage() {
     
     try {
       const payload = {
-        items: cart.map(i => ({ productId: i.id, quantity: i.quantity, price: i.sellingPrice })),
-        subtotal,
-        tax,
-        discount,
-        total: grandTotal,
+        items: cart.map(i => ({ productId: i.id, quantity: i.quantity })), // Send raw IDs/Quantities
         paymentMethod,
         amountPaid,
         customerId: customer?.id || null,
-        timestamp: new Date().toISOString()
+        taxRate: 5, // Fixed 5% GST (Backend will re-verify)
+        discount: discount // Requested discount (Backend will re-verify permissions)
       }
 
-      const res = await api("/sales", { method: "POST", body: JSON.stringify(payload) })
+      // 1. Submit to Authoritative Backend
+      const res = await api("/orders", { method: "POST", body: JSON.stringify(payload) })
       const result = await res.json()
 
-      // 1. Audit Log
-      await api("/activity", {
-        method: "POST",
-        body: JSON.stringify({
-          action: "SALE_COMPLETE",
-          entityId: result.id,
-          entityType: "sale",
-          description: `Sale completed: Rs ${grandTotal.toLocaleString()} (${paymentMethod})`,
-        })
-      })
+      if (!result.success) throw new Error(result.message)
 
       addNotification({
         title: "Sale Completed",
-        description: `Invoice ${result.invoiceNumber || "INV-882"} generated.`,
+        description: `Invoice ${result.order?.orderNumber || "INV-NEW"} generated.`,
         type: "success"
       })
 
       // Set last sale for receipt
-      setLastSale({ ...payload, invoiceNumber: result.invoiceNumber || "INV-882", id: result.id })
+      setLastSale({ 
+        ...payload, 
+        total: result.order?.totalAmount || grandTotal,
+        invoiceNumber: result.order?.orderNumber || "INV-NEW", 
+        id: result.order?._id 
+      })
       setShowReceiptModal(true)
 
       // Reset

@@ -15,7 +15,7 @@ import {
   User,
   Store,
   CheckCircle2,
-  Chrome
+  Globe
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -215,7 +215,7 @@ export default function SignupPage() {
               variant="outline" 
               className="w-full h-14 rounded-2xl flex items-center justify-center gap-3 hover:bg-[var(--bg-secondary)]"
             >
-              <Chrome size={20} className="text-primary" />
+              <Globe size={20} className="text-primary" />
               Sign up with Google
             </Button>
           </form>

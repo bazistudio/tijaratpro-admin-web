@@ -4,15 +4,42 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { User } from "@/types";
 import { setStoredToken, clearStoredToken } from "@/lib/api/axios";
+import { api } from "@/lib/api";
 
-// ─── Auth Store ───────────────────────────────────────────────────────────────
-// SSR-safe: persist middleware only runs on client (localStorage guard built-in)
-// Direct localStorage access in setAuth/clearAuth is also guarded.
+export interface Capabilities {
+  canCreateProduct: boolean;
+  canUpdateProduct: boolean;
+  canDeleteProduct: boolean;
+  canViewProduct: boolean;
+  canAdjustStock: boolean;
+  canTransferStock: boolean;
+  canDamageStock: boolean;
+  canViewStock: boolean;
+  canSale: boolean;
+  canVoidSale: boolean;
+  canOverridePrice: boolean;
+  canDiscount: boolean;
+  canViewFinance: boolean;
+  canCreateFinance: boolean;
+  canCreateOrder: boolean;
+  canReadOrder: boolean;
+  canCancelOrder: boolean;
+  canViewAudit: boolean;
+  canEditSettings: boolean;
+  canManageStaff: boolean;
+  canExportReports: boolean;
+}
 
 interface AuthState {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
+  capabilities: Capabilities | null;
+  rawPermissions: string[];
+  
+  // SaaS Context
+  organizationId: string | null;
+  activeShopId: string | null;
 
   /** Set user + token after successful login/register */
   setAuth: (user: User, token: string) => void;
@@ -22,47 +49,96 @@ interface AuthState {
 
   /** Hydrate user from token (e.g. /auth/me response) */
   setUser: (user: User) => void;
+
+  /** Set active shop context */
+  setActiveShop: (shopId: string | null) => void;
+
+  /** Fetch fresh permissions and capabilities from backend */
+  initialize: () => Promise<void>;
+  
+  /** Check if a specific capability is granted */
+  hasCapability: (cap: keyof Capabilities) => boolean;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       token: null,
       isAuthenticated: false,
+      capabilities: null,
+      rawPermissions: [],
+      organizationId: null,
+      activeShopId: null,
 
       setAuth: (user, token) => {
-        // Mirror token to localStorage + cookie (client-only helpers are guarded internally)
         setStoredToken(token);
-        set({ user, token, isAuthenticated: true });
+        // Extract org and shop from user if available (e.g. legacy or default)
+        const organizationId = user.organizationId || user.tenantId || null;
+        const activeShopId = user.shopId || null;
+        set({ user, token, isAuthenticated: true, organizationId, activeShopId });
+        get().initialize(); // Fetch capabilities right after login
       },
 
       clearAuth: () => {
         clearStoredToken();
-        set({ user: null, token: null, isAuthenticated: false });
+        set({ user: null, token: null, isAuthenticated: false, capabilities: null, rawPermissions: [], organizationId: null, activeShopId: null });
       },
 
       setUser: (user) => {
         set({ user });
       },
+
+      setActiveShop: (shopId) => {
+        set({ activeShopId: shopId });
+      },
+
+      initialize: async () => {
+        try {
+          const [meRes, capRes] = await Promise.all([
+            api("/auth/me"),
+            api("/auth/capabilities")
+          ]);
+          
+          if (!meRes.ok || !capRes.ok) throw new Error("Failed to fetch capabilities");
+
+          const meData = await meRes.json();
+          const capData = await capRes.json();
+
+          set({
+            user: meData.data,
+            rawPermissions: meData.data.permissions || [],
+            capabilities: capData.data,
+          });
+        } catch (error) {
+          console.error("Failed to initialize auth state capabilities", error);
+        }
+      },
+
+      hasCapability: (cap) => {
+        const capabilities = get().capabilities;
+        if (!capabilities) return false;
+        return !!capabilities[cap];
+      }
     }),
     {
       name: "tp_auth",
-      // SSR-safe: createJSONStorage falls back gracefully when localStorage is unavailable
       storage: createJSONStorage(() => {
         if (typeof window !== "undefined") return localStorage;
-        // Return a no-op storage for SSR
         return {
           getItem: () => null,
           setItem: () => {},
           removeItem: () => {},
         };
       }),
-      // Only persist these fields
       partialize: (state) => ({
         user: state.user,
         token: state.token,
         isAuthenticated: state.isAuthenticated,
+        capabilities: state.capabilities,
+        rawPermissions: state.rawPermissions,
+        organizationId: state.organizationId,
+        activeShopId: state.activeShopId,
       }),
     }
   )

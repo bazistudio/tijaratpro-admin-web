@@ -5,7 +5,8 @@
 export const api = async (url: string, options: any = {}) => {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const baseUrl = "http://localhost:5000/api";
-  const fullUrl = url.startsWith("http") ? url : `${baseUrl}${url}`;
+  const processedUrl = url.startsWith("/api") ? url.replace("/api", "") : url;
+  const fullUrl = url.startsWith("http") ? url : `${baseUrl}${processedUrl}`;
 
   const headers = {
     "Content-Type": "application/json",

@@ -7,37 +7,43 @@ import {
   LayoutDashboard, ShoppingCart, Package, Users, ReceiptText, 
   PieChart, Settings, LogOut, Store, ChevronRight,
   X, PanelLeftClose, PanelLeftOpen, CreditCard,
+  Layers, Database, FileText
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUiStore } from "@/store";
-
-// Simulated user role (in a real app, this comes from auth context/store)
-const CURRENT_ROLE = "admin";
+import { usePermission } from "@/hooks/use-permissions";
 
 const navigation = [
-  { label: "Overview", icon: LayoutDashboard, href: "/dashboard", roles: ["admin", "manager", "staff"] },
-  { label: "Analytics", icon: PieChart, href: "/analytics", roles: ["admin", "manager"] },
-  { label: "Orders", icon: ShoppingCart, href: "/orders", roles: ["admin", "manager", "staff"] },
+  // ── Super Admin Only ───────────────────────────────────────────────────────
+  { label: "Shops", icon: Store, href: "/shops", roles: ["SUPER_ADMIN"] },
+  { label: "Plans", icon: Layers, href: "/plans", roles: ["SUPER_ADMIN"] },
+  { label: "Subscriptions", icon: Database, href: "/subscriptions", roles: ["SUPER_ADMIN"] },
+
+  // ── Standard Shop Dashboard ────────────────────────────────────────────────
+  { label: "Overview", icon: LayoutDashboard, href: "/dashboard", roles: ["SUPER_ADMIN", "ADMIN", "MANAGER", "STAFF"] },
+  { label: "Analytics", icon: PieChart, href: "/analytics", roles: ["SUPER_ADMIN", "ADMIN", "MANAGER"] },
+  { label: "Orders", icon: ShoppingCart, href: "/orders", roles: ["SUPER_ADMIN", "ADMIN", "MANAGER", "STAFF"] },
   { 
     label: "Products", 
     icon: Package, 
     href: "/products",
-    roles: ["admin", "manager"],
+    roles: ["SUPER_ADMIN", "ADMIN", "MANAGER"],
     subItems: [
       { label: "All Products", href: "/products" },
       { label: "Categories", href: "/products/categories" },
     ]
   },
-  { label: "Inventory", icon: Store, href: "/stock", roles: ["admin", "manager"] },
-  { label: "Billing", icon: ReceiptText, href: "/billing", roles: ["admin"] },
-  { label: "Customers", icon: Users, href: "/customers", roles: ["admin", "manager"] },
-  { label: "Expenses", icon: CreditCard, href: "/expenses", roles: ["admin"] },
-  { label: "Settings", icon: Settings, href: "/settings", roles: ["admin"] },
+  { label: "Inventory", icon: Store, href: "/stock", roles: ["SUPER_ADMIN", "ADMIN", "MANAGER"] },
+  { label: "Billing", icon: ReceiptText, href: "/billing", roles: ["SUPER_ADMIN", "ADMIN"] },
+  { label: "Customers", icon: Users, href: "/customers", roles: ["SUPER_ADMIN", "ADMIN", "MANAGER"] },
+  { label: "Expenses", icon: CreditCard, href: "/expenses", roles: ["SUPER_ADMIN", "ADMIN"] },
+  { label: "Settings", icon: Settings, href: "/settings", roles: ["SUPER_ADMIN", "ADMIN"] },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { user, role } = usePermission();
   const { sidebarCollapsed, setSidebarCollapsed, mobileNavOpen, setMobileNavOpen } = useUiStore();
   
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
@@ -59,7 +65,11 @@ export function Sidebar() {
   }, [pathname, setMobileNavOpen]);
 
   // Filter items by role
-  const visibleNav = navigation.filter(item => item.roles.includes(CURRENT_ROLE));
+  const currentRole = role || "STAFF";
+  const visibleNav = navigation.filter(item => item.roles.includes(currentRole as any));
+
+  // Get user initials
+  const initials = user?.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : "AD";
 
   return (
     <>
@@ -106,7 +116,7 @@ export function Sidebar() {
         </div>
         
         {/* Navigation Section */}
-        <div className="flex-1 py-6 px-3">
+        <div className="flex-1 py-6 px-3 overflow-y-auto custom-scrollbar">
           <nav className="space-y-1">
             {visibleNav.map((route) => {
               const hasSubItems = !!route.subItems;
@@ -171,11 +181,11 @@ export function Sidebar() {
               <div className="mb-3 p-3 rounded-xl bg-primary/5 border border-primary/10 group cursor-pointer hover:bg-primary/10 transition-all">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white font-bold text-xs shadow-sm shrink-0">
-                    AD
+                    {initials}
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <p className="text-xs font-bold text-[var(--text)] truncate">Admin User</p>
-                    <p className="text-[9px] font-bold text-[var(--text-soft)] uppercase tracking-wider truncate">Super Admin</p>
+                    <p className="text-xs font-bold text-[var(--text)] truncate">{user?.name || 'User'}</p>
+                    <p className="text-[9px] font-bold text-[var(--text-soft)] uppercase tracking-wider truncate">{role?.replace('_', ' ') || 'Staff'}</p>
                   </div>
                 </div>
               </div>
@@ -190,8 +200,8 @@ export function Sidebar() {
             </>
           ) : (
             <div className="flex flex-col items-center gap-4">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white font-bold text-xs shadow-sm cursor-pointer" title="Admin User">
-                AD
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white font-bold text-xs shadow-sm cursor-pointer" title={user?.name || 'User'}>
+                {initials}
               </div>
               <button 
                 onClick={handleLogout}

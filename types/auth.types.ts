@@ -2,12 +2,11 @@
 // Matches backend roles exactly: superadmin | shop_owner | manager | staff | salesman | customer
 
 export type Role =
-  | "superadmin"
-  | "shop_owner"
-  | "manager"
-  | "staff"
-  | "salesman"
-  | "customer";
+  | "SUPER_ADMIN"
+  | "ADMIN"
+  | "MANAGER"
+  | "CASHIER"
+  | "STAFF";
 
 export interface User {
   _id: string;

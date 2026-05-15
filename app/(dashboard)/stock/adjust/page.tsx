@@ -62,7 +62,7 @@ export default function BulkAdjustmentPage() {
   const { can } = usePermission()
 
   // ─── Permission Guard ──────────────────────────────────────────────────────
-  if (!can("STOCK_ADJUST")) {
+  if (!can("canAdjustStock")) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4 animate-in fade-in zoom-in duration-500">
          <div className="h-20 w-20 rounded-[2rem] bg-danger-light text-danger flex items-center justify-center shadow-lg shadow-danger/10">
@@ -155,27 +155,21 @@ export default function BulkAdjustmentPage() {
 
     setIsSubmitting(true)
     try {
-      // 1. Process Adjustments via API
+      // 1. Process Adjustments via Authoritative Backend API
       const promises = queue.map(async (item) => {
-        // Update Stock
-        await api(`/stock/${item.id}`, {
+        // The Backend now:
+        // - Re-calculates new balance
+        // - Verifies user permissions
+        // - Auto-generates Audit Log
+        // - Creates Stock Movement Entry
+        await api(`/inventory/adjust`, {
           method: "POST",
           body: JSON.stringify({
-            adjustment: item.adjustment,
+            productId: item.id,
+            type: item.adjustment > 0 ? "INCREASE" : "DECREASE",
+            quantity: Math.abs(item.adjustment),
             reason: item.reason,
-            note: item.note
-          })
-        })
-
-        // 2. Log Activity for Audit Trail (Weaponized Logging)
-        await api("/activity", {
-          method: "POST",
-          body: JSON.stringify({
-            action: "STOCK_ADJUST",
-            entityId: item.id,
-            entityType: "product",
-            description: `Stock adjusted for ${item.name}: ${item.adjustment > 0 ? "+" : ""}${item.adjustment} (${item.reason})`,
-            metadata: { sku: item.sku, prev: item.currentStock, new: item.currentStock + item.adjustment, note: item.note }
+            notes: item.note
           })
         })
       })

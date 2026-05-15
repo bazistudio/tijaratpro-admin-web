@@ -1,11 +1,11 @@
 "use client"
 
 import * as React from "react"
-import { usePermission, type PermissionKey } from "@/hooks/use-permissions"
+import { usePermission, type Capabilities } from "@/hooks/use-permissions"
 import { ShieldAlert } from "lucide-react"
 
 interface PermissionGuardProps {
-  permission: PermissionKey
+  permission: keyof Capabilities
   children: React.ReactNode
   fallback?: React.ReactNode
   mode?: "hide" | "disable"

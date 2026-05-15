@@ -50,7 +50,7 @@ export default function DamageHubPage() {
   const { addNotification } = useNotificationStore()
   const { can } = usePermission()
 
-  if (!can("STOCK_ADJUST")) {
+  if (!can("canDamageStock")) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4 animate-in fade-in zoom-in duration-500">
          <div className="h-20 w-20 rounded-[2rem] bg-danger-light text-danger flex items-center justify-center shadow-lg shadow-danger/10">

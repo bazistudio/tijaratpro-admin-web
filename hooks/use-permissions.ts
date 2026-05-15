@@ -1,86 +1,50 @@
 /**
  * TijaratPro RBAC (Role Based Access Control) System
- * Prevents "Inventory Abuse" and unauthorized financial overrides.
+ * Synchronized with Backend Permission Registry.
  */
 
-export type UserRole = "admin" | "manager" | "cashier"
+import { useAuthStore, type Capabilities } from "@/store/auth.store";
+export type { Capabilities };
 
-export interface User {
-  id: string
-  name: string
-  role: UserRole
-  branchId: string
-}
+export type UserRole = "SUPER_ADMIN" | "ADMIN" | "MANAGER" | "CASHIER" | "STAFF";
 
-// ─── Permission Schema ──────────────────────────────────────────────────────
+const defaultCapabilities: Capabilities = {
+  canCreateProduct: false,
+  canUpdateProduct: false,
+  canDeleteProduct: false,
+  canViewProduct: false,
+  canAdjustStock: false,
+  canTransferStock: false,
+  canDamageStock: false,
+  canViewStock: false,
+  canSale: false,
+  canVoidSale: false,
+  canOverridePrice: false,
+  canDiscount: false,
+  canViewFinance: false,
+  canCreateFinance: false,
+  canCreateOrder: false,
+  canReadOrder: false,
+  canCancelOrder: false,
+  canViewAudit: false,
+  canEditSettings: false,
+  canManageStaff: false,
+  canExportReports: false,
+};
 
-export const PERMISSIONS = {
-  // Sales / POS
-  SALE_CREATE: ["admin", "manager", "cashier"],
-  PRICE_OVERRIDE: ["admin", "manager"], // Cashier cannot change price
-  DISCOUNT_APPLY_LIMIT: ["admin", "manager"], // Cashier restricted to small % (handled in UI)
-  
-  // Inventory
-  PRODUCT_CREATE: ["admin", "manager"],
-  PRODUCT_EDIT: ["admin", "manager"],
-  PRODUCT_DELETE: ["admin"], // Only Admin can delete
-  
-  STOCK_ADJUST: ["admin", "manager"], // Cashier cannot manually change stock
-  STOCK_TRANSFER_REQUEST: ["admin", "manager", "cashier"],
-  STOCK_TRANSFER_APPROVE: ["admin", "manager"],
-  
-  // Financials
-  VIEW_REPORTS: ["admin", "manager"],
-  VIEW_PROFIT: ["admin"], // Only Admin sees true profit margins
-  LEDGER_EDIT: ["admin"],
-  
-  // System
-  SETTINGS_EDIT: ["admin"],
-  USER_MANAGEMENT: ["admin"],
-} as const
-
-export type PermissionKey = keyof typeof PERMISSIONS
-
-// ─── Permission Hook Logic ──────────────────────────────────────────────────
-
-import { create } from "zustand"
-
-interface AuthState {
-  user: User | null
-  setUser: (user: User | null) => void
-  hasPermission: (permission: PermissionKey) => boolean
-}
-
-/**
- * Mock Auth Store (In production, this would be tied to JWT/Next-Auth)
- */
-export const useAuthStore = create<AuthState>((set, get) => ({
-  user: {
-    id: "u-1",
-    name: "Salman Khan",
-    role: "cashier", // Default to most restricted role for safety
-    branchId: "branch-a"
-  },
-  setUser: (user) => set({ user }),
-  hasPermission: (permission) => {
-    const user = get().user
-    if (!user) return false
-    const allowedRoles = PERMISSIONS[permission] as readonly string[]
-    return allowedRoles.includes(user.role)
-  }
-}))
-
-/**
- * Utility Hook for Components
- */
 export function usePermission() {
-  const { user, hasPermission } = useAuthStore()
+  const { user, capabilities, hasCapability, rawPermissions } = useAuthStore();
+  
   return {
     user,
     role: user?.role,
-    can: hasPermission,
-    isAdmin: user?.role === "admin",
-    isManager: user?.role === "manager",
-    isCashier: user?.role === "cashier",
-  }
+    capabilities: capabilities || defaultCapabilities,
+    can: hasCapability,
+    rawPermissions,
+    isSuperAdmin: user?.role === "SUPER_ADMIN",
+    isShopAdmin: user?.role === "ADMIN",
+    isManager: user?.role === "MANAGER",
+    isCashier: user?.role === "CASHIER",
+    isStaff: user?.role === "STAFF",
+  };
 }

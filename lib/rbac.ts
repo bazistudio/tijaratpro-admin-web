@@ -4,19 +4,18 @@ import { ROLE_ALLOWED_PREFIXES } from "@/lib/constants/routes";
 // ─── Role hierarchy (higher index = more privilege) ────────────────────────────
 // Matches backend User.role enum exactly
 const ROLE_HIERARCHY: Role[] = [
-  "customer",
-  "salesman",
-  "staff",
-  "manager",
-  "shop_owner",
-  "superadmin",
+  "STAFF",
+  "CASHIER",
+  "MANAGER",
+  "ADMIN",
+  "SUPER_ADMIN",
 ];
 
 // ─── Core guards ───────────────────────────────────────────────────────────────
 
 /**
  * Check if a user's role is in the allowed roles list.
- * @example canAccess(user.role, ['superadmin', 'shop_owner'])
+ * @example canAccess(user.role, ['SUPER_ADMIN', 'ADMIN'])
  */
 export function canAccess(userRole: Role, allowedRoles: Role[]): boolean {
   return allowedRoles.includes(userRole);
@@ -24,7 +23,7 @@ export function canAccess(userRole: Role, allowedRoles: Role[]): boolean {
 
 /**
  * Check if a user's role has at least the minimum required privilege.
- * @example hasMinRole(user.role, 'manager') // true for manager, shop_owner, superadmin
+ * @example hasMinRole(user.role, 'MANAGER') // true for MANAGER, ADMIN, SUPER_ADMIN
  */
 export function hasMinRole(userRole: Role, minRole: Role): boolean {
   return ROLE_HIERARCHY.indexOf(userRole) >= ROLE_HIERARCHY.indexOf(minRole);
@@ -32,19 +31,19 @@ export function hasMinRole(userRole: Role, minRole: Role): boolean {
 
 // ─── Convenience role checks ───────────────────────────────────────────────────
 
-export const isSuperAdmin  = (role: Role) => role === "superadmin";
-export const isShopOwner   = (role: Role) => role === "shop_owner";
-export const isManager     = (role: Role) => role === "manager";
-export const isStaff       = (role: Role) => role === "staff";
-export const isSalesman    = (role: Role) => role === "salesman";
+export const isSuperAdmin  = (role: Role) => role === "SUPER_ADMIN";
+export const isShopOwner   = (role: Role) => role === "ADMIN";
+export const isManager     = (role: Role) => role === "MANAGER";
+export const isCashier     = (role: Role) => role === "CASHIER";
+export const isStaff       = (role: Role) => role === "STAFF";
 
 /** Any role that belongs to a shop (not superadmin) */
 export const isShopUser    = (role: Role) =>
-  canAccess(role, ["shop_owner", "manager", "staff", "salesman"]);
+  canAccess(role, ["ADMIN", "MANAGER", "CASHIER", "STAFF"]);
 
 /** Can manage shop settings, staff, and subscriptions */
 export const isShopAdmin   = (role: Role) =>
-  canAccess(role, ["shop_owner", "manager"]);
+  canAccess(role, ["ADMIN", "MANAGER"]);
 
 // ─── Route visibility guard ───────────────────────────────────────────────────
 

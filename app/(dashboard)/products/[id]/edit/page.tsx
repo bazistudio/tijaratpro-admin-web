@@ -72,7 +72,7 @@ export default function ProductEditPage() {
     reset,
     formState: { errors },
   } = useForm<Product>({
-    resolver: zodResolver(productSchema),
+    resolver: zodResolver(productSchema) as any,
     defaultValues: {
       tags: [],
       variants: [],
@@ -181,7 +181,7 @@ export default function ProductEditPage() {
          ))}
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="max-w-4xl mx-auto space-y-8">
+      <form onSubmit={handleSubmit(onSubmit as any)} className="max-w-4xl mx-auto space-y-8">
          {/* Step 1: Identity */}
          {currentStep === 1 && (
             <SectionCard title="General Identity" description="Basic product details and branding.">

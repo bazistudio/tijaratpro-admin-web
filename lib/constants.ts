@@ -12,9 +12,11 @@ export const STORAGE_KEYS = {
 };
 
 export const ROLES = {
-  SUPER_ADMIN: "super_admin",
-  SHOP_ADMIN: "shop_admin",
-  STAFF: "staff",
+  SUPER_ADMIN: "SUPER_ADMIN",
+  ADMIN: "ADMIN",
+  MANAGER: "MANAGER",
+  CASHIER: "CASHIER",
+  STAFF: "STAFF",
 };
 
 export const ROUTES = {
@@ -31,9 +33,11 @@ export const PROTECTED_PREFIXES = ["/dashboard", "/products", "/orders", "/setti
 export const AUTH_ROUTES = ["/login", "/register", "/forgot-password", "/reset-password"];
 
 export const ROLE_ALLOWED_PREFIXES = {
-  super_admin: ["/dashboard", "/shops", "/plans", "/subscriptions", "/settings"],
-  shop_admin: ["/dashboard", "/products", "/orders", "/customers", "/inventory", "/reports", "/settings"],
-  staff: ["/dashboard", "/products", "/orders", "/customers"],
+  SUPER_ADMIN: ["/dashboard", "/shops", "/plans", "/subscriptions", "/settings"],
+  ADMIN: ["/dashboard", "/products", "/orders", "/customers", "/inventory", "/reports", "/settings"],
+  MANAGER: ["/dashboard", "/products", "/orders", "/customers", "/inventory", "/reports", "/settings"],
+  CASHIER: ["/dashboard", "/orders", "/customers"],
+  STAFF: ["/dashboard", "/products", "/orders", "/customers"],
 };
 
 export const queryKeys = {

@@ -76,7 +76,7 @@ export const AUTH_ROUTES = ["/login", "/register"] as const;
 // Lists the route prefixes each role is allowed to visit.
 // Middleware uses hasMinRole(); this map is for nav visibility.
 export const ROLE_ALLOWED_PREFIXES: Record<string, string[]> = {
-  superadmin: [
+  SUPER_ADMIN: [
     "/dashboard",
     "/shops",
     "/plans",
@@ -86,7 +86,7 @@ export const ROLE_ALLOWED_PREFIXES: Record<string, string[]> = {
     "/notifications",
     "/settings",
   ],
-  shop_owner: [
+  ADMIN: [
     "/dashboard",
     "/products",
     "/orders",
@@ -98,7 +98,7 @@ export const ROLE_ALLOWED_PREFIXES: Record<string, string[]> = {
     "/notifications",
     "/settings",
   ],
-  manager: [
+  MANAGER: [
     "/dashboard",
     "/products",
     "/orders",
@@ -110,7 +110,7 @@ export const ROLE_ALLOWED_PREFIXES: Record<string, string[]> = {
     "/notifications",
     "/settings",
   ],
-  staff: [
+  STAFF: [
     "/dashboard",
     "/products",
     "/orders",
@@ -119,7 +119,7 @@ export const ROLE_ALLOWED_PREFIXES: Record<string, string[]> = {
     "/notifications",
     "/settings",
   ],
-  salesman: [
+  CASHIER: [
     "/dashboard",
     "/orders",
     "/customers",
