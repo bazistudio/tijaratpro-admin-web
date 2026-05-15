@@ -3,6 +3,7 @@
 
 export type Role =
   | "SUPER_ADMIN"
+  | "ORGANIZATION_OWNER"
   | "ADMIN"
   | "MANAGER"
   | "CASHIER"
@@ -14,6 +15,8 @@ export interface User {
   email: string;
   role: Role;
   shopId?: string;
+  organizationId?: string;
+  tenantId?: string;
   shopName?: string;
   phone?: string;
   isActive: boolean;
