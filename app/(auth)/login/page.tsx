@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -15,6 +16,8 @@ import {
   TrendingUp, 
   ShieldCheck
 } from "lucide-react";
+import axiosInstance, { setStoredToken } from "@/lib/api/axios";
+import { useAuthStore } from "@/store";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +35,9 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   const {
     register,
@@ -39,13 +45,40 @@ export default function LoginPage() {
     formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      rememberMe: false,
+    }
   });
 
   const onSubmit = async (data: LoginFormValues) => {
     setIsLoading(true);
-    // UI Only for now as per requirements
-    console.log("Login Data:", data);
-    setTimeout(() => setIsLoading(false), 2000);
+    setError(null);
+    try {
+      const res = await axiosInstance.post("/api/auth/login", {
+        identifier: data.email,
+        password: data.password
+      });
+
+      const responseData = res.data;
+
+      if (responseData.token) {
+        setStoredToken(responseData.token);
+        
+        if (responseData.user) {
+          setAuth(responseData.user, responseData.token);
+        }
+        
+        router.push("/dashboard");
+      } else {
+        throw new Error("Invalid response from server");
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || err.message || "Login failed");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -130,6 +163,11 @@ export default function LoginPage() {
           <div className="text-center mb-10">
             <h2 className="text-3xl font-black mb-2">Welcome Back</h2>
             <p className="text-[var(--text-soft)] font-medium">Enter your credentials to access your shop.</p>
+            {error && (
+              <div className="mt-4 p-3 bg-danger/10 border border-danger/20 rounded-xl text-danger text-xs font-black uppercase tracking-widest">
+                {error}
+              </div>
+            )}
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -222,7 +260,7 @@ export default function LoginPage() {
                 />
                 <path
                   fill="#EA4335"
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.66l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.66l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
               Sign in with Google

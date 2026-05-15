@@ -96,38 +96,15 @@ export const useDashboardStore = create<DashboardState>((set) => ({
         sold: p.sold
       }));
 
-      // Mock Recent Activities
-      const mockActivities: RecentActivity[] = [
-        {
-          id: 'act1',
-          type: 'order',
-          title: 'New Wholesale Order',
-          description: 'Order #ORD-9921 placed by Green Mart',
-          timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
-          status: 'pending'
-        },
-        {
-          id: 'act2',
-          type: 'stock',
-          title: 'Stock Depleted',
-          description: 'Organic Honey (500g) is now out of stock',
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-          status: 'warning'
-        },
-        {
-          id: 'act3',
-          type: 'customer',
-          title: 'New Partner Registered',
-          description: 'Metro Cash & Carry joined as a distributor',
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
-        }
-      ];
+      // Fetch Recent Activities from Backend
+      const activitiesRes = await axiosInstance.get(`${BASE}/activities`);
+      const activities = activitiesRes.data.data || [];
 
       set({ 
         stats: normalizedStats, 
         salesChart: normalizedChart,
         topProducts: normalizedTopProducts,
-        recentActivities: mockActivities,
+        recentActivities: activities,
         isLoading: false 
       });
     } catch (err: any) {

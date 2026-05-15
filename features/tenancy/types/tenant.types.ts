@@ -4,12 +4,15 @@ export type BusinessType =
   | "AUTO"
   | "WHOLESALE";
 
+export type TenantStatus = "ACTIVE" | "SUSPENDED" | "TRIAL" | "EXPIRED";
+
 export interface Tenant {
   _id: string;
   name: string;
   businessType: BusinessType;
   logo?: string;
   isActive: boolean;
+  status: TenantStatus;
   createdAt: string;
 }
 

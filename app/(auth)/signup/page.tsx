@@ -18,10 +18,12 @@ import {
   Globe
 } from "lucide-react";
 
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AuthCard } from "@/components/auth/AuthCard";
 import ThemeToggle from "@/components/ui/ThemeToggle";
+import axiosInstance, { setStoredToken } from "@/lib/api/axios";
 
 const signupSchema = z.object({
   fullName: z.string().min(3, "Full name must be at least 3 characters"),
@@ -38,6 +40,8 @@ type SignupFormValues = z.infer<typeof signupSchema>;
 export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const {
     register,
@@ -49,9 +53,25 @@ export default function SignupPage() {
 
   const onSubmit = async (data: SignupFormValues) => {
     setIsLoading(true);
-    // UI Only for now
-    console.log("Signup Data:", data);
-    setTimeout(() => setIsLoading(false), 2000);
+    setError(null);
+    try {
+      const res = await axiosInstance.post("/api/auth/register", {
+        name: data.fullName,
+        email: data.email,
+        password: data.password,
+        shopName: data.shopName,
+      });
+
+      if (res.data.success) {
+        setStoredToken(res.data.token);
+        // Navigate to login or dashboard
+        router.push("/login?registered=true");
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || err.message || "Registration failed");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -126,6 +146,11 @@ export default function SignupPage() {
           <div className="text-center mb-10">
             <h2 className="text-3xl font-black mb-2">Create Shop Account</h2>
             <p className="text-[var(--text-soft)] font-medium">Join 500+ businesses scaling with TijaratPro.</p>
+            {error && (
+              <div className="mt-4 p-3 bg-danger/10 border border-danger/20 rounded-xl text-danger text-xs font-black uppercase tracking-widest">
+                {error}
+              </div>
+            )}
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

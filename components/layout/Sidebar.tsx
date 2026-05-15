@@ -14,6 +14,7 @@ import { useUiStore } from "@/store";
 import { usePermission } from "@/hooks/use-permissions";
 
 import { getSidebarByRole } from "@/lib/sidebarConfig";
+import { useAuthStore } from "@/store/auth.store";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -23,8 +24,10 @@ export function Sidebar() {
   
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
+  const { clearAuth } = useAuthStore();
+
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    clearAuth();
     router.push("/login");
   };
 

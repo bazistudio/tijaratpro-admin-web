@@ -23,6 +23,6 @@ export function useTenant() {
     setTenantList,
     clearTenancy,
     hasActiveTenant: !!activeTenant,
-    tenantId: activeTenant?.id,
+    tenantId: activeTenant?._id,
   };
 }

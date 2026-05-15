@@ -109,11 +109,14 @@ export const useAuthStore = create<AuthState>()(
             user: meData.data,
             rawPermissions: meData.data.permissions || [],
             capabilities: capData.data,
+            isAuthenticated: true,
           });
         } catch (error) {
           console.error("Failed to initialize auth state capabilities", error);
+          get().clearAuth();
         }
       },
+
 
       hasCapability: (cap) => {
         const capabilities = get().capabilities;

@@ -15,19 +15,25 @@ export default function DashboardLayout({
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, initialize } = useAuthStore();
+  const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
     setMounted(true);
-    if (!isAuthenticated) {
+    
+    // Call backend to verify token and rebuild state
+    initialize().finally(() => {
+      setIsInitializing(false);
+    });
+  }, [initialize]);
+
+  useEffect(() => {
+    if (!isInitializing && !isAuthenticated) {
       router.push("/login");
     }
-    // (shop) allows practically all authenticated internal roles:
-    // SUPER_ADMIN, ORGANIZATION_OWNER, ADMIN, MANAGER, CASHIER, STAFF
-    // so just checking isAuthenticated is a good start.
-  }, [isAuthenticated, router]);
+  }, [isInitializing, isAuthenticated, router]);
 
-  if (!mounted || !isAuthenticated) return null;
+  if (!mounted || isInitializing) return null;
 
   return (
     <div className="flex min-h-screen bg-[var(--background)] transition-colors duration-500">

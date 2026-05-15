@@ -11,7 +11,7 @@ export const TenantContext = {
    * If null, the system should ideally block tenant-scoped operations.
    */
   getActiveTenantId: (): string | null => {
-    return useTenantStore.getState().activeTenant?.id || null;
+    return useTenantStore.getState().activeTenant?._id || null;
   },
 
   /**

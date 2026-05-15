@@ -129,9 +129,11 @@ const QuickAction = ({ label, icon: Icon, href, color = "primary" }: { label: st
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
+  const [mounted, setMounted] = React.useState(false)
   const { stats, salesChart, topProducts, recentActivities, fetchDashboardData, isLoading } = useDashboardStore()
 
   useEffect(() => {
+    setMounted(true)
     fetchDashboardData()
   }, [fetchDashboardData])
 
@@ -154,7 +156,7 @@ export default function DashboardPage() {
         </p>
         <div className="flex flex-wrap justify-center gap-4 mt-10">
           <Button asChild size="lg" className="h-14 px-8 text-base font-bold rounded-2xl shadow-xl shadow-primary/20">
-            <Link href="/orders/new" className="flex items-center gap-2">
+            <Link href="/orders/create" className="flex items-center gap-2">
               <Plus size={20} />
               Create First Order
             </Link>
@@ -250,11 +252,11 @@ export default function DashboardPage() {
 
       {/* Quick Actions Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        <QuickAction label="New Order" icon={ShoppingCart} href="/orders/new" color="primary" />
-        <QuickAction label="Add Product" icon={Plus} href="/products/new" color="success" />
-        <QuickAction label="New Expense" icon={Wallet} href="/expenses/new" color="danger" />
-        <QuickAction label="Register Party" icon={Users} href="/customers/new" color="info" />
-        <QuickAction label="Analytics" icon={PieChart} href="/reports" color="warning" />
+        <QuickAction label="New Order" icon={ShoppingCart} href="/orders/create" color="primary" />
+        <QuickAction label="Add Product" icon={Plus} href="/products/create" color="success" />
+        <QuickAction label="New Expense" icon={Wallet} href="/expenses/create" color="danger" />
+        <QuickAction label="Register Party" icon={Users} href="/customers/create" color="info" />
+        <QuickAction label="Analytics" icon={PieChart} href="/analytics" color="warning" />
         <QuickAction label="Inventory" icon={Boxes} href="/stock" color="primary" />
       </div>
 
@@ -276,58 +278,60 @@ export default function DashboardPage() {
             className="border border-[var(--border)] shadow-xl shadow-slate-200/50"
             contentClassName="h-[350px] p-6"
           >
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={salesChart} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.15}/>
-                    <stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" strokeOpacity={0.5} />
-                <XAxis 
-                  dataKey="name" 
-                  stroke="var(--text-soft)" 
-                  fontSize={10} 
-                  fontWeight={700}
-                  tickLine={false} 
-                  axisLine={false}
-                  dy={10}
-                />
-                <YAxis 
-                  stroke="var(--text-soft)" 
-                  fontSize={10} 
-                  fontWeight={700}
-                  tickLine={false} 
-                  axisLine={false} 
-                  tickFormatter={(value) => `Rs ${value/1000}k`} 
-                />
-                <Tooltip 
-                  content={({ active, payload, label }) => {
-                    if (active && payload && payload.length) {
-                      return (
-                        <div className="bg-[var(--card)] border border-[var(--border)] p-3 rounded-xl shadow-2xl backdrop-blur-xl">
-                          <p className="text-[10px] font-black uppercase tracking-widest text-[var(--text-soft)] mb-1">{label}</p>
-                          <p className="text-sm font-bold text-[var(--text-main)]">{formatCurrency(payload[0].value as number)}</p>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="sales" 
-                  stroke="var(--primary)" 
-                  strokeWidth={4} 
-                  fillOpacity={1} 
-                  fill="url(#salesGradient)"
-                  animationDuration={2000}
-                  dot={{ r: 4, fill: "var(--primary)", strokeWidth: 2, stroke: "white" }}
-                  activeDot={{ r: 6, fill: "var(--primary)", strokeWidth: 2, stroke: "white", className: "shadow-lg" }}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+            <div className="h-full min-h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={salesChart} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.15}/>
+                      <stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" strokeOpacity={0.5} />
+                  <XAxis 
+                    dataKey="name" 
+                    stroke="var(--text-soft)" 
+                    fontSize={10} 
+                    fontWeight={700}
+                    tickLine={false} 
+                    axisLine={false}
+                    dy={10}
+                  />
+                  <YAxis 
+                    stroke="var(--text-soft)" 
+                    fontSize={10} 
+                    fontWeight={700}
+                    tickLine={false} 
+                    axisLine={false} 
+                    tickFormatter={(value) => `Rs ${value/1000}k`} 
+                  />
+                  <Tooltip 
+                    content={({ active, payload, label }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <div className="bg-[var(--card)] border border-[var(--border)] p-3 rounded-xl shadow-2xl backdrop-blur-xl">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-[var(--text-soft)] mb-1">{label}</p>
+                            <p className="text-sm font-bold text-[var(--text-main)]">{formatCurrency(payload[0].value as number)}</p>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="sales" 
+                    stroke="var(--primary)" 
+                    strokeWidth={4} 
+                    fillOpacity={1} 
+                    fill="url(#salesGradient)"
+                    animationDuration={2000}
+                    dot={{ r: 4, fill: "var(--primary)", strokeWidth: 2, stroke: "white" }}
+                    activeDot={{ r: 6, fill: "var(--primary)", strokeWidth: 2, stroke: "white", className: "shadow-lg" }}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </SectionCard>
 
           {/* Top Products */}
@@ -336,41 +340,43 @@ export default function DashboardPage() {
             className="border border-[var(--border)] shadow-xl shadow-slate-200/50"
             contentClassName="h-[300px] p-6"
           >
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={topProducts} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--border)" strokeOpacity={0.5} />
-                <XAxis type="number" hide />
-                <YAxis 
-                  dataKey="name" 
-                  type="category" 
-                  stroke="var(--text-main)" 
-                  fontSize={11} 
-                  fontWeight={700}
-                  tickLine={false} 
-                  axisLine={false}
-                  width={100}
-                />
-                <Tooltip 
-                   cursor={{fill: 'var(--bg-secondary)', radius: 8}}
-                   content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      return (
-                        <div className="bg-[var(--card)] border border-[var(--border)] p-3 rounded-xl shadow-2xl backdrop-blur-xl">
-                          <p className="text-sm font-bold text-[var(--text-main)]">{formatCurrency(payload[0].value as number)} Profit</p>
-                          <p className="text-[10px] font-bold text-success uppercase mt-1">ROI Optimized</p>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <Bar dataKey="profit" radius={[0, 8, 8, 0]} barSize={20}>
-                  {topProducts.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={index === 0 ? 'var(--primary)' : 'var(--primary-light)'} fillOpacity={1 - (index * 0.15)} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            <div className="h-full min-h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={topProducts} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--border)" strokeOpacity={0.5} />
+                  <XAxis type="number" hide />
+                  <YAxis 
+                    dataKey="name" 
+                    type="category" 
+                    stroke="var(--text-main)" 
+                    fontSize={11} 
+                    fontWeight={700}
+                    tickLine={false} 
+                    axisLine={false}
+                    width={100}
+                  />
+                  <Tooltip 
+                     cursor={{fill: 'var(--bg-secondary)', radius: 8}}
+                     content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <div className="bg-[var(--card)] border border-[var(--border)] p-3 rounded-xl shadow-2xl backdrop-blur-xl">
+                            <p className="text-sm font-bold text-[var(--text-main)]">{formatCurrency(payload[0].value as number)} Profit</p>
+                            <p className="text-[10px] font-bold text-success uppercase mt-1">ROI Optimized</p>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                  <Bar dataKey="profit" radius={[0, 8, 8, 0]} barSize={20}>
+                    {topProducts.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={index === 0 ? 'var(--primary)' : 'var(--primary-light)'} fillOpacity={1 - (index * 0.15)} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </SectionCard>
 
         </div>

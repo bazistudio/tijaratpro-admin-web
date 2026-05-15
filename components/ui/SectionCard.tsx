@@ -48,11 +48,12 @@ export function SectionCard({
           {action && <div className="shrink-0">{action}</div>}
         </CardHeader>
       )}
-      <CardContent className={cn("p-6 pt-0 overflow-x-auto", contentClassName)}>
-        <div className="min-w-0 h-full">
+      <CardContent className={cn("p-6 pt-0 flex flex-col min-h-0", contentClassName)}>
+        <div className="min-w-0 flex-1 h-full relative">
           {children}
         </div>
       </CardContent>
+
     </Card>
   );
 }

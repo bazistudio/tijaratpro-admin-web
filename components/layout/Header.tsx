@@ -1,10 +1,11 @@
-import React from 'react';
-import { cookies } from 'next/headers';
-import NavbarClient from './NavbarClient';
+"use client";
 
-export const Header = async () => {
-  const cookieStore = await cookies();
-  const isAuthenticated = cookieStore.has('tp_token');
+import React from 'react';
+import NavbarClient from './NavbarClient';
+import { useAuthStore } from '@/store/auth.store';
+
+export const Header = () => {
+  const { isAuthenticated } = useAuthStore();
 
   return (
     <NavbarClient isAuthenticated={isAuthenticated} />

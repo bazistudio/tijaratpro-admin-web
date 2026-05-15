@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { loginSchema, LoginFormData } from '@/lib/auth/auth.schema';
 import { useAuthStore } from '@/store';
 import { authService } from '@/lib/auth/auth.service';
+import axiosInstance, { setStoredToken } from '@/lib/api/axios';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -34,26 +35,16 @@ export default function LoginForm() {
     setError(null);
     
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ 
-          identifier: data.identifier, 
-          password: data.password 
-        }),
+      const res = await axiosInstance.post("/api/auth/login", {
+        identifier: data.identifier, 
+        password: data.password 
       });
 
-      if (!res.ok) {
-        throw new Error("Invalid credentials");
-      }
-
-      const responseData = await res.json();
+      const responseData = res.data;
 
       if (responseData.token) {
         // Simple predictable storage as requested
-        localStorage.setItem("token", responseData.token);
+        setStoredToken(responseData.token);
         
         // Update Zustand store so the UI (Header, etc.) reflects the login
         if (responseData.user) {

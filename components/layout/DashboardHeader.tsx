@@ -15,13 +15,16 @@ import {
 import { useRouter } from 'next/navigation';
 import { useUiStore } from "@/store";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { useAuthStore } from "@/store/auth.store";
 
 export function DashboardHeader() {
   const router = useRouter();
   const { toggleMobileNav } = useUiStore();
 
+  const { clearAuth } = useAuthStore();
+
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    clearAuth();
     router.push("/login");
   };
 

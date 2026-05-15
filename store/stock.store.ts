@@ -32,28 +32,15 @@ export const useStockStore = create<StockState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const res = await axiosInstance.get(BASE, { params: { search } });
-      const items = res.data.data || [];
+      const { items, summary } = res.data.data || { items: [], summary: {} };
       
-      // Compute KPIs natively on load
-      let totalProd = items.length;
-      let lowStock = 0;
-      let outOfStock = 0;
-      let totalVal = 0;
-
-      items.forEach((item: any) => {
-        if (item.quantity === 0) outOfStock++;
-        else if (item.status === 'LOW') lowStock++;
-
-        totalVal += (item.quantity * item.cost);
-      });
-
       set({ 
         stockItems: items, 
         isLoading: false,
-        totalProducts: totalProd,
-        lowStockItems: lowStock,
-        outOfStockItems: outOfStock,
-        totalInventoryValue: totalVal
+        totalProducts: summary.totalProducts || 0,
+        lowStockItems: summary.lowStockItems || 0,
+        outOfStockItems: summary.outOfStockItems || 0,
+        totalInventoryValue: summary.totalInventoryValue || 0
       });
     } catch (err: any) {
       set({ error: err.message || 'Failed to fetch stock', isLoading: false });

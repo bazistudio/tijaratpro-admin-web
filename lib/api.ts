@@ -3,7 +3,7 @@
  * Handles Auth, Base URL, Error Interception, and Response Normalization.
  */
 export const api = async (url: string, options: any = {}) => {
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const token = typeof window !== "undefined" ? localStorage.getItem("tp_token") : null;
   const baseUrl = "http://localhost:5000/api";
   const processedUrl = url.startsWith("/api") ? url.replace("/api", "") : url;
   const fullUrl = url.startsWith("http") ? url : `${baseUrl}${processedUrl}`;
@@ -29,7 +29,7 @@ export const api = async (url: string, options: any = {}) => {
       if (refreshRes.ok) {
         const { token: newToken } = await refreshRes.json();
         if (typeof window !== "undefined") {
-          localStorage.setItem("token", newToken);
+          localStorage.setItem("tp_token", newToken);
         }
         
         // Retry original request with new token
@@ -40,7 +40,7 @@ export const api = async (url: string, options: any = {}) => {
       } else {
         // Refresh failed -> logout
         if (typeof window !== "undefined") {
-          localStorage.removeItem("token");
+          localStorage.removeItem("tp_token");
           window.location.href = "/login";
         }
         throw new Error("Session expired. Please login again.");
