@@ -13,32 +13,7 @@ import { cn } from "@/lib/utils";
 import { useUiStore } from "@/store";
 import { usePermission } from "@/hooks/use-permissions";
 
-const navigation = [
-  // ── Super Admin Only ───────────────────────────────────────────────────────
-  { label: "Shops", icon: Store, href: "/shops", roles: ["SUPER_ADMIN"] },
-  { label: "Plans", icon: Layers, href: "/plans", roles: ["SUPER_ADMIN"] },
-  { label: "Subscriptions", icon: Database, href: "/subscriptions", roles: ["SUPER_ADMIN"] },
-
-  // ── Standard Shop Dashboard ────────────────────────────────────────────────
-  { label: "Overview", icon: LayoutDashboard, href: "/dashboard", roles: ["SUPER_ADMIN", "ADMIN", "MANAGER", "STAFF"] },
-  { label: "Analytics", icon: PieChart, href: "/analytics", roles: ["SUPER_ADMIN", "ADMIN", "MANAGER"] },
-  { label: "Orders", icon: ShoppingCart, href: "/orders", roles: ["SUPER_ADMIN", "ADMIN", "MANAGER", "STAFF"] },
-  { 
-    label: "Products", 
-    icon: Package, 
-    href: "/products",
-    roles: ["SUPER_ADMIN", "ADMIN", "MANAGER"],
-    subItems: [
-      { label: "All Products", href: "/products" },
-      { label: "Categories", href: "/products/categories" },
-    ]
-  },
-  { label: "Inventory", icon: Store, href: "/stock", roles: ["SUPER_ADMIN", "ADMIN", "MANAGER"] },
-  { label: "Billing", icon: ReceiptText, href: "/billing", roles: ["SUPER_ADMIN", "ADMIN"] },
-  { label: "Customers", icon: Users, href: "/customers", roles: ["SUPER_ADMIN", "ADMIN", "MANAGER"] },
-  { label: "Expenses", icon: CreditCard, href: "/expenses", roles: ["SUPER_ADMIN", "ADMIN"] },
-  { label: "Settings", icon: Settings, href: "/settings", roles: ["SUPER_ADMIN", "ADMIN"] },
-];
+import { getSidebarByRole } from "@/lib/sidebarConfig";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -66,7 +41,7 @@ export function Sidebar() {
 
   // Filter items by role
   const currentRole = role || "STAFF";
-  const visibleNav = navigation.filter(item => item.roles.includes(currentRole as any));
+  const visibleNav = getSidebarByRole(currentRole as string);
 
   // Get user initials
   const initials = user?.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : "AD";
