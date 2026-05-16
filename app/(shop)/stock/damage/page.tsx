@@ -19,7 +19,6 @@ import { useNotificationStore } from "@/hooks/use-notifications"
 import { api } from "@/lib/api"
 import { cn } from "@/lib/utils"
 import { usePermission } from "@/hooks/use-permissions"
-import { ShieldAlert } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"

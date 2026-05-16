@@ -3,11 +3,10 @@
 
 export type Role =
   | "SUPER_ADMIN"
-  | "ORGANIZATION_OWNER"
   | "ADMIN"
   | "MANAGER"
-  | "CASHIER"
-  | "STAFF";
+  | "STAFF"
+  | "DEMO_USER";
 
 export interface User {
   _id: string;

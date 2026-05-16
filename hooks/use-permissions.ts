@@ -6,7 +6,7 @@
 import { useAuthStore, type Capabilities } from "@/store/auth.store";
 export type { Capabilities };
 
-export type UserRole = "SUPER_ADMIN" | "ORGANIZATION_OWNER" | "ADMIN" | "MANAGER" | "CASHIER" | "STAFF";
+export type UserRole = "SUPER_ADMIN" | "ADMIN" | "MANAGER" | "STAFF" | "DEMO_USER";
 
 const defaultCapabilities: Capabilities = {
   canCreateProduct: false,

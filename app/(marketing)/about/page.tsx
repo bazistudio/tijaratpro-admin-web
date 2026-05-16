@@ -89,7 +89,7 @@ export default function AboutPage() {
           {values.map((value) => (
             <div key={value.title} className="glass-card p-8 group text-center">
               <div className="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                {React.cloneElement(value.icon as React.ReactElement, { size: 28 })}
+                {React.cloneElement(value.icon as React.ReactElement<any>, { size: 28 })}
               </div>
               <h4 className="text-xl font-bold text-text mb-4">{value.title}</h4>
               <p className="text-sm text-text-soft leading-relaxed">

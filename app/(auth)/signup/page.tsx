@@ -30,8 +30,8 @@ const signupSchema = z.object({
   email: z.string().email("Please enter a valid business email"),
   shopName: z.string().min(3, "Shop name must be at least 3 characters"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  agreeTerms: z.literal(true, {
-    errorMap: () => ({ message: "You must agree to the terms and conditions" }),
+  agreeTerms: z.boolean().refine((val) => val === true, {
+    message: "You must agree to the terms and conditions",
   }),
 });
 

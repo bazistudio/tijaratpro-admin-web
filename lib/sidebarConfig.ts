@@ -56,12 +56,11 @@ export const getSidebarByRole = (role: string | undefined): SidebarItem[] => {
   switch (role) {
     case "SUPER_ADMIN":
       return SUPER_ADMIN_MENU;
-    case "ORGANIZATION_OWNER":
-      // Eventually, this could return a combined menu or contextual menu based on whether they are in /organization or /dashboard
-      return ORGANIZATION_OWNER_MENU;
-    case "SHOP_ADMIN":
+    case "ADMIN":
+      return ORGANIZATION_OWNER_MENU; // Could be a combined menu for admins
     case "MANAGER":
     case "STAFF":
+    case "DEMO_USER":
     default:
       return SHOP_MENU;
   }

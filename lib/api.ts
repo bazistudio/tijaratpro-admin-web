@@ -53,6 +53,20 @@ export const api = async (url: string, options: any = {}) => {
       throw new Error(errorData.message || `API Error: ${response.status}`);
     }
 
+    // --- TRANSITIONAL COMPATIBILITY LAYER ---
+    // Safely unwrap new backend standardized responses without breaking legacy components.
+    const originalJson = response.json.bind(response);
+    response.json = async () => {
+      const json = await originalJson();
+      // If it's the new standard { success, data, meta }
+      if (json && json.success !== undefined && json.data !== undefined) {
+        // If meta exists, we can attach it non-enumerable to the data if needed,
+        // but for now, just returning data keeps legacy components happy.
+        return json.data; 
+      }
+      return json; // Fallback for endpoints not yet migrated
+    };
+
     return response;
   } catch (error: any) {
     console.error(`[API ERROR] ${url}:`, error.message);

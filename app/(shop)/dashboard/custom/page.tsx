@@ -1,5 +1,5 @@
 import FeatureComingSoon from '@/components/ui/FeatureComingSoon';
 
-export default function Dashboard CustomPage() {
+export default function CustomDashboardPage() {
   return <FeatureComingSoon title='Dashboard Custom' />;
 }

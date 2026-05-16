@@ -4,8 +4,8 @@ import { ROLE_ALLOWED_PREFIXES } from "@/lib/constants/routes";
 // ─── Role hierarchy (higher index = more privilege) ────────────────────────────
 // Matches backend User.role enum exactly
 const ROLE_HIERARCHY: Role[] = [
+  "DEMO_USER",
   "STAFF",
-  "CASHIER",
   "MANAGER",
   "ADMIN",
   "SUPER_ADMIN",
@@ -34,12 +34,12 @@ export function hasMinRole(userRole: Role, minRole: Role): boolean {
 export const isSuperAdmin  = (role: Role) => role === "SUPER_ADMIN";
 export const isShopOwner   = (role: Role) => role === "ADMIN";
 export const isManager     = (role: Role) => role === "MANAGER";
-export const isCashier     = (role: Role) => role === "CASHIER";
 export const isStaff       = (role: Role) => role === "STAFF";
+export const isDemoUser    = (role: Role) => role === "DEMO_USER";
 
 /** Any role that belongs to a shop (not superadmin) */
 export const isShopUser    = (role: Role) =>
-  canAccess(role, ["ADMIN", "MANAGER", "CASHIER", "STAFF"]);
+  canAccess(role, ["ADMIN", "MANAGER", "STAFF", "DEMO_USER"]);
 
 /** Can manage shop settings, staff, and subscriptions */
 export const isShopAdmin   = (role: Role) =>
