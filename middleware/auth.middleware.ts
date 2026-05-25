@@ -18,11 +18,27 @@ const PROTECTED_PREFIXES = [
   "/orders",
   "/products",
   "/sales",
-  "/shops"
+  "/shops",
+  "/warehouse"
 ];
 
 export function authMiddleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const token = request.cookies.get("tp_token")?.value;
+
+  const isAuthRoute = AUTH_ROUTES.includes(pathname);
+  const isProtectedRoute = PROTECTED_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+
+  if (isProtectedRoute && !token) {
+    const url = new URL("/login", request.url);
+    url.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(url);
+  }
+
+  if (isAuthRoute && token) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
   return NextResponse.next();
-  // const { pathname } = request.nextUrl;
-  // ...
 }
+

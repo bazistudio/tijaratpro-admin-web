@@ -14,13 +14,35 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "TijaratPro — ERP Dashboard",
+    default: "TijaratPro — Enterprise ERP & POS Solutions",
     template: "%s | TijaratPro",
   },
   description:
-    "TijaratPro is a production-grade multi-tenant ERP system for retail and wholesale businesses.",
-  keywords: ["ERP", "POS", "inventory", "sales", "TijaratPro"],
+    "TijaratPro is a production-grade multi-tenant ERP system for retail and wholesale businesses. Streamline your inventory, sales, and analytics.",
+  keywords: ["ERP", "POS", "inventory", "sales", "TijaratPro", "SaaS", "multi-tenant"],
+  authors: [{ name: "TijaratPro Team" }],
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://tijaratpro.com",
+    siteName: "TijaratPro",
+    title: "TijaratPro — Powering Your Business Growth",
+    description: "Modern ERP and POS platform for retail excellence.",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "TijaratPro Dashboard Preview",
+      },
+    ],
+  },
 };
+
 
 export default async function RootLayout({
   children,
