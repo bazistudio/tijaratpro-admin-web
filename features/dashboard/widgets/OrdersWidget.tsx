@@ -4,12 +4,14 @@ import { Package, Clock } from "lucide-react";
 
 interface OrdersWidgetProps {
   data?: { total: number; pending: number };
-  isLoading: boolean;
+  isLoading?: boolean;
   error?: string;
-  lastUpdated: number;
+  lastUpdated?: number;
 }
 
-export const OrdersWidget: React.FC<OrdersWidgetProps> = ({ data, isLoading, error, lastUpdated }) => {
+
+export const OrdersWidget: React.FC<OrdersWidgetProps> = ({ data, isLoading = false, error, lastUpdated = Date.now() }) => {
+
   return (
     <WidgetCard title="Order Lifecycle" isLoading={isLoading} error={error}>
       <div className="space-y-6">

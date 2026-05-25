@@ -61,26 +61,28 @@ export function PageHeader({
             key={index}
             variant={action.variant || "outline"}
             onClick={action.onClick}
-            icon={action.icon}
             isLoading={action.loading}
             disabled={action.disabled}
             size="sm"
           >
+            {action.icon && <span>{action.icon}</span>}
             {action.label}
           </Button>
+
         ))}
 
         {primaryAction && (
           <Button
             variant={primaryAction.variant || "primary"}
             onClick={primaryAction.onClick}
-            icon={primaryAction.icon}
             isLoading={primaryAction.loading}
             disabled={primaryAction.disabled}
             size="sm"
           >
+            {primaryAction.icon && <span>{primaryAction.icon}</span>}
             {primaryAction.label}
           </Button>
+
         )}
       </div>
     </div>

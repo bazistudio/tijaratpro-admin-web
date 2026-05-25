@@ -22,14 +22,14 @@ export default function OrganizationLayout({
     if (!isAuthenticated) {
       router.push("/login");
     } else {
-      const allowedRoles = ["SUPER_ADMIN", "ORGANIZATION_OWNER"];
+      const allowedRoles = ["SUPER_ADMIN", "ADMIN"];
       if (!allowedRoles.includes(user?.role || "")) {
         router.push("/dashboard"); // fallback for shop staff
       }
     }
   }, [isAuthenticated, user, router]);
 
-  const allowedRoles = ["SUPER_ADMIN", "ORGANIZATION_OWNER"];
+  const allowedRoles = ["SUPER_ADMIN", "ADMIN"];
   if (!mounted || !isAuthenticated || !allowedRoles.includes(user?.role || "")) return null;
 
   return (

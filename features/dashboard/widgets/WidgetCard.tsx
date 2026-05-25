@@ -4,19 +4,24 @@ import { clsx } from "clsx";
 
 interface WidgetCardProps {
   title: string;
-  isLoading: boolean;
+  subtitle?: string;
+  isLoading?: boolean;
   error?: string;
   children: ReactNode;
   className?: string;
 }
 
+
+
 export const WidgetCard: React.FC<WidgetCardProps> = ({ 
   title, 
+  subtitle,
   isLoading, 
   error, 
   children,
   className 
 }) => {
+
   return (
     <div className={clsx(
       "bg-card border border-border rounded-2xl shadow-sm overflow-hidden flex flex-col h-full ring-1 ring-white/5",
@@ -24,11 +29,19 @@ export const WidgetCard: React.FC<WidgetCardProps> = ({
     )}>
       {/* Header */}
       <div className="px-6 py-4 border-b border-border bg-muted/20 flex items-center justify-between">
-        <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">
-          {title}
-        </h3>
+        <div>
+          <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+            {title}
+          </h3>
+          {subtitle && (
+            <p className="text-[10px] text-muted-foreground/60 font-medium">
+              {subtitle}
+            </p>
+          )}
+        </div>
         {isLoading && <RefreshCw size={14} className="animate-spin text-primary" />}
       </div>
+
 
       {/* Content Area */}
       <div className="flex-1 relative">

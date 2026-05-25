@@ -4,7 +4,8 @@ export interface RowAction<TData> {
   label: string;
   icon?: React.ReactNode;
   onClick: (row: TData) => void;
-  variant?: "primary" | "secondary" | "outline" | "white" | "white-outline" | "ghost" | "destructive" | "premium";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "link" | "danger";
+
 
   className?: string;
   isDisabled?: (row: TData) => boolean;

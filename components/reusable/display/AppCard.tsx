@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
-export interface AppCardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface AppCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   title?: React.ReactNode;
   description?: React.ReactNode;
   footer?: React.ReactNode;

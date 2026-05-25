@@ -41,9 +41,10 @@ export function DatePickerWithRange({
               "w-full justify-start text-left font-normal",
               !date && "text-muted-foreground"
             )}
-            icon={<CalendarIcon className="mr-2 h-4 w-4" />}
           >
+            <CalendarIcon className="mr-2 h-4 w-4" />
             {date?.from ? (
+
               date.to ? (
                 <>
                   {format(date.from, "LLL dd, y")} -{" "}

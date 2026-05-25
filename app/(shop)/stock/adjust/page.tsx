@@ -13,6 +13,7 @@ import {
   Package,
   History,
   ShieldCheck,
+  ShieldAlert,
   Zap,
   Info
 } from "lucide-react"

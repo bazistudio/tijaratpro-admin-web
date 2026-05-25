@@ -9,6 +9,7 @@ type MarketingButtonProps = {
   type?: "button" | "submit" | "reset";
   href?: string;
   onClick?: () => void;
+  disabled?: boolean;
 };
 
 export default function MarketingButton({ 
@@ -18,7 +19,8 @@ export default function MarketingButton({
   className = "", 
   type = "button", 
   href,
-  onClick
+  onClick,
+  disabled = false
 }: MarketingButtonProps) {
   const base = "px-8 py-4 rounded-xl font-button text-button transition-all flex items-center justify-center gap-2";
 
@@ -34,8 +36,9 @@ export default function MarketingButton({
   }
 
   const widthStyle = fullWidth ? "w-full" : "";
+  const disabledStyle = disabled ? "opacity-50 cursor-not-allowed" : "";
 
-  const combinedClasses = `${base} ${styles} ${widthStyle} ${className}`;
+  const combinedClasses = `${base} ${styles} ${widthStyle} ${disabledStyle} ${className}`;
 
   if (href) {
     return (
@@ -46,7 +49,7 @@ export default function MarketingButton({
   }
 
   return (
-    <button type={type} className={combinedClasses} onClick={onClick}>
+    <button type={type} className={combinedClasses} onClick={onClick} disabled={disabled}>
       {children}
     </button>
   );

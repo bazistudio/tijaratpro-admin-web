@@ -6,12 +6,14 @@ import { TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 
 interface RevenueWidgetProps {
   data?: RevenueStats;
-  isLoading: boolean;
+  isLoading?: boolean;
   error?: string;
-  lastUpdated: number;
+  lastUpdated?: number;
 }
 
-export const RevenueWidget: React.FC<RevenueWidgetProps> = ({ data, isLoading, error, lastUpdated }) => {
+
+export const RevenueWidget: React.FC<RevenueWidgetProps> = ({ data, isLoading = false, error, lastUpdated = Date.now() }) => {
+
   return (
     <WidgetCard title="Revenue Insights" isLoading={isLoading} error={error}>
       <div className="space-y-6">

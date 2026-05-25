@@ -15,10 +15,11 @@ import { clsx } from "clsx";
 
 interface ActivityFeedWidgetProps {
   activity?: ActivityItem[];
-  isLoading: boolean;
+  isLoading?: boolean;
   error?: string;
-  lastUpdated: number;
+  lastUpdated?: number;
 }
+
 
 const typeConfig: Record<ActivityType, { icon: any; color: string; bgColor: string }> = {
   SALE_CREATED: { icon: ShoppingBag, color: "text-green-600", bgColor: "bg-green-500/10" },
@@ -31,10 +32,11 @@ const typeConfig: Record<ActivityType, { icon: any; color: string; bgColor: stri
 
 export const ActivityFeedWidget: React.FC<ActivityFeedWidgetProps> = ({ 
   activity, 
-  isLoading, 
+  isLoading = false, 
   error,
-  lastUpdated 
+  lastUpdated = Date.now() 
 }) => {
+
   return (
     <WidgetCard title="Live Activity Feed" isLoading={isLoading} error={error} className="lg:col-span-1">
       <div className="space-y-4">

@@ -58,7 +58,7 @@ const Features = () => {
           {features.map((feature) => (
             <div key={feature.title} className="glass-card p-8 group">
               <div className={`w-14 h-14 rounded-2xl ${feature.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                {React.cloneElement(feature.icon as React.ReactElement, { size: 28 })}
+                {React.cloneElement(feature.icon as React.ReactElement<any>, { size: 28 })}
               </div>
               <h3 className="text-xl font-bold text-text mb-4">{feature.title}</h3>
               <p className="text-text-soft leading-relaxed mb-6">

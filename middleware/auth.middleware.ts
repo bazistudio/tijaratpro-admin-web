@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 const AUTH_ROUTES = ["/login", "/signup", "/forgot-password", "/verify-otp", "/reset-password"];
 const PROTECTED_PREFIXES = [
   "/dashboard",
+  "/organization",
   "/analytics",
   "/billing",
   "/notifications",

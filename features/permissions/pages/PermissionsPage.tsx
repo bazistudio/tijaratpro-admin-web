@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { usePermissions } from "../hooks/usePermissions";
 import { PermissionMatrix } from "../components/PermissionMatrix";
 import { PermissionString } from "../types/permission.types";
-import { Fingerprint, Save, Info } from "lucide-react";
+import { Fingerprint, Save, Info, ShieldCheck } from "lucide-react";
+
 import { toast } from "sonner";
 
 export const PermissionsPage: React.FC = () => {

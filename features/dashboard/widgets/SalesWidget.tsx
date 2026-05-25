@@ -6,12 +6,14 @@ import { ShoppingCart, TrendingUp } from "lucide-react";
 
 interface SalesWidgetProps {
   data?: SalesStats;
-  isLoading: boolean;
+  isLoading?: boolean;
   error?: string;
-  lastUpdated: number;
+  lastUpdated?: number;
 }
 
-export const SalesWidget: React.FC<SalesWidgetProps> = ({ data, isLoading, error, lastUpdated }) => {
+
+export const SalesWidget: React.FC<SalesWidgetProps> = ({ data, isLoading = false, error, lastUpdated = Date.now() }) => {
+
   return (
     <WidgetCard title="Sales Volume" isLoading={isLoading} error={error}>
       <div className="space-y-6">

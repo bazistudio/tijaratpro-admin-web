@@ -40,9 +40,13 @@ const FinancialReportPage: React.FC = () => {
     { header: "Description", accessor: "description" as const, className: "font-bold" },
     { 
       header: "Amount", 
-      accessor: (item: any) => formatCurrency(item.amount),
-      className: (item: any) => item.category === "revenue" ? "text-green-600 font-bold" : "text-red-600 font-bold"
+      accessor: (item: any) => (
+        <span className={item.category === "revenue" ? "text-green-600 font-bold" : "text-red-600 font-bold"}>
+          {formatCurrency(item.amount)}
+        </span>
+      )
     },
+
     { header: "Reference", accessor: "referenceId" as const, className: "text-xs font-mono text-muted-foreground" },
     { header: "Date", accessor: "date" as const, className: "text-xs text-muted-foreground" },
   ];

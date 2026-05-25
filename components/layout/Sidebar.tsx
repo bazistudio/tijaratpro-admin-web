@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { useUiStore } from "@/store";
 import { usePermission } from "@/hooks/use-permissions";
 
-import { getSidebarByRole } from "@/lib/sidebarConfig";
+import { getSidebar } from "@/lib/sidebarConfig";
 import { useAuthStore } from "@/store/auth.store";
 
 export function Sidebar() {
@@ -24,7 +24,7 @@ export function Sidebar() {
   
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
-  const { clearAuth } = useAuthStore();
+  const { clearAuth, shops, activeShopId, user: authUser } = useAuthStore();
 
   const handleLogout = () => {
     clearAuth();
@@ -42,9 +42,11 @@ export function Sidebar() {
     setMobileNavOpen(false);
   }, [pathname, setMobileNavOpen]);
 
-  // Filter items by role
-  const currentRole = role || "STAFF";
-  const visibleNav = getSidebarByRole(currentRole as string);
+  // Filter items by role & active shop industry
+  const activeShop = (shops || []).find((s) => s._id === activeShopId);
+  const activeIndustry = activeShop?.industryType || "GENERAL_STORE";
+  const currentRole = role || authUser?.role || "STAFF";
+  const visibleNav = getSidebar(currentRole as string, activeIndustry);
 
   // Get user initials
   const initials = user?.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : "AD";
@@ -97,6 +99,17 @@ export function Sidebar() {
         <div className="flex-1 py-6 px-3 overflow-y-auto custom-scrollbar">
           <nav className="space-y-1">
             {visibleNav.map((route) => {
+              if ((route as any).isSeparator) {
+                if (sidebarCollapsed) {
+                  return <div key={route.label} className="h-[1px] bg-[var(--border)] my-6 mx-2" />;
+                }
+                return (
+                  <div key={route.label} className="px-3 pt-6 pb-2 text-[9px] font-black uppercase text-[var(--text-soft)] tracking-[0.2em] border-b border-[var(--border)]/35 mb-3 truncate select-none">
+                    {route.label}
+                  </div>
+                );
+              }
+
               const hasSubItems = !!route.subItems;
               const isActive = pathname === route.href || (hasSubItems && route.subItems?.some(sub => pathname === sub.href));
               const isSubOpen = openMenus[route.label];

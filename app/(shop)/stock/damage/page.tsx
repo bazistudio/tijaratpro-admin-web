@@ -354,7 +354,9 @@ export default function DamageHubPage() {
 }
 
 // Subcomponent for Textarea since it wasn't imported in full earlier
-function Textarea({ className, ...props }: any) {
+interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+
+function Textarea({ className, ...props }: TextareaProps) {
    return (
       <textarea 
          className={cn(

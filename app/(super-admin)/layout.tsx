@@ -23,8 +23,8 @@ export default function SuperAdminLayout({
       router.push("/login");
     } else if (user?.role !== "SUPER_ADMIN") {
       // If not SUPER_ADMIN, redirect to appropriate dashboard
-      if (user?.role === "ORGANIZATION_OWNER") {
-        router.push("/organization/dashboard");
+      if (user?.role === "ADMIN") {
+        router.push("/organization");
       } else {
         router.push("/dashboard");
       }

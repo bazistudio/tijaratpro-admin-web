@@ -17,13 +17,13 @@ export default function ComponentsDemo() {
             <CardTitle className="font-heading">Buttons</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4 items-start">
-            <Button variant="default">Primary Action</Button>
-            <Button variant="premium">Premium Export</Button>
-            <Button variant="destructive">Delete Item</Button>
+            <Button variant="primary">Primary Action</Button>
+            <Button variant="primary">Premium Export</Button>
+            <Button variant="danger">Delete Item</Button>
             <Button variant="secondary">Secondary Action</Button>
             <Button variant="outline">Outline Filter</Button>
             <Button variant="ghost">Ghost Cancel</Button>
-            <Button loading>Saving...</Button>
+            <Button isLoading>Saving...</Button>
           </CardContent>
         </Card>
 

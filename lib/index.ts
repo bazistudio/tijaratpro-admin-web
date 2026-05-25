@@ -19,7 +19,8 @@ export {
   isShopAdmin,
   isManager,
   isStaff,
-  isSalesman,
+  isCashier,
+
   isShopUser,
   SUPERADMIN_ONLY_ROUTES,
   SHOP_ONLY_ROUTES,

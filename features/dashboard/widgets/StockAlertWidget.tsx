@@ -6,12 +6,14 @@ import { clsx } from "clsx";
 
 interface StockAlertWidgetProps {
   alerts?: StockAlert[];
-  isLoading: boolean;
+  isLoading?: boolean;
   error?: string;
-  lastUpdated: number;
+  lastUpdated?: number;
 }
 
-export const StockAlertWidget: React.FC<StockAlertWidgetProps> = ({ alerts, isLoading, error, lastUpdated }) => {
+
+export const StockAlertWidget: React.FC<StockAlertWidgetProps> = ({ alerts, isLoading = false, error, lastUpdated = Date.now() }) => {
+
   const CriticalItems = alerts?.filter(a => a.currentStock <= a.minimumStock / 2) || [];
   const WarningItems = alerts?.filter(a => a.currentStock > a.minimumStock / 2) || [];
 

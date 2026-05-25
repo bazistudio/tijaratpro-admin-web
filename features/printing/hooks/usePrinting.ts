@@ -7,7 +7,8 @@ import { PrintJob } from "../types/printing.types";
 
 export const usePrinting = () => {
   const queryClient = useQueryClient();
-  const { setPrinters, setNotifications } = usePrintingStore(); // typo: setNotifications? wait, store has setPrinters.
+  const { setPrinters } = usePrintingStore();
+
 
   const usePrintQueue = () =>
     useQuery({
@@ -16,14 +17,21 @@ export const usePrinting = () => {
       refetchInterval: 10000, // Poll every 10s for queue updates
     });
 
-  const usePrinters = () =>
-    useQuery({
+  const usePrinters = () => {
+    const query = useQuery({
       queryKey: ["printing", "printers"],
       queryFn: printingService.fetchPrinters,
-      onSuccess: (res) => {
-        if (res.data) setPrinters(res.data);
-      },
     });
+
+    useEffect(() => {
+      if (query.data?.data) {
+        setPrinters(query.data.data);
+      }
+    }, [query.data]);
+
+    return query;
+  };
+
 
   const useCreatePrintJob = () =>
     useMutation({

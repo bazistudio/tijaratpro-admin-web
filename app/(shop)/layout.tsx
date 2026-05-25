@@ -15,7 +15,7 @@ export default function DashboardLayout({
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuthenticated, initialize } = useAuthStore();
+  const { isAuthenticated, initialize, user, shops, activeShopId, hasCapability } = useAuthStore();
   const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
@@ -32,6 +32,45 @@ export default function DashboardLayout({
       router.push("/login");
     }
   }, [isInitializing, isAuthenticated, router]);
+
+  // Industry & Capability Security Guards
+  useEffect(() => {
+    if (isInitializing || !isAuthenticated || !user) return;
+
+    // Resolve Active Shop Context
+    const activeShop = (shops || []).find((s) => s._id === activeShopId);
+    const activeShopIndustry = activeShop?.industryType || "GENERAL_STORE";
+
+    // 1. Industry Specific Route Restrictions
+    if (pathname.includes("/industry/expiry") || pathname.includes("/industry/batches")) {
+      if (activeShopIndustry !== "MEDICINES") {
+        router.replace("/dashboard");
+        return;
+      }
+    }
+
+    if (pathname.includes("/industry/compatibility")) {
+      if (activeShopIndustry !== "AUTO_PARTS") {
+        router.replace("/dashboard");
+        return;
+      }
+    }
+
+    // 2. Financial / Reporting Capability Guards
+    if (pathname.startsWith("/reports")) {
+      if (!hasCapability("canExportReports") && user.role !== "SUPER_ADMIN" && user.role !== "ADMIN") {
+        router.replace("/dashboard");
+        return;
+      }
+    }
+
+    if (pathname.startsWith("/expenses")) {
+      if (!hasCapability("canViewFinance") && user.role !== "SUPER_ADMIN" && user.role !== "ADMIN") {
+        router.replace("/dashboard");
+        return;
+      }
+    }
+  }, [pathname, isInitializing, isAuthenticated, user, shops, activeShopId, hasCapability, router]);
 
   if (!mounted || isInitializing) return null;
 

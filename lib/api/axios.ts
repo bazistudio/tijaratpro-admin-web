@@ -2,7 +2,8 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import type { ApiError } from "@/types";
 import { useTenantStore } from "@/features/tenancy/store/tenant.store";
 
-const API_URL = "http://localhost:5000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 
 // ─── Token helpers (client-only) ──────────────────────────────────────────────
 // Auth strategy: read token from localStorage (set at login).
@@ -61,6 +62,13 @@ axiosInstance.interceptors.request.use(
     if (token && config.headers) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
+
+    // Safely strip /api from the start of the URL if it's already included in baseURL
+    // This ensures consistency between lib/api.ts (fetch) and axiosInstance
+    if (config.url?.startsWith("/api") && config.baseURL?.endsWith("/api")) {
+      config.url = config.url.replace("/api", "");
+    }
+
     
     // Multi-tenant isolation: Always inject active tenant ID into query params
     // We use getState() to access the store outside of React components

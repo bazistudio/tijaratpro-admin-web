@@ -4,13 +4,26 @@
  */
 export const api = async (url: string, options: any = {}) => {
   const token = typeof window !== "undefined" ? localStorage.getItem("tp_token") : null;
-  const baseUrl = "http://localhost:5000/api";
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const processedUrl = url.startsWith("/api") ? url.replace("/api", "") : url;
   const fullUrl = url.startsWith("http") ? url : `${baseUrl}${processedUrl}`;
+
+  let activeShopId = null;
+  if (typeof window !== "undefined") {
+    try {
+      const persistedAuth = localStorage.getItem("tp_auth");
+      if (persistedAuth) {
+        const parsed = JSON.parse(persistedAuth);
+        activeShopId = parsed?.state?.activeShopId;
+      }
+    } catch (_) {}
+  }
 
   const headers = {
     "Content-Type": "application/json",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(activeShopId ? { "x-shop-id": activeShopId } : {}),
     ...options.headers,
   };
 

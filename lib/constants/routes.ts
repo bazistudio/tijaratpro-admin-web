@@ -54,6 +54,7 @@ export const ROUTES = {
 // ── Protected prefixes — checked by Next.js middleware ───────────────────────
 export const PROTECTED_PREFIXES = [
   "/dashboard",
+  "/organization",
   "/shops",
   "/plans",
   "/subscriptions",
@@ -78,6 +79,7 @@ export const AUTH_ROUTES = ["/login", "/register"] as const;
 export const ROLE_ALLOWED_PREFIXES: Record<string, string[]> = {
   SUPER_ADMIN: [
     "/dashboard",
+    "/organization",
     "/shops",
     "/plans",
     "/subscriptions",
@@ -88,6 +90,7 @@ export const ROLE_ALLOWED_PREFIXES: Record<string, string[]> = {
   ],
   ADMIN: [
     "/dashboard",
+    "/organization",
     "/products",
     "/orders",
     "/customers",

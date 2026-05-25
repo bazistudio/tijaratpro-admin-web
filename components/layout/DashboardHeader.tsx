@@ -60,11 +60,11 @@ export function DashboardHeader() {
       <div className="flex items-center gap-1 sm:gap-2">
         
         {/* Quick Add */}
-        <Button variant="default" size="sm" className="hidden sm:flex items-center gap-1.5 h-9 rounded-full px-4 shadow-sm hover:shadow transition-all">
+        <Button variant="primary" size="sm" className="hidden sm:flex items-center gap-1.5 h-9 rounded-full px-4 shadow-sm hover:shadow transition-all">
           <Plus className="h-4 w-4" />
           <span className="font-semibold text-xs tracking-wide">Quick Add</span>
         </Button>
-        <Button variant="default" size="icon" className="sm:hidden h-8 w-8 rounded-full shadow-sm">
+        <Button variant="primary" size="icon" className="sm:hidden h-8 w-8 rounded-full shadow-sm">
           <Plus className="h-4 w-4" />
         </Button>
 

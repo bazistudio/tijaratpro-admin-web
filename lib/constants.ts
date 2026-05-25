@@ -3,7 +3,8 @@
  */
 
 export const APP_NAME = "TijaratPro";
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
 
 export const STORAGE_KEYS = {
   TOKEN: "tp_token",
@@ -42,15 +43,37 @@ export const ROLE_ALLOWED_PREFIXES = {
 
 export const queryKeys = {
   products: {
-    all: ["products"] as const,
-    list: (filters: any) => ["products", "list", filters] as const,
+    all: (shopId: string) => ["products", shopId] as const,
+    list: (shopId: string, filters: any) => ["products", shopId, "list", filters] as const,
     detail: (id: string) => ["products", "detail", id] as const,
+    lowStock: (shopId: string) => ["products", shopId, "lowStock"] as const,
   },
+
   tenants: {
-    all: ["tenants"] as const,
-    me: ["tenants", "me"] as const,
+    all: () => ["tenants"] as const,
+    me: () => ["tenants", "me"] as const,
   },
   dashboard: {
-    stats: ["dashboard", "stats"] as const,
+    stats: (shopId: string) => ["dashboard", shopId, "stats"] as const,
+  },
+
+  auth: {
+    me: () => ["auth", "me"] as const,
+  },
+  orders: {
+    all: (shopId: string) => ["orders", shopId] as const,
+    list: (shopId: string, filters: any) => ["orders", shopId, "list", filters] as const,
+    detail: (id: string) => ["orders", "detail", id] as const,
+  },
+  inventory: {
+    summary: (shopId: string) => ["inventory", shopId, "summary"] as const,
+    movements: (shopId: string, filters: any) => ["inventory", shopId, "movements", filters] as const,
+  },
+  customers: {
+    all: (shopId: string) => ["customers", shopId] as const,
+    list: (shopId: string, filters: any) => ["customers", shopId, "list", filters] as const,
+    detail: (id: string) => ["customers", "detail", id] as const,
   },
 };
+
+

@@ -40,6 +40,7 @@ interface AuthState {
   // SaaS Context
   organizationId: string | null;
   activeShopId: string | null;
+  shops: any[];
 
   /** Set user + token after successful login/register */
   setAuth: (user: User, token: string) => void;
@@ -70,6 +71,7 @@ export const useAuthStore = create<AuthState>()(
       rawPermissions: [],
       organizationId: null,
       activeShopId: null,
+      shops: [],
 
       setAuth: (user, token) => {
         setStoredToken(token);
@@ -82,7 +84,7 @@ export const useAuthStore = create<AuthState>()(
 
       clearAuth: () => {
         clearStoredToken();
-        set({ user: null, token: null, isAuthenticated: false, capabilities: null, rawPermissions: [], organizationId: null, activeShopId: null });
+        set({ user: null, token: null, isAuthenticated: false, capabilities: null, rawPermissions: [], organizationId: null, activeShopId: null, shops: [] });
       },
 
       setUser: (user) => {
@@ -105,11 +107,26 @@ export const useAuthStore = create<AuthState>()(
           const meData = await meRes.json();
           const capData = await capRes.json();
 
+          // Fetch organization shops
+          let shops = [];
+          try {
+            const shopsRes = await api("/shops/my-shops");
+            if (shopsRes.ok) {
+              const shopsData = await shopsRes.json();
+              shops = shopsData.data || [];
+            }
+          } catch (err) {
+            console.warn("Could not fetch organization shops:", err);
+          }
+
           set({
             user: meData.data,
             rawPermissions: meData.data.permissions || [],
             capabilities: capData.data,
             isAuthenticated: true,
+            shops,
+            organizationId: meData.data.organizationId || meData.data.tenantId || null,
+            activeShopId: get().activeShopId || meData.data.shopId || (shops[0]?._id) || null,
           });
         } catch (error) {
           console.error("Failed to initialize auth state capabilities", error);
@@ -142,6 +159,7 @@ export const useAuthStore = create<AuthState>()(
         rawPermissions: state.rawPermissions,
         organizationId: state.organizationId,
         activeShopId: state.activeShopId,
+        shops: state.shops,
       }),
     }
   )
