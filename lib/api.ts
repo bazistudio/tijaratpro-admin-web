@@ -31,12 +31,14 @@ export const api = async (url: string, options: any = {}) => {
     let response = await fetch(fullUrl, {
       ...options,
       headers,
+      credentials: "include", // send cookies cross-origin
     });
 
     // Global 401 Error Interception & Token Refresh
-    if (response.status === 401 && !url.includes("/auth/refresh-token")) {
-      const refreshRes = await fetch(`${baseUrl}/auth/refresh-token`, {
+    if (response.status === 401 && !url.includes("/auth/refresh")) {
+      const refreshRes = await fetch(`${baseUrl}/auth/refresh`, {
         method: "POST",
+        credentials: "include",
       });
 
       if (refreshRes.ok) {

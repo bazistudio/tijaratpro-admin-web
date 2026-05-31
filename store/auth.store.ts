@@ -32,10 +32,14 @@ export interface Capabilities {
   canExportReports: boolean;
 }
 
+export type AuthStatus = "loading" | "authenticated" | "unauthenticated" | "error";
+
 interface AuthState {
   user: User | null;
   token: string | null;
+  status: AuthStatus;
   isAuthenticated: boolean;
+  hydrated: boolean;
   capabilities: Capabilities | null;
   rawPermissions: string[];
   
@@ -61,19 +65,26 @@ interface AuthState {
   
   /** Check if a specific capability is granted */
   hasCapability: (cap: keyof Capabilities) => boolean;
+
+  /** Set hydration status (used by persistence middleware) */
+  setHydrated: (val: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
+      status: "loading",
       user: null,
       token: null,
       isAuthenticated: false,
+      hydrated: false,
       capabilities: null,
       rawPermissions: [],
       organizationId: null,
       activeShopId: null,
       shops: [],
+
+      setHydrated: (val: boolean) => set({ hydrated: val }),
 
       setAuth: (user, token) => {
         setStoredToken(token);
@@ -83,21 +94,43 @@ export const useAuthStore = create<AuthState>()(
         // Extract org and shop from user if available (e.g. legacy or default)
         const organizationId = user.organizationId || user.tenantId || null;
         const activeShopId = user.shopId || null;
-        set({ user, token, isAuthenticated: true, organizationId, activeShopId });
+        set({ 
+          user, 
+          token, 
+          isAuthenticated: true, 
+          status: "authenticated",
+          organizationId, 
+          activeShopId 
+        });
         get().initialize(); // Fetch capabilities right after login
       },
 
       clearAuth: async () => {
-        // 1. Call backend to clear the httpOnly cookie (cannot be done from JS)
-        await logoutFromServer();
-        // 2. Wipe localStorage tokens
+        try {
+          // 1. Call backend to clear the httpOnly cookie (server-first is safer)
+          await logoutFromServer();
+        } catch (err) {
+          console.warn("[Auth Store] Server logout failed (likely already expired), proceeding with local wipe.");
+        }
+
+        // 2. Wipe storage
         clearStoredToken();
         localStorage.removeItem("tp_token");
         localStorage.removeItem("tp_auth");
         localStorage.removeItem("tp_tenant_context");
-        document.cookie = "tp_token=; path=/; max-age=0; SameSite=Lax";
+        
         // 3. Reset Zustand state
-        set({ user: null, token: null, isAuthenticated: false, capabilities: null, rawPermissions: [], organizationId: null, activeShopId: null, shops: [] });
+        set({ 
+          user: null, 
+          token: null, 
+          status: "unauthenticated",
+          isAuthenticated: false, 
+          capabilities: null, 
+          rawPermissions: [], 
+          organizationId: null, 
+          activeShopId: null, 
+          shops: [] 
+        });
       },
 
       setUser: (user) => {
@@ -110,16 +143,17 @@ export const useAuthStore = create<AuthState>()(
 
       initialize: async () => {
         const token = getStoredToken();
-        console.log("[AUTH DEBUG] Initializing with token:", token ? "FOUND" : "MISSING");
         
+        // Unauthenticated check
         if (!token) {
-          console.warn("[AUTH DEBUG] No token found, clearing auth.");
-          get().clearAuth();
+          set({ status: "unauthenticated", isAuthenticated: false, user: null, capabilities: null });
           return;
         }
 
         try {
-          // Use our new consolidated authService
+          set({ status: "loading" });
+
+          // Attempt to fetch fresh session data
           const [meData, capData] = await Promise.all([
             import("@/services/authService").then(m => m.getMe()),
             import("@/services/authService").then(m => m.getCapabilities())
@@ -134,32 +168,31 @@ export const useAuthStore = create<AuthState>()(
               shops = shopsData.data || [];
             }
           } catch (err) {
-            console.warn("Could not fetch organization shops:", err);
+            console.warn("[Auth Bootstrap] Organization shops fetch failed:", err);
           }
 
+          const user = meData.data || meData;
           set({
-            user: meData.data || meData,
-            rawPermissions: (meData.data || meData).permissions || [],
+            user,
+            rawPermissions: user.permissions || [],
             capabilities: capData.data || capData,
             isAuthenticated: true,
+            status: "authenticated",
             shops,
-            organizationId: (meData.data || meData).organizationId || (meData.data || meData).tenantId || null,
-            activeShopId: get().activeShopId || (meData.data || meData).shopId || (shops[0]?._id) || null,
+            organizationId: user.organizationId || user.tenantId || null,
+            activeShopId: get().activeShopId || user.shopId || (shops[0]?._id) || null,
           });
         } catch (error: any) {
-          console.error("[AUTH DEBUG] Initialization failed. Check if your token is valid and backend is running.", {
-            error: error.message,
-            status: error.response?.status,
-            tokenFound: !!getStoredToken()
-          });
-          
-          // Only clear auth if it's a genuine 401 or user not found
-          if (error.response?.status === 401 || error.response?.status === 404 || error.message?.includes("not found")) {
-             get().clearAuth();
+          if (error.response?.status === 401 || error.response?.status === 404 || error.status === 401) {
+             console.warn("[Auth Bootstrap] Session invalid. Cleaning up.");
+             set({ status: "unauthenticated" });
+             await get().clearAuth();
+          } else {
+            console.error("[Auth Bootstrap] Critical initialization error:", error.message);
+            set({ status: "error" });
           }
         }
       },
-
 
       hasCapability: (cap) => {
         const capabilities = get().capabilities;
@@ -177,6 +210,9 @@ export const useAuthStore = create<AuthState>()(
           removeItem: () => {},
         };
       }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHydrated(true);
+      },
       partialize: (state) => ({
         user: state.user,
         token: state.token,

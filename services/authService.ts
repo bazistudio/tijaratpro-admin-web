@@ -51,17 +51,12 @@ authService.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      console.warn("[AuthService] 401 Unauthorized detected. Purging state.");
+      console.warn("[AuthService] 401 Unauthorized detected. Purging local state.");
       if (typeof window !== "undefined") {
         localStorage.removeItem("tp_token");
         localStorage.removeItem("tp_auth");
         localStorage.removeItem("tp_tenant_context");
         document.cookie = "tp_token=; path=/; max-age=0; SameSite=Lax";
-        
-        // Prevent redirect loop if already on login
-        if (!window.location.pathname.includes("/login")) {
-          window.location.href = "/login";
-        }
       }
     }
     return Promise.reject(error);

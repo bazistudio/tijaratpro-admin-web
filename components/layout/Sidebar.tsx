@@ -30,13 +30,20 @@ export function Sidebar() {
 
   const handleLogout = async () => {
     try {
+      // 1. Perform server-first logout + local state wipe
       await clearAuth();
-      // Clear all cached data to prevent information leakage
+      
+      // 2. Clear all cached data to prevent information leakage
+      // NOTE: For extreme scale, consider queryClient.invalidateQueries({ queryKey: ["tenant"] })
+      // to preserve global config cache while wiping sensitive data.
       queryClient.clear();
+      
+      // 3. Force redirect to login
       router.push("/login");
     } catch (error) {
-      console.error("[Sidebar] Logout failed:", error);
-      // Fallback redirect even if server call fails
+      console.error("[Sidebar] Secure logout failed:", error);
+      // Fallback: Clear cache and redirect anyway to ensure user isn't stuck
+      queryClient.clear();
       router.push("/login");
     }
   };
