@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+admin-web-structure.txt
+backend-structure.txt
+project-structure.txt
