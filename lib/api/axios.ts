@@ -39,8 +39,11 @@ export function clearStoredToken(): void {
   if (typeof window === "undefined") return;
   localStorage.removeItem("tp_token");
   localStorage.removeItem("tp_shopId");
+  localStorage.removeItem("tp_auth");
+  localStorage.removeItem("tp_tenant_context");
   document.cookie = "tp_token=; path=/; max-age=0; SameSite=Lax";
   document.cookie = "tp_shopId=; path=/; max-age=0; SameSite=Lax";
+  document.cookie = "tp_tenant_context=; path=/; max-age=0; SameSite=Lax";
 }
 
 // ─── Axios instance ───────────────────────────────────────────────────────────
@@ -71,8 +74,11 @@ axiosInstance.interceptors.request.use(
 
     
     // Multi-tenant isolation: Always inject active tenant ID into query params
-    // We use getState() to access the store outside of React components
-    const tenantId = useTenantStore.getState().activeTenant?._id;
+    // We check both TenantStore (explicit context) and AuthStore (session context)
+    const tenantId = 
+      useTenantStore.getState().activeTenant?._id || 
+      (typeof window !== "undefined" ? JSON.parse(localStorage.getItem("tp_auth") || "{}")?.state?.organizationId : null);
+
     if (tenantId) {
       config.params = {
         ...config.params,

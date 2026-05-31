@@ -23,6 +23,9 @@ module.exports = {
         success: "var(--success)",
         warning: "var(--warning)",
         danger: "var(--danger)",
+        info: "var(--info)",
+        card: "var(--card)",
+        "card-hover": "var(--card-hover)",
         text: {
           DEFAULT: "var(--text)",
           soft: "var(--text-soft)",

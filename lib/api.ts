@@ -3,7 +3,7 @@
  * Handles Auth, Base URL, Error Interception, and Response Normalization.
  */
 export const api = async (url: string, options: any = {}) => {
-  const token = typeof window !== "undefined" ? localStorage.getItem("tp_token") : null;
+  const token = typeof window !== "undefined" ? (localStorage.getItem("tp_token") || document.cookie.match(/tp_token=([^;]+)/)?.[1]) : null;
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
   const processedUrl = url.startsWith("/api") ? url.replace("/api", "") : url;
@@ -54,6 +54,9 @@ export const api = async (url: string, options: any = {}) => {
         // Refresh failed -> logout
         if (typeof window !== "undefined") {
           localStorage.removeItem("tp_token");
+          localStorage.removeItem("tp_auth");
+          localStorage.removeItem("tp_tenant_context");
+          document.cookie = "tp_token=; path=/; max-age=0; SameSite=Lax";
           window.location.href = "/login";
         }
         throw new Error("Session expired. Please login again.");

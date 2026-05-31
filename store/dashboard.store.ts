@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import axiosInstance from '@/lib/api/axios';
+import authService from '@/services/authService';
 
 const BASE = "/api/dashboard";
 
@@ -62,43 +62,52 @@ export const useDashboardStore = create<DashboardState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       // 1. Fetch Metrics & Top Products
-      const metricsRes = await axiosInstance.get(`${BASE}/metrics`);
-      const { summary, topProducts } = metricsRes.data.data;
+      const metricsRes = await authService.get(`${BASE}/metrics`);
+      const metricsData = metricsRes.data.data || metricsRes.data || {};
+      const summary = metricsData.summary || {
+        revenue: { today: 0, thisMonth: 0, total: 0, growth: 0 },
+        profit: { today: 0, thisMonth: 0, total: 0 },
+        orders: { today: 0, total: 0 },
+        inventory: { totalProducts: 0, lowStockItems: 0 },
+        customers: { total: 0 }
+      };
+      const topProductsRaw = metricsData.topProducts || [];
 
       // 2. Fetch Chart Data (Last 7 days for the main chart)
-      const chartRes = await axiosInstance.get(`${BASE}/sales-chart?days=7`);
+      const chartRes = await authService.get(`${BASE}/sales-chart?days=7`);
+      const chartDataRaw = chartRes.data.data || chartRes.data || [];
       
       // Normalization Layer: Map Backend -> UI Model
       const normalizedStats: DashboardStats = {
-        todayRevenue: summary.revenue.today,
-        monthlyRevenue: summary.revenue.thisMonth,
-        revenueGrowth: summary.revenue.growth,
-        todayProfit: summary.profit.today,
-        monthlyProfit: summary.profit.thisMonth,
-        totalProfit: summary.profit.total,
-        ordersToday: summary.orders.today,
-        totalOrders: summary.orders.total,
-        lowStockCount: summary.inventory.lowStockItems,
-        totalProducts: summary.inventory.totalProducts,
-        totalCustomers: summary.customers.total,
+        todayRevenue: summary.revenue?.today || 0,
+        monthlyRevenue: summary.revenue?.thisMonth || 0,
+        revenueGrowth: summary.revenue?.growth || 0,
+        todayProfit: summary.profit?.today || 0,
+        monthlyProfit: summary.profit?.thisMonth || 0,
+        totalProfit: summary.profit?.total || 0,
+        ordersToday: summary.orders?.today || 0,
+        totalOrders: summary.orders?.total || 0,
+        lowStockCount: summary.inventory?.lowStockItems || 0,
+        totalProducts: summary.inventory?.totalProducts || 0,
+        totalCustomers: summary.customers?.total || 0,
       };
 
-      const normalizedChart = chartRes.data.data.map((item: any) => ({
-        name: new Date(item._id).toLocaleDateString('en-US', { weekday: 'short' }),
-        sales: item.revenue
+      const normalizedChart = chartDataRaw.map((item: any) => ({
+        name: item._id ? new Date(item._id).toLocaleDateString('en-US', { weekday: 'short' }) : 'Unknown',
+        sales: item.revenue || 0
       }));
 
-      const normalizedTopProducts = topProducts.map((p: any) => ({
-        id: p._id,
-        name: p.name,
-        revenue: p.revenue,
-        profit: p.profit,
-        sold: p.sold
+      const normalizedTopProducts = topProductsRaw.map((p: any) => ({
+        id: p._id || Math.random().toString(),
+        name: p.name || 'Unknown Product',
+        revenue: p.revenue || 0,
+        profit: p.profit || 0,
+        sold: p.sold || 0
       }));
 
       // Fetch Recent Activities from Backend
-      const activitiesRes = await axiosInstance.get(`${BASE}/activities`);
-      const activities = activitiesRes.data.data || [];
+      const activitiesRes = await authService.get(`${BASE}/activities`);
+      const activities = activitiesRes.data.data || activitiesRes.data || [];
 
       set({ 
         stats: normalizedStats, 

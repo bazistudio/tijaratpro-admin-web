@@ -11,13 +11,13 @@ export default function Heading({ children, level = 2, className = "" }: Heading
   
   let baseStyles = "";
   if (level === 1) {
-    baseStyles = "font-h1 text-h1 text-[#003049] mb-6 leading-tight";
+    baseStyles = "font-h1 text-h1 text-[var(--text)] mb-6 leading-tight";
   } else if (level === 2) {
-    baseStyles = "font-h2 text-h2 text-[#003049] mb-4";
+    baseStyles = "font-h2 text-h2 text-[var(--text)] mb-4";
   } else if (level === 3) {
-    baseStyles = "font-h3 text-h3 text-[#003049] mb-3";
+    baseStyles = "font-h3 text-h3 text-[var(--text)] mb-3";
   } else {
-    baseStyles = "font-bold text-[#003049] mb-2";
+    baseStyles = "font-bold text-[var(--text)] mb-2";
   }
 
   return (

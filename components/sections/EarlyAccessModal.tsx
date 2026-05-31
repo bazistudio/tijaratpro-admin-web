@@ -64,7 +64,7 @@ const EarlyAccessModal = ({ isOpen, onClose, title = "Get Early Access" }: Early
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-h2 text-[#003049]">{title}</DialogTitle>
+          <DialogTitle className="text-2xl font-h2 text-[var(--text)]">{title}</DialogTitle>
           <DialogDescription>
             Join the waitlist and get 1-month free trial when we launch.
           </DialogDescription>

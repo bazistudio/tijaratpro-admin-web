@@ -32,7 +32,7 @@ export function DataTableEmpty({
           </div>
           
           <div className="space-y-2 max-w-sm mx-auto">
-            <h3 className="text-xl font-bold tracking-tight text-[#003049]">
+            <h3 className="text-xl font-bold tracking-tight text-[var(--text)]">
               {message}
             </h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -41,9 +41,11 @@ export function DataTableEmpty({
           </div>
 
           {actionLabel && (
-            <Button 
+            <Button
               onClick={onAction}
-              className="rounded-xl px-8 h-12 bg-[#003049] hover:bg-[#003049]/90 font-bold gap-2 shadow-lg shadow-blue-900/10"
+              variant="primary"
+              size="sm"
+              className="rounded-xl px-8 h-12 font-bold gap-2"
             >
               <Plus className="h-4 w-4" />
               {actionLabel}

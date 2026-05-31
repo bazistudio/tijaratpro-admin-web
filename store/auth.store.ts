@@ -3,8 +3,10 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { User } from "@/types";
-import { setStoredToken, clearStoredToken } from "@/lib/api/axios";
+import { setStoredToken, clearStoredToken, getStoredToken } from "@/lib/api/axios";
 import { api } from "@/lib/api";
+import { useTenantStore } from "@/features/tenancy/store/tenant.store";
+import { logoutFromServer } from "@/services/authService";
 
 export interface Capabilities {
   canCreateProduct: boolean;
@@ -45,8 +47,8 @@ interface AuthState {
   /** Set user + token after successful login/register */
   setAuth: (user: User, token: string) => void;
 
-  /** Clear all auth state on logout or 401 */
-  clearAuth: () => void;
+  /** Clear all auth state on logout. Calls backend first to clear httpOnly cookie. */
+  clearAuth: () => Promise<void>;
 
   /** Hydrate user from token (e.g. /auth/me response) */
   setUser: (user: User) => void;
@@ -75,6 +77,9 @@ export const useAuthStore = create<AuthState>()(
 
       setAuth: (user, token) => {
         setStoredToken(token);
+        // Wipe any old tenant context to ensure fresh start
+        useTenantStore.getState().clearTenancy();
+        
         // Extract org and shop from user if available (e.g. legacy or default)
         const organizationId = user.organizationId || user.tenantId || null;
         const activeShopId = user.shopId || null;
@@ -82,8 +87,16 @@ export const useAuthStore = create<AuthState>()(
         get().initialize(); // Fetch capabilities right after login
       },
 
-      clearAuth: () => {
+      clearAuth: async () => {
+        // 1. Call backend to clear the httpOnly cookie (cannot be done from JS)
+        await logoutFromServer();
+        // 2. Wipe localStorage tokens
         clearStoredToken();
+        localStorage.removeItem("tp_token");
+        localStorage.removeItem("tp_auth");
+        localStorage.removeItem("tp_tenant_context");
+        document.cookie = "tp_token=; path=/; max-age=0; SameSite=Lax";
+        // 3. Reset Zustand state
         set({ user: null, token: null, isAuthenticated: false, capabilities: null, rawPermissions: [], organizationId: null, activeShopId: null, shops: [] });
       },
 
@@ -96,16 +109,21 @@ export const useAuthStore = create<AuthState>()(
       },
 
       initialize: async () => {
-        try {
-          const [meRes, capRes] = await Promise.all([
-            api("/auth/me"),
-            api("/auth/capabilities")
-          ]);
-          
-          if (!meRes.ok || !capRes.ok) throw new Error("Failed to fetch capabilities");
+        const token = getStoredToken();
+        console.log("[AUTH DEBUG] Initializing with token:", token ? "FOUND" : "MISSING");
+        
+        if (!token) {
+          console.warn("[AUTH DEBUG] No token found, clearing auth.");
+          get().clearAuth();
+          return;
+        }
 
-          const meData = await meRes.json();
-          const capData = await capRes.json();
+        try {
+          // Use our new consolidated authService
+          const [meData, capData] = await Promise.all([
+            import("@/services/authService").then(m => m.getMe()),
+            import("@/services/authService").then(m => m.getCapabilities())
+          ]);
 
           // Fetch organization shops
           let shops = [];
@@ -120,17 +138,25 @@ export const useAuthStore = create<AuthState>()(
           }
 
           set({
-            user: meData.data,
-            rawPermissions: meData.data.permissions || [],
-            capabilities: capData.data,
+            user: meData.data || meData,
+            rawPermissions: (meData.data || meData).permissions || [],
+            capabilities: capData.data || capData,
             isAuthenticated: true,
             shops,
-            organizationId: meData.data.organizationId || meData.data.tenantId || null,
-            activeShopId: get().activeShopId || meData.data.shopId || (shops[0]?._id) || null,
+            organizationId: (meData.data || meData).organizationId || (meData.data || meData).tenantId || null,
+            activeShopId: get().activeShopId || (meData.data || meData).shopId || (shops[0]?._id) || null,
           });
-        } catch (error) {
-          console.error("Failed to initialize auth state capabilities", error);
-          get().clearAuth();
+        } catch (error: any) {
+          console.error("[AUTH DEBUG] Initialization failed. Check if your token is valid and backend is running.", {
+            error: error.message,
+            status: error.response?.status,
+            tokenFound: !!getStoredToken()
+          });
+          
+          // Only clear auth if it's a genuine 401 or user not found
+          if (error.response?.status === 401 || error.response?.status === 404 || error.message?.includes("not found")) {
+             get().clearAuth();
+          }
         }
       },
 

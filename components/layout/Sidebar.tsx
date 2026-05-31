@@ -12,6 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useUiStore } from "@/store";
 import { usePermission } from "@/hooks/use-permissions";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { getSidebar } from "@/lib/sidebarConfig";
 import { useAuthStore } from "@/store/auth.store";
@@ -21,14 +22,23 @@ export function Sidebar() {
   const router = useRouter();
   const { user, role } = usePermission();
   const { sidebarCollapsed, setSidebarCollapsed, mobileNavOpen, setMobileNavOpen } = useUiStore();
+  const queryClient = useQueryClient();
   
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
   const { clearAuth, shops, activeShopId, user: authUser } = useAuthStore();
 
-  const handleLogout = () => {
-    clearAuth();
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await clearAuth();
+      // Clear all cached data to prevent information leakage
+      queryClient.clear();
+      router.push("/login");
+    } catch (error) {
+      console.error("[Sidebar] Logout failed:", error);
+      // Fallback redirect even if server call fails
+      router.push("/login");
+    }
   };
 
   const toggleSubmenu = (label: string, e: React.MouseEvent) => {

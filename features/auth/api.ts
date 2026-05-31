@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/api/axios";
+import authService from "@/services/authService";
 import type {
   ApiResponse,
   AuthResponse,
@@ -8,12 +8,12 @@ import type {
 } from "@/types";
 
 // ─── Auth API layer ────────────────────────────────────────────────────────────
-// All axios calls for auth are here. hooks.ts imports from here.
+// Consistent with services/authService.ts
 
 export async function loginUser(
   payload: LoginPayload
 ): Promise<ApiResponse<AuthResponse>> {
-  const res = await axiosInstance.post<ApiResponse<AuthResponse>>(
+  const res = await authService.post<ApiResponse<AuthResponse>>(
     "/auth/login",
     payload
   );
@@ -23,7 +23,7 @@ export async function loginUser(
 export async function registerUser(
   payload: RegisterPayload
 ): Promise<ApiResponse<AuthResponse>> {
-  const res = await axiosInstance.post<ApiResponse<AuthResponse>>(
+  const res = await authService.post<ApiResponse<AuthResponse>>(
     "/auth/register",
     payload
   );
@@ -31,6 +31,6 @@ export async function registerUser(
 }
 
 export async function getMe(): Promise<ApiResponse<User>> {
-  const res = await axiosInstance.get<ApiResponse<User>>("/auth/me");
+  const res = await authService.get<ApiResponse<User>>("/auth/me");
   return res.data;
 }

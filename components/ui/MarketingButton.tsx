@@ -26,11 +26,11 @@ export default function MarketingButton({
 
   let styles = "";
   if (variant === "primary") {
-    styles = "bg-[#0077B6] text-white shadow-lg hover:opacity-90";
+    styles = "bg-primary text-white shadow-lg hover:bg-primary-dark hover:shadow-primary/20";
   } else if (variant === "outline") {
-    styles = "bg-transparent border-2 border-[#003049] text-[#003049] hover:bg-[#003049]/5";
+    styles = "bg-transparent border-2 border-[var(--text)] text-[var(--text)] hover:bg-[var(--bg-secondary)]";
   } else if (variant === "white") {
-    styles = "bg-white text-[#0077B6] shadow-2xl hover:bg-gray-50";
+    styles = "bg-white text-primary shadow-2xl hover:bg-gray-50";
   } else if (variant === "white-outline") {
     styles = "bg-transparent border-2 border-white text-white hover:bg-white/10";
   }
