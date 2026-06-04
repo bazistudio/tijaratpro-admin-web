@@ -20,7 +20,7 @@ export default function DashboardLayout({
 
   useEffect(() => {
     setMounted(true);
-    
+
     // Call backend to verify token and rebuild state
     initialize().finally(() => {
       setIsInitializing(false);
@@ -30,8 +30,14 @@ export default function DashboardLayout({
   useEffect(() => {
     if (!isInitializing && !isAuthenticated) {
       router.push("/login");
+      return;
     }
-  }, [isInitializing, isAuthenticated, router]);
+
+    // Phase A Logic: Enforce shop selection for shop-scoped routes
+    if (!isInitializing && isAuthenticated && user?.role !== "SUPER_ADMIN" && !activeShopId) {
+      router.push("/organization");
+    }
+  }, [isInitializing, isAuthenticated, activeShopId, user, router]);
 
   // Industry & Capability Security Guards
   useEffect(() => {
@@ -41,22 +47,7 @@ export default function DashboardLayout({
     const activeShop = (shops || []).find((s) => s._id === activeShopId);
     const activeShopIndustry = activeShop?.industryType || "GENERAL_STORE";
 
-    // 1. Industry Specific Route Restrictions
-    if (pathname.includes("/industry/expiry") || pathname.includes("/industry/batches")) {
-      if (activeShopIndustry !== "MEDICINES") {
-        router.replace("/dashboard");
-        return;
-      }
-    }
-
-    if (pathname.includes("/industry/compatibility")) {
-      if (activeShopIndustry !== "AUTO_PARTS") {
-        router.replace("/dashboard");
-        return;
-      }
-    }
-
-    // 2. Financial / Reporting Capability Guards
+    // 1. Financial / Reporting Capability Guards
     if (pathname.startsWith("/reports")) {
       if (!hasCapability("canExportReports") && user.role !== "SUPER_ADMIN" && user.role !== "ADMIN") {
         router.replace("/dashboard");
@@ -84,7 +75,7 @@ export default function DashboardLayout({
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         <Topbar />
-        
+
         <main className="flex-1 p-6 md:p-8 lg:p-10 animate-in fade-in duration-700">
           {/* Content Container with max-width for better readability */}
           <div className="max-w-[1600px] mx-auto">

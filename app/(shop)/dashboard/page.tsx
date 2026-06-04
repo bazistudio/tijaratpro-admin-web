@@ -26,6 +26,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { SectionCard } from "@/components/ui/SectionCard"
 import { useDashboardStore } from "@/store/dashboard.store"
+import { useAuthStore } from "@/store/auth.store"
 import { useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -131,6 +132,9 @@ const QuickAction = ({ label, icon: Icon, href, color = "primary" }: { label: st
 export default function DashboardPage() {
   const [mounted, setMounted] = React.useState(false)
   const { stats, salesChart, topProducts, recentActivities, fetchDashboardData, isLoading } = useDashboardStore()
+  const { user } = useAuthStore()
+
+  const isSuperAdmin = user?.role === "SUPER_ADMIN"
 
   useEffect(() => {
     setMounted(true)
@@ -192,12 +196,12 @@ export default function DashboardPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-3xl font-black font-heading text-[var(--text-main)] tracking-tight">
-            Executive Dashboard
+            {isSuperAdmin ? "Platform Overview" : "Executive Dashboard"}
           </h1>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
             <p className="text-sm font-bold text-[var(--text-soft)] uppercase tracking-widest">
-              Live Intelligence Stream • {new Date().toLocaleDateString('en-PK', { day: 'numeric', month: 'long', year: 'numeric' })}
+              {isSuperAdmin ? "Global Intelligence Stream" : "Live Intelligence Stream"} • {new Date().toLocaleDateString('en-PK', { day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
           </div>
         </div>

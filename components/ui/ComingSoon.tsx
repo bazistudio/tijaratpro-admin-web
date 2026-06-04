@@ -1,6 +1,6 @@
 import React from 'react';
 import { PageHeader } from './PageHeader';
-import Container from './Container';
+import Container from './container';
 import { LucideIcon, Hammer } from 'lucide-react';
 
 interface ComingSoonProps {

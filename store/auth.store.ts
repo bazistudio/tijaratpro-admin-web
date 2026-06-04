@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { User } from "@/types";
-import { setStoredToken, clearStoredToken, getStoredToken } from "@/lib/api/axios";
+import { setStoredToken, clearStoredToken, getStoredToken, getStoredShopId } from "@/lib/api/axios";
 import { api } from "@/lib/api";
 import { useTenantStore } from "@/features/tenancy/store/tenant.store";
 import { logoutFromServer } from "@/services/authService";
@@ -106,6 +106,13 @@ export const useAuthStore = create<AuthState>()(
 
       setActiveShop: (shopId) => {
         set({ activeShopId: shopId });
+        if (typeof window !== "undefined") {
+          if (shopId) {
+            document.cookie = `tp_shopId=${shopId}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+          } else {
+            document.cookie = "tp_shopId=; path=/; max-age=0; SameSite=Lax";
+          }
+        }
       },
 
       initialize: async () => {
@@ -125,6 +132,8 @@ export const useAuthStore = create<AuthState>()(
             import("@/services/authService").then(m => m.getCapabilities())
           ]);
 
+          const user = meData.data || meData;
+
           // Fetch organization shops
           let shops = [];
           try {
@@ -137,15 +146,29 @@ export const useAuthStore = create<AuthState>()(
             console.warn("Could not fetch organization shops:", err);
           }
 
+          // Persistent Shop Selection Logic
+          const storedShopId = getStoredShopId();
+          let nextActiveShopId = get().activeShopId || storedShopId || user.shopId || null;
+
+          // Auto-select if literal single shop
+          if (!nextActiveShopId && shops.length === 1) {
+            nextActiveShopId = shops[0]._id;
+          }
+
           set({
-            user: meData.data || meData,
-            rawPermissions: (meData.data || meData).permissions || [],
+            user,
+            rawPermissions: user.permissions || [],
             capabilities: capData.data || capData,
             isAuthenticated: true,
             shops,
-            organizationId: (meData.data || meData).organizationId || (meData.data || meData).tenantId || null,
-            activeShopId: get().activeShopId || (meData.data || meData).shopId || (shops[0]?._id) || null,
+            organizationId: user.organizationId || user.tenantId || null,
+            activeShopId: nextActiveShopId,
           });
+
+          // Sync back to cookie for middleware/backend consistency
+          if (nextActiveShopId) {
+            get().setActiveShop(nextActiveShopId);
+          }
         } catch (error: any) {
           console.error("[AUTH DEBUG] Initialization failed. Check if your token is valid and backend is running.", {
             error: error.message,

@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import MarketingButton from '../ui/MarketingButton';
-import Container from '../ui/Container';
+import Container from '../ui/container';
 import { cookies } from 'next/headers';
 
 const Navbar = async () => {
