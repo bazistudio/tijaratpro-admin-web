@@ -52,11 +52,11 @@ export function Sidebar() {
     setMobileNavOpen(false);
   }, [pathname, setMobileNavOpen]);
 
-  // Filter items by role & active shop industry
+  // Filter items by role & active shop modules
   const activeShop = (shops || []).find((s) => s._id === activeShopId);
-  const activeIndustry = activeShop?.industryType || "GENERAL_STORE";
+  const enabledModules = activeShop?.enabledModules || ["PRODUCTS", "SALES", "INVENTORY"];
   const currentRole = role || authUser?.role || "STAFF";
-  const visibleNav = getSidebar(currentRole as string, activeIndustry);
+  const visibleNav = getSidebar(currentRole as string, enabledModules);
 
   // Get user initials
   const initials = user?.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : "AD";

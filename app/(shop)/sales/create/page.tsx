@@ -38,7 +38,7 @@ import { api } from "@/lib/api"
 import { cn } from "@/lib/utils"
 import { usePermission } from "@/hooks/use-permissions"
 import { PermissionGuard } from "@/components/auth/PermissionGuard"
-import { INDUSTRY_PROFILES, type IndustryType } from "@/lib/industry-config"
+import { useAuthStore } from "@/store/auth.store"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -67,7 +67,10 @@ export default function POSPage() {
   const router = useRouter()
   const { addNotification } = useNotificationStore()
   const { can } = usePermission()
-  const [industry, setIndustry] = React.useState<IndustryType>("general")
+  const { shops, activeShopId } = useAuthStore()
+
+  const activeShop = shops?.find(s => s._id === activeShopId)
+  const enabledModules = activeShop?.enabledModules || ["PRODUCTS", "SALES", "INVENTORY"]
 
   // ─── State Management ─────────────────────────────────────────────────────
   const [products, setProducts] = React.useState<any[]>([])
@@ -275,25 +278,7 @@ export default function POSPage() {
                   <Scan className="absolute right-3 top-1/2 -translate-y-1/2 text-primary" size={18} />
                </div>
                
-               {/* Industry Profile Switcher */}
-               <div className="mt-4 flex items-center justify-between p-2 rounded-xl bg-slate-900 text-white">
-                  <div className="flex items-center gap-2 pl-2">
-                     <Zap size={14} className="text-primary animate-pulse" />
-                     <span className="text-[10px] font-black uppercase tracking-widest">Profile: {industry.replace('_', ' ')}</span>
-                  </div>
-                  <Select value={industry} onValueChange={(v) => setIndustry(v as IndustryType)}>
-                     <SelectTrigger className="h-7 w-fit bg-white/10 border-none text-[9px] font-black uppercase tracking-widest rounded-lg">
-                        <SelectValue />
-                     </SelectTrigger>
-                     <SelectContent className="rounded-xl border-slate-200">
-                        {Object.entries(INDUSTRY_PROFILES).map(([id, config]) => (
-                           <SelectItem key={id} value={id} className="text-[10px] font-black uppercase tracking-widest">
-                              {config.label}
-                           </SelectItem>
-                        ))}
-                     </SelectContent>
-                  </Select>
-               </div>
+
             </CardHeader>
             <CardContent className="flex-1 overflow-y-auto custom-scrollbar pt-0 space-y-4">
                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
@@ -326,13 +311,13 @@ export default function POSPage() {
                        <h4 className="text-[11px] font-black uppercase text-slate-900 line-clamp-1">{product.name}</h4>
                        <div className="flex flex-col gap-0.5 mb-1">
                           <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">{product.sku}</p>
-                          {/* Industry specific badges */}
-                          {industry === "pharmacy" && product.industryMetadata?.expiryDate && (
+                          {/* Module specific badges */}
+                          {enabledModules.includes("EXPIRY_TRACKING") && product.industryMetadata?.expiryDate && (
                              <Badge variant="outline" className="text-[7px] font-black uppercase text-amber-500 border-amber-200 px-1 py-0 h-3 w-fit">
                                 Exp: {product.industryMetadata.expiryDate}
                              </Badge>
                           )}
-                          {industry === "auto_parts" && product.industryMetadata?.partNumber && (
+                          {enabledModules.includes("COMPATIBILITY") && product.industryMetadata?.partNumber && (
                              <Badge variant="outline" className="text-[7px] font-black uppercase text-blue-500 border-blue-200 px-1 py-0 h-3 w-fit">
                                 {product.industryMetadata.partNumber}
                              </Badge>
@@ -423,12 +408,12 @@ export default function POSPage() {
                             <h4 className="text-sm font-black text-slate-900 line-clamp-1">{item.name}</h4>
                             <div className="flex items-center gap-2">
                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Rs {item.sellingPrice.toLocaleString()} / unit</p>
-                               {industry === "pharmacy" && item.industryMetadata?.batchNumber && (
+                               {enabledModules.includes("EXPIRY_TRACKING") && item.industryMetadata?.batchNumber && (
                                   <Badge variant="outline" className="text-[7px] font-black uppercase text-amber-600 bg-amber-50/50 border-amber-100 px-1 py-0 h-3">
                                      Batch: {item.industryMetadata.batchNumber}
                                   </Badge>
                                )}
-                               {industry === "auto_parts" && item.industryMetadata?.partNumber && (
+                               {enabledModules.includes("COMPATIBILITY") && item.industryMetadata?.partNumber && (
                                   <Badge variant="outline" className="text-[7px] font-black uppercase text-blue-600 bg-blue-50/50 border-blue-100 px-1 py-0 h-3">
                                      Part: {item.industryMetadata.partNumber}
                                   </Badge>

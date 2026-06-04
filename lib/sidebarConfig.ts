@@ -1,51 +1,48 @@
 import type { SidebarItem } from "./sidebar/core";
-import { CORE_SHOP_MENU } from "./sidebar/core";
 import { ORGANIZATION_OWNER_MENU } from "./sidebar/organization";
 import { SUPER_ADMIN_MENU } from "./sidebar/superAdmin";
-import { getIndustrySidebar } from "./sidebar/industries";
+import { MODULES } from "./modules";
 
 export type { SidebarItem };
 
 /**
- * Dynamically builds sidebar items by combining core items, SaaS manager controls, and custom industry screens.
+ * Dynamically builds sidebar items by combining core items, SaaS manager controls, and custom module screens.
  */
 export const getSidebar = (
   role: string | undefined,
-  industryType: string | undefined
+  enabledModules: string[] = []
 ): SidebarItem[] => {
-  if (!role) return CORE_SHOP_MENU;
+  const shopModules = enabledModules.map(m => MODULES[m]).filter(Boolean) as SidebarItem[];
+  
+  // Base modules that every shop has
+  const defaultShopModules: SidebarItem[] = [
+    MODULES.DASHBOARD,
+    MODULES.CUSTOMERS,
+    MODULES.SETTINGS
+  ].filter(Boolean) as SidebarItem[];
+
+  // Merge default and enabled modules (preventing duplicates if someone added them to enabledModules)
+  const allShopMenu = Array.from(new Set([...defaultShopModules, ...shopModules]));
+
+  if (!role) return allShopMenu;
 
   switch (role) {
     case "SUPER_ADMIN":
       return SUPER_ADMIN_MENU;
 
-    case "ADMIN": {
-      const shopMenuCopy = [...CORE_SHOP_MENU];
-      
-      // Inject industry-specific navigation items right after Analytics
-      const industryItems = getIndustrySidebar(industryType);
-      if (industryItems.length > 0) {
-        shopMenuCopy.splice(2, 0, ...industryItems);
-      }
-
+    case "ADMIN":
       return [
         ...ORGANIZATION_OWNER_MENU,
         // Mark visual separator
         { label: "--- Shop Branch POS ---", icon: null, href: "#", isSeparator: true } as any,
-        ...shopMenuCopy,
+        ...allShopMenu,
       ];
-    }
 
     case "MANAGER":
     case "STAFF":
+    case "SHOP_OWNER":
     case "DEMO_USER":
-    default: {
-      const shopMenuCopy = [...CORE_SHOP_MENU];
-      const industryItems = getIndustrySidebar(industryType);
-      if (industryItems.length > 0) {
-        shopMenuCopy.splice(2, 0, ...industryItems);
-      }
-      return shopMenuCopy;
-    }
+    default:
+      return allShopMenu;
   }
 };

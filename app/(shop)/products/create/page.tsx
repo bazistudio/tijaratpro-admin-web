@@ -29,7 +29,8 @@ import { productSchema, type Product } from "@/lib/validations/product"
 import { useNotificationStore } from "@/hooks/use-notifications"
 import { api } from "@/lib/api"
 import { cn } from "@/lib/utils"
-import { INDUSTRY_PROFILES, type IndustryType } from "@/lib/industry-config"
+import { MODULE_FIELD_PROFILES } from "@/lib/moduleFields"
+import { useAuthStore } from "@/store/auth.store"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -62,7 +63,15 @@ export default function ProductCreatePage() {
   const { addNotification } = useNotificationStore()
   const [currentStep, setCurrentStep] = React.useState<number>(1)
   const [isSubmitting, setIsSubmitting] = React.useState(false)
-  const [industry, setIndustry] = React.useState<IndustryType>("general")
+  const { shops, activeShopId } = useAuthStore()
+
+  const activeShop = shops?.find(s => s._id === activeShopId)
+  const enabledModules = activeShop?.enabledModules || ["PRODUCTS", "SALES", "INVENTORY"]
+  
+  // Aggregate all product fields from enabled modules
+  const dynamicFields = enabledModules
+    .map((m: string) => MODULE_FIELD_PROFILES[m]?.productFields || [])
+    .flat()
 
   // ─── Form Initialization ───────────────────────────────────────────────────
   const {
@@ -148,7 +157,7 @@ export default function ProductCreatePage() {
           entityId: result.id,
           entityType: "product",
           description: `Created new product: ${validatedData.name} (SKU: ${validatedData.sku})`,
-          metadata: { sku: validatedData.sku, price: validatedData.sellingPrice, industry }
+          metadata: { sku: validatedData.sku, price: validatedData.sellingPrice }
         }),
       }).catch(err => console.error("Audit logging failed:", err))
 
@@ -219,37 +228,7 @@ export default function ProductCreatePage() {
          {/* Step 1: Basic Information */}
          {currentStep === 1 && (
             <div className="space-y-6">
-               <SectionCard title="Business Profile" description="Select your industry to optimize the catalog fields.">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                     {(Object.keys(INDUSTRY_PROFILES) as IndustryType[]).map((key) => {
-                        const profile = INDUSTRY_PROFILES[key]
-                        return (
-                           <button
-                              key={key}
-                              type="button"
-                              onClick={() => setIndustry(key)}
-                              className={cn(
-                                 "flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all text-center",
-                                 industry === key 
-                                    ? "bg-primary/5 border-primary shadow-sm" 
-                                    : "bg-white border-slate-100 grayscale opacity-60 hover:opacity-100 hover:grayscale-0"
-                              )}
-                           >
-                              <span className="text-xl">
-                                 {key === "pharmacy" && "💊"}
-                                 {key === "auto_parts" && "⚙️"}
-                                 {key === "grocery" && "🛒"}
-                                 {key === "electronics" && "📱"}
-                                 {key === "general" && "🏪"}
-                                 {key === "wholesale" && "📦"}
-                                 {key === "fashion" && "👕"}
-                              </span>
-                              <span className="text-[10px] font-black uppercase tracking-tight">{profile.label}</span>
-                           </button>
-                        )
-                     })}
-                  </div>
-               </SectionCard>
+
 
                <SectionCard title="General Identity" description="Basic product details and branding.">
                   <div className="grid gap-6 py-4">
@@ -259,10 +238,10 @@ export default function ProductCreatePage() {
                         {errors.name && <p className="text-[10px] font-bold text-danger">{errors.name.message}</p>}
                      </div>
                      
-                     {/* Dynamic Industry Fields */}
-                     {INDUSTRY_PROFILES[industry].productFields.length > 0 && (
+                     {/* Dynamic Module Fields */}
+                     {dynamicFields.length > 0 && (
                         <div className="grid grid-cols-2 gap-6 p-6 rounded-3xl bg-slate-50/50 border border-slate-100">
-                           {INDUSTRY_PROFILES[industry].productFields.map((field) => (
+                           {dynamicFields.map((field: any) => (
                               <div key={field.name} className="space-y-3">
                                  <Label className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
                                     <Tag size={12} />
@@ -296,7 +275,7 @@ export default function ProductCreatePage() {
                                           <SelectValue placeholder={`Select ${field.label}`} />
                                        </SelectTrigger>
                                        <SelectContent>
-                                          {field.options?.map(opt => (
+                                          {field.options?.map((opt: string) => (
                                              <SelectItem key={opt} value={opt}>{opt}</SelectItem>
                                           ))}
                                        </SelectContent>
@@ -485,8 +464,8 @@ export default function ProductCreatePage() {
                            <p className="text-2xl font-black text-white">{formData.stock} {formData.unit}</p>
                         </div>
                         <div>
-                           <p className="text-[10px] font-black uppercase text-slate-500 mb-1">Business Profile</p>
-                           <p className="text-2xl font-black text-white uppercase tracking-tight">{industry}</p>
+                           <p className="text-[10px] font-black uppercase text-slate-500 mb-1">Enabled Modules</p>
+                           <p className="text-xs font-black text-white uppercase tracking-tight line-clamp-2">{enabledModules.join(", ")}</p>
                         </div>
                      </div>
                   </div>
