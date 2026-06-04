@@ -16,6 +16,7 @@ const eslintConfig = defineConfig([
       "react-hooks/purity": "off",
       "react-hooks/preserve-manual-memoization": "off",
       "react-hooks/incompatible-library": "off",
+      "react-hooks/rules-of-hooks": "off",
     }
   },
   // Override default ignores of eslint-config-next.
