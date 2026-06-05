@@ -1,38 +1,50 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { 
-  LayoutDashboard, ShoppingCart, Package, Users, ReceiptText, 
-  PieChart, Settings, LogOut, Store, ChevronRight,
-  X, PanelLeftClose, PanelLeftOpen, CreditCard,
-  Layers, Database, FileText
+  LogOut, ChevronRight, X, PanelLeftClose, PanelLeftOpen
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useUiStore } from "@/store";
 import { usePermission } from "@/hooks/use-permissions";
 import { useQueryClient } from "@tanstack/react-query";
-
-import { getSidebar } from "@/lib/sidebarConfig";
 import { useAuthStore } from "@/store/auth.store";
+import { useSidebarNav } from "@/hooks/useSidebarNav";
+import { useSidebarState } from "@/hooks/useSidebarState";
 
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, role } = usePermission();
-  const { sidebarCollapsed, setSidebarCollapsed, mobileNavOpen, setMobileNavOpen } = useUiStore();
   const queryClient = useQueryClient();
-  
-  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+  const { clearAuth, activeShopId } = useAuthStore();
 
-  const { clearAuth, shops, activeShopId, user: authUser } = useAuthStore();
+  // 1. Fetch authorized architecture from the backend
+  const { data: visibleNav = [], isLoading } = useSidebarNav(activeShopId);
+
+  // 2. Manage all UI layout state (collapse, mobile overlay, nested opens)
+  const {
+    openMenus,
+    toggleSubmenu,
+    sidebarCollapsed,
+    setSidebarCollapsed,
+    mobileNavOpen,
+    setMobileNavOpen,
+    setOpenMenus
+  } = useSidebarState(visibleNav);
 
   const handleLogout = async () => {
     try {
       await clearAuth();
       // Clear all cached data to prevent information leakage
       queryClient.clear();
+      // Clear persisted sidebar UI state
+      localStorage.removeItem("tp_sidebar_openMenus");
+      // Reset UI state to defaults
+      setSidebarCollapsed(false);
+      setMobileNavOpen(false);
+      setOpenMenus({});
       router.push("/login");
     } catch (error) {
       console.error("[Sidebar] Logout failed:", error);
@@ -40,23 +52,6 @@ export function Sidebar() {
       router.push("/login");
     }
   };
-
-  const toggleSubmenu = (label: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    setOpenMenus(prev => ({ ...prev, [label]: !prev[label] }));
-    if (sidebarCollapsed) setSidebarCollapsed(false);
-  };
-
-  // Close mobile nav on route change
-  useEffect(() => {
-    setMobileNavOpen(false);
-  }, [pathname, setMobileNavOpen]);
-
-  // Filter items by role & active shop modules
-  const activeShop = (shops || []).find((s) => s._id === activeShopId);
-  const enabledModules = activeShop?.enabledModules || ["PRODUCTS", "SALES", "INVENTORY"];
-  const currentRole = role || authUser?.role || "STAFF";
-  const visibleNav = getSidebar(currentRole as string, enabledModules);
 
   // Get user initials
   const initials = user?.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : "AD";
@@ -108,27 +103,37 @@ export function Sidebar() {
         {/* Navigation Section */}
         <div className="flex-1 py-6 px-3 overflow-y-auto custom-scrollbar">
           <nav className="space-y-1">
-            {visibleNav.map((route) => {
+            {isLoading ? (
+              // Skeleton Loader
+              Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-3 px-3 py-3 rounded-lg animate-pulse">
+                  <div className="h-5 w-5 bg-muted rounded-md shrink-0" />
+                  {!sidebarCollapsed && <div className="h-4 bg-muted rounded w-2/3" />}
+                </div>
+              ))
+            ) : (
+              visibleNav.map((route) => {
               if ((route as any).isSeparator) {
                 if (sidebarCollapsed) {
-                  return <div key={route.label} className="h-[1px] bg-[var(--border)] my-6 mx-2" />;
+                  return <div key={(route as any).key || route.label} className="h-[1px] bg-[var(--border)] my-6 mx-2" />;
                 }
                 return (
-                  <div key={route.label} className="px-3 pt-6 pb-2 text-[9px] font-black uppercase text-[var(--text-soft)] tracking-[0.2em] border-b border-[var(--border)]/35 mb-3 truncate select-none">
+                  <div key={(route as any).key || route.label} className="px-3 pt-6 pb-2 text-[9px] font-black uppercase text-[var(--text-soft)] tracking-[0.2em] border-b border-[var(--border)]/35 mb-3 truncate select-none">
                     {route.label}
                   </div>
                 );
               }
 
               const hasSubItems = !!route.subItems;
-              const isActive = pathname === route.href || (hasSubItems && route.subItems?.some(sub => pathname === sub.href));
-              const isSubOpen = openMenus[route.label];
+              const isActive = pathname === route.href || pathname.startsWith(route.href + "/");
+              const isSubOpen = openMenus[route.key];
 
               return (
-                <div key={route.label}>
+                <div key={route.key}>
                   <Link
                     href={hasSubItems ? "#" : route.href}
-                    onClick={hasSubItems ? (e) => toggleSubmenu(route.label, e) : undefined}
+                    onClick={hasSubItems ? (e) => toggleSubmenu(route.key, e) : undefined}
+                    data-active={isActive}
                     className={cn(
                       "group flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300",
                       isActive 
@@ -155,11 +160,12 @@ export function Sidebar() {
                     <div className="ml-9 mt-1 mb-2 flex flex-col gap-1 border-l-2 border-border/50 pl-2">
                       {route.subItems?.map((sub) => (
                         <Link
-                          key={sub.href}
+                          key={sub.key}
                           href={sub.href}
+                          data-active={pathname === sub.href || pathname.startsWith(sub.href + "/")}
                           className={cn(
                             "text-xs font-medium px-3 py-2 rounded-md transition-all duration-200",
-                            pathname === sub.href 
+                            pathname === sub.href || pathname.startsWith(sub.href + "/")
                               ? "bg-primary/10 text-primary" 
                               : "text-muted-foreground hover:bg-muted hover:text-foreground"
                           )}
@@ -170,8 +176,8 @@ export function Sidebar() {
                     </div>
                   )}
                 </div>
-              );
-            })}
+              )
+            )}
           </nav>
         </div>
 
