@@ -22,8 +22,9 @@ import { NotificationDropdown } from "@/components/layout/NotificationDropdown";
 import { useQueryClient } from "@tanstack/react-query";
 
 export function Topbar() {
-  const { user, shops, activeShopId, setActiveShop } = useAuthStore();
+  const { user, shops, activeShopId, setActiveShop, clearAuth } = useAuthStore();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -35,11 +36,19 @@ export function Topbar() {
 
   const handleShopSwitch = (shopId: string) => {
     setActiveShop(shopId);
-    // Instantly wipe query cache to prevent race conditions and cross-shop data leakage
     queryClient.clear();
     setDropdownOpen(false);
-    // Always redirect to dashboard on branch switch to prevent route mismatch crashes
     router.push("/dashboard");
+  };
+
+  const handleLogout = async () => {
+    try {
+      await clearAuth();
+      queryClient.clear();
+      router.push("/login");
+    } catch {
+      router.push("/login");
+    }
   };
 
   return (
@@ -195,12 +204,34 @@ export function Topbar() {
 
         <div className="h-10 w-[1px] bg-[var(--border)] mx-2" />
 
-        <button className="flex items-center gap-3 p-1 rounded-xl hover:bg-[var(--bg-secondary)] transition-all group">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-            <HelpCircle size={18} className="text-primary" />
-          </div>
-          <ChevronDown size={16} className="text-[var(--text-soft)] group-hover:translate-y-0.5 transition-transform" />
-        </button>
+        <div className="relative">
+          <button 
+            onClick={() => setProfileOpen(!profileOpen)}
+            className="flex items-center gap-3 p-1 rounded-xl hover:bg-[var(--bg-secondary)] transition-all group"
+          >
+            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+              <span className="text-primary font-bold text-xs">
+                {user?.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : "AD"}
+              </span>
+            </div>
+            <ChevronDown size={16} className={`text-[var(--text-soft)] transition-transform duration-300 ${profileOpen ? "rotate-180" : "group-hover:translate-y-0.5"}`} />
+          </button>
+
+          {profileOpen && (
+            <>
+              <div className="fixed inset-0 z-40 cursor-default" onClick={() => setProfileOpen(false)} />
+              <div className="absolute right-0 mt-2 w-48 bg-[var(--card)] border border-[var(--border)] rounded-2xl shadow-xl py-2 z-50 animate-in fade-in slide-in-from-top-2">
+                <button
+                  onClick={() => { setProfileOpen(false); handleLogout(); }}
+                  className="w-full flex items-center gap-3 px-4 py-2 text-sm font-bold text-danger hover:bg-danger/10 transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                  Logout
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );

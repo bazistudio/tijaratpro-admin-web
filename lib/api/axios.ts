@@ -73,17 +73,17 @@ axiosInstance.interceptors.request.use(
     }
 
     
-    // Multi-tenant isolation: Always inject active tenant ID into query params
+    // Multi-tenant isolation: inject tenant ID as a header (not query param)
+    // Using a header prevents tenantId from leaking into server logs / URL caches.
     // We check both TenantStore (explicit context) and AuthStore (session context)
-    const tenantId = 
-      useTenantStore.getState().activeTenant?._id || 
-      (typeof window !== "undefined" ? JSON.parse(localStorage.getItem("tp_auth") || "{}")?.state?.organizationId : null);
+    const tenantId =
+      useTenantStore.getState().activeTenant?._id ||
+      (typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem("tp_auth") || "{}")?.state?.organizationId
+        : null);
 
-    if (tenantId) {
-      config.params = {
-        ...config.params,
-        tenantId
-      };
+    if (tenantId && config.headers) {
+      config.headers["x-tenant-id"] = tenantId;
     }
     
     return config;

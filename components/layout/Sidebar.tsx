@@ -21,7 +21,7 @@ export function Sidebar() {
   const { clearAuth, activeShopId } = useAuthStore();
 
   // 1. Fetch authorized architecture from the backend
-  const { data: visibleNav = [], isLoading } = useSidebarNav(activeShopId);
+  const { data: visibleNav = [], isLoading } = useSidebarNav(activeShopId || undefined);
 
   // 2. Manage all UI layout state (collapse, mobile overlay, nested opens)
   const {
@@ -176,8 +176,9 @@ export function Sidebar() {
                     </div>
                   )}
                 </div>
-              )
-            )}
+              );
+            })
+          )}
           </nav>
         </div>
 

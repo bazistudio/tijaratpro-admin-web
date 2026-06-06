@@ -101,7 +101,7 @@ export default function SettingsPage() {
     { id: "billing", label: "Billing & Plans", icon: CreditCard },
     { id: "notifications", label: "Notifications", icon: Bell },
     { id: "pos", label: "POS Settings", icon: Monitor },
-    { id: "backup", label: "Backup & Data", icon: Database },
+    { id: "backup", label: "Backup & Data", icon: Database, onClick: () => router.push("/settings/backups") },
     { id: "permissions", label: "Roles & Permissions", icon: Lock },
     { id: "theme", label: "Theme Customization", icon: Palette },
   ]
@@ -119,7 +119,7 @@ export default function SettingsPage() {
              {sidebarItems.map((item) => (
                <button
                  key={item.id}
-                 onClick={() => setActiveTab(item.id)}
+                 onClick={item.onClick || (() => setActiveTab(item.id))}
                  className={cn(
                    "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all group",
                    activeTab === item.id 

@@ -1,5 +1,6 @@
-import FeatureComingSoon from '@/components/ui/FeatureComingSoon';
+import { redirect } from "next/navigation";
 
+// /sales/new-sale → canonical POS at /sales/create
 export default function SalesNewSalePage() {
-  return <FeatureComingSoon title='Sales New-Sale' />;
+  redirect("/sales/create");
 }

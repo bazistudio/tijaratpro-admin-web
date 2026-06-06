@@ -19,7 +19,8 @@ const PROTECTED_PREFIXES = [
   "/products",
   "/sales",
   "/shops",
-  "/warehouse"
+  "/warehouse",
+  "/super-admin",  // ← SECURITY FIX: was missing
 ];
 
 export function authMiddleware(request: NextRequest) {

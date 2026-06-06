@@ -8,10 +8,14 @@ import {
   PieChart, 
   Settings,
   LayoutDashboard,
-  Users
+  Users,
+  Zap
 } from "lucide-react";
 
 import { SidebarItem } from "./sidebar/core";
+import { ORGANIZATION_OWNER_MENU } from "./sidebar/organization";
+import { SUPER_ADMIN_MENU } from "./sidebar/superAdmin";
+
 
 export const MODULES: Record<string, SidebarItem> = {
   DASHBOARD: {
@@ -87,11 +91,19 @@ export const MODULES: Record<string, SidebarItem> = {
     href: "/settings",
     icon: Settings,
     roles: ["SUPER_ADMIN", "ADMIN", "SHOP_OWNER"]
+  },
+  POS: {
+    key: "pos",
+    label: "POS Terminal",
+    href: "/sales/create",
+    icon: Zap,
+    roles: ["SUPER_ADMIN", "ADMIN", "MANAGER", "CASHIER", "STAFF", "SHOP_OWNER"]
   }
 };
 
 export const CORE_MODULES: SidebarItem[] = [
   MODULES.DASHBOARD,
+  MODULES.POS,
   MODULES.PRODUCTS,
   MODULES.SALES,
   MODULES.INVENTORY,
@@ -109,6 +121,11 @@ export const INDUSTRY_MODULES: SidebarItem[] = [
   MODULES.IMEI_TRACKING
 ];
 
-export const MODULES_MAP = Object.fromEntries(
-  Object.values(MODULES).map(m => [m.key, m])
-);
+export const MODULES_MAP: Record<string, SidebarItem> = {
+  // Core shop modules (keyed by SidebarItem.key)
+  ...Object.fromEntries(Object.values(MODULES).map(m => [m.key, m])),
+  // Organization-level modules
+  ...Object.fromEntries(ORGANIZATION_OWNER_MENU.map(m => [m.key, m])),
+  // Super-admin platform modules
+  ...Object.fromEntries(SUPER_ADMIN_MENU.map(m => [m.key, m])),
+};
