@@ -36,6 +36,12 @@ export function authMiddleware(request: NextRequest) {
   }
 
   if (isAuthRoute && token) {
+    if (request.nextUrl.searchParams.get("clearSession") === "true") {
+      const response = NextResponse.next();
+      response.cookies.delete("tp_token");
+      response.cookies.delete("tp_shopId");
+      return response;
+    }
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 

@@ -94,7 +94,7 @@ axiosInstance.interceptors.response.use(
       clearStoredToken();
       // Client-side redirect to login
       if (typeof window !== "undefined") {
-        window.location.href = "/login";
+        window.location.href = "/login?clearSession=true";
       }
     }
 

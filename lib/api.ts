@@ -43,6 +43,7 @@ export const api = async (url: string, options: any = {}) => {
         const { token: newToken } = await refreshRes.json();
         if (typeof window !== "undefined") {
           localStorage.setItem("tp_token", newToken);
+          document.cookie = `tp_token=${newToken}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
         }
         
         // Retry original request with new token
@@ -54,11 +55,12 @@ export const api = async (url: string, options: any = {}) => {
         // Refresh failed -> logout
         if (typeof window !== "undefined") {
           localStorage.removeItem("tp_token");
-          window.location.href = "/login";
+          document.cookie = "tp_token=; path=/; max-age=0; SameSite=Lax";
+          document.cookie = "tp_shopId=; path=/; max-age=0; SameSite=Lax";
+          window.location.href = "/login?clearSession=true";
         }
         throw new Error("Session expired. Please login again.");
       }
-      throw new Error("Session expired. Please login again.");
     }
 
     if (!response.ok) {
