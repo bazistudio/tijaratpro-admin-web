@@ -1,7 +1,7 @@
 "use client";
 
-import { Sidebar } from "./Sidebar";
-import { DashboardHeader } from "./DashboardHeader";
+import { Sidebar } from "./sidebar";
+import { DashboardHeader } from "./dashboard-header";
 import { useUiStore } from "@/store";
 
 import { cn } from "@/lib/utils";

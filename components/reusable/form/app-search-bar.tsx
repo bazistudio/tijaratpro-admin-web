@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
-import { AppInput, AppInputProps } from './AppInput';
+import { AppInput, AppInputProps } from './app-input';
 
 export interface AppSearchBarProps extends Omit<AppInputProps, 'onChange'> {
   onSearch: (value: string) => void;

@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { AppEmptyState } from '../feedback/AppEmptyState';
+import { AppEmptyState } from '../feedback/app-empty-state';
 import { AppLoader } from '../feedback/app-loader';
 import { cn } from '@/lib/utils';
 

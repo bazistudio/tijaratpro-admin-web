@@ -2,37 +2,37 @@
 export { AppButton } from "./form/AppButton";
 export type { AppButtonProps } from "./form/AppButton";
 
-export { AppInput } from "./form/AppInput";
-export type { AppInputProps } from "./form/AppInput";
+export { AppInput } from "./form/app-input";
+export type { AppInputProps } from "./form/app-input";
 
-export { AppSelect } from "./form/AppSelect";
-export type { AppSelectProps } from "./form/AppSelect";
+export { AppSelect } from "./form/app-select";
+export type { AppSelectProps } from "./form/app-select";
 
-export { AppSearchBar } from "./form/AppSearchBar";
-export type { AppSearchBarProps } from "./form/AppSearchBar";
+export { AppSearchBar } from "./form/app-search-bar";
+export type { AppSearchBarProps } from "./form/app-search-bar";
 
-export { AppDatePicker } from "./form/AppDatePicker";
-export type { AppDatePickerProps } from "./form/AppDatePicker";
+export { AppDatePicker } from "./form/app-date-picker";
+export type { AppDatePickerProps } from "./form/app-date-picker";
 
 // Feedback
 export { AppLoader } from "./feedback/app-loader";
 export type { AppLoaderProps } from "./feedback/app-loader";
 
-export { AppEmptyState } from "./feedback/AppEmptyState";
-export type { AppEmptyStateProps } from "./feedback/AppEmptyState";
+export { AppEmptyState } from "./feedback/app-empty-state";
+export type { AppEmptyStateProps } from "./feedback/app-empty-state";
 
-export { AppConfirmDialog } from "./feedback/AppConfirmDialog";
-export type { AppConfirmDialogProps } from "./feedback/AppConfirmDialog";
+export { AppConfirmDialog } from "./feedback/app-confirm-dialog";
+export type { AppConfirmDialogProps } from "./feedback/app-confirm-dialog";
 
 // Navigation
-export { AppTabs } from "./navigation/AppTabs";
-export type { AppTabsProps, AppTabItem } from "./navigation/AppTabs";
+export { AppTabs } from "./navigation/app-tabs";
+export type { AppTabsProps, AppTabItem } from "./navigation/app-tabs";
 
-export { AppDropdown } from "./navigation/AppDropdown";
-export type { AppDropdownProps, AppDropdownAction } from "./navigation/AppDropdown";
+export { AppDropdown } from "./navigation/app-dropdown";
+export type { AppDropdownProps, AppDropdownAction } from "./navigation/app-dropdown";
 
-export { AppPagination } from "./navigation/AppPagination";
-export type { AppPaginationProps } from "./navigation/AppPagination";
+export { AppPagination } from "./navigation/app-pagination";
+export type { AppPaginationProps } from "./navigation/app-pagination";
 
 // Display
 export { AppCard } from "./display/app-card";
@@ -48,8 +48,8 @@ export { AppTable } from "./display/app-table";
 export type { AppTableProps, AppTableColumn } from "./display/app-table";
 
 // Overlay
-export { AppModal } from "./overlay/AppModal";
-export type { AppModalProps } from "./overlay/AppModal";
+export { AppModal } from "./overlay/app-modal";
+export type { AppModalProps } from "./overlay/app-modal";
 
-export { AppDrawer } from "./overlay/AppDrawer";
-export type { AppDrawerProps } from "./overlay/AppDrawer";
+export { AppDrawer } from "./overlay/app-drawer";
+export type { AppDrawerProps } from "./overlay/app-drawer";

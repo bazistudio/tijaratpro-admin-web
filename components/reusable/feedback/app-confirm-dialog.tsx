@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppModal } from '../overlay/AppModal';
+import { AppModal } from '../overlay/app-modal';
 import { AppButton } from '../form/AppButton';
 
 export interface AppConfirmDialogProps {

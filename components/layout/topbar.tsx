@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/auth.store";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { Button } from "@/components/ui/button";
-import { NotificationDropdown } from "@/components/layout/NotificationDropdown";
+import { NotificationDropdown } from "@/components/layout/notification-dropdown";
 import { useQueryClient } from "@tanstack/react-query";
 
 export function Topbar() {

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { PageLayout } from "@/components/layout/PageLayout"
+import { PageLayout } from "@/components/layout/page-layout"
 import { ImportWizard } from "@/components/import/import-wizard"
 
 export default function ImportPage() {

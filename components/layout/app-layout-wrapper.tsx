@@ -1,8 +1,8 @@
 "use client"
 
 import { usePathname } from "next/navigation"
-import { Sidebar } from "./Sidebar"
-import { Header } from "./Header"
+import { Sidebar } from "./sidebar"
+import { Header } from "./header"
 
 export function AppLayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
