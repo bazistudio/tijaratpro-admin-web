@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { PageLayout } from "@/components/layout/PageLayout"
-import { ImportWizard } from "@/components/import/ImportWizard"
+import { ImportWizard } from "@/components/import/import-wizard"
 
 export default function ImportPage() {
   return (

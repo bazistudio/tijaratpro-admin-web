@@ -21,7 +21,7 @@ import {
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AuthCard } from "@/components/auth/AuthCard";
+import { AuthCard } from "@/components/auth/auth-card";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import axiosInstance, { setStoredToken } from "@/lib/api/axios";
 

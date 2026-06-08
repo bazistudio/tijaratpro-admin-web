@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { AuthCard } from "@/components/auth/AuthCard";
+import { AuthCard } from "@/components/auth/auth-card";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 
 export default function OTPVerifyPage() {

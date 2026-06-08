@@ -17,7 +17,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AuthCard } from "@/components/auth/AuthCard";
+import { AuthCard } from "@/components/auth/auth-card";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 
 const resetSchema = z.object({

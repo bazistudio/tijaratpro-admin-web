@@ -37,7 +37,7 @@ import { useNotificationStore } from "@/hooks/use-notifications"
 import { api } from "@/lib/api"
 import { cn } from "@/lib/utils"
 import { usePermission } from "@/hooks/use-permissions"
-import { PermissionGuard } from "@/components/auth/PermissionGuard"
+import { PermissionGuard } from "@/components/auth/permission-guard"
 import { INDUSTRY_PROFILES, type IndustryType } from "@/lib/industry-config"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
