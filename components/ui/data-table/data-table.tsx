@@ -34,10 +34,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 import { DataTableProps, RowAction } from "./types";
-import { DataTableToolbar } from "./DataTableToolbar";
-import { DataTablePagination } from "./DataTablePagination";
-import { DataTableSkeleton } from "./DataTableSkeleton";
-import { DataTableEmpty } from "./DataTableEmpty";
+import { DataTableToolbar } from "./data-table-toolbar";
+import { DataTablePagination } from "./data-table-pagination";
+import { DataTableSkeleton } from "./data-table-skeleton";
+import { DataTableEmpty } from "./data-table-empty";
 
 export function DataTable<TData, TValue>({
   columns,

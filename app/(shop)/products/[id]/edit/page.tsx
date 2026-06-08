@@ -34,7 +34,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
-import { SectionCard } from "@/components/ui/SectionCard"
+import { SectionCard } from "@/components/ui/section-card"
 import {
   Select,
   SelectContent,

@@ -24,7 +24,7 @@ import {
 } from "recharts"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { SectionCard } from "@/components/ui/SectionCard"
+import { SectionCard } from "@/components/ui/section-card"
 import { useDashboardStore } from "@/store/dashboard.store"
 import { useEffect } from "react"
 import { Button } from "@/components/ui/button"

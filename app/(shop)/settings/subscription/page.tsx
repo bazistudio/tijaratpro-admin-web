@@ -20,7 +20,7 @@ import {
   AlertCircle
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { SectionCard } from "@/components/ui/SectionCard"
+import { SectionCard } from "@/components/ui/section-card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
