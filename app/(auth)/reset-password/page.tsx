@@ -18,7 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AuthCard } from "@/components/auth/auth-card";
-import ThemeToggle from "@/components/ui/ThemeToggle";
+import ThemeToggle from "@/components/ui/theme-toggle";
 
 const resetSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),

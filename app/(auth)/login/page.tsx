@@ -22,7 +22,7 @@ import { useAuthStore } from "@/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AuthCard } from "@/components/auth/auth-card";
-import ThemeToggle from "@/components/ui/ThemeToggle";
+import ThemeToggle from "@/components/ui/theme-toggle";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid business email"),

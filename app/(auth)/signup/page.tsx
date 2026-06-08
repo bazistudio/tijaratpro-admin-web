@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AuthCard } from "@/components/auth/auth-card";
-import ThemeToggle from "@/components/ui/ThemeToggle";
+import ThemeToggle from "@/components/ui/theme-toggle";
 import axiosInstance, { setStoredToken } from "@/lib/api/axios";
 
 const signupSchema = z.object({

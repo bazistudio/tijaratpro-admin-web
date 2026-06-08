@@ -1,6 +1,6 @@
 import React from 'react';
 import { Target, Eye, Shield, Rocket } from 'lucide-react';
-import CTASection from '@/components/sections/CTASection';
+import CTASection from '@/components/sections/cta-section';
 
 export const metadata = {
   title: 'About Us | TijaratPro',

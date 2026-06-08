@@ -13,7 +13,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { AuthCard } from "@/components/auth/auth-card";
-import ThemeToggle from "@/components/ui/ThemeToggle";
+import ThemeToggle from "@/components/ui/theme-toggle";
 
 export default function OTPVerifyPage() {
   const [isLoading, setIsLoading] = useState(false);
