@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { AppEmptyState } from '../feedback/AppEmptyState';
-import { AppLoader } from '../feedback/AppLoader';
+import { AppLoader } from '../feedback/app-loader';
 import { cn } from '@/lib/utils';
 
 export interface AppTableColumn<T> {

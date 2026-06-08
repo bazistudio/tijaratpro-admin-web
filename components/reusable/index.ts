@@ -15,8 +15,8 @@ export { AppDatePicker } from "./form/AppDatePicker";
 export type { AppDatePickerProps } from "./form/AppDatePicker";
 
 // Feedback
-export { AppLoader } from "./feedback/AppLoader";
-export type { AppLoaderProps } from "./feedback/AppLoader";
+export { AppLoader } from "./feedback/app-loader";
+export type { AppLoaderProps } from "./feedback/app-loader";
 
 export { AppEmptyState } from "./feedback/AppEmptyState";
 export type { AppEmptyStateProps } from "./feedback/AppEmptyState";
@@ -35,17 +35,17 @@ export { AppPagination } from "./navigation/AppPagination";
 export type { AppPaginationProps } from "./navigation/AppPagination";
 
 // Display
-export { AppCard } from "./display/AppCard";
-export type { AppCardProps } from "./display/AppCard";
+export { AppCard } from "./display/app-card";
+export type { AppCardProps } from "./display/app-card";
 
-export { AppBadge } from "./display/AppBadge";
-export type { AppBadgeProps } from "./display/AppBadge";
+export { AppBadge } from "./display/app-badge";
+export type { AppBadgeProps } from "./display/app-badge";
 
-export { AppStatCard } from "./display/AppStatCard";
-export type { AppStatCardProps } from "./display/AppStatCard";
+export { AppStatCard } from "./display/app-stat-card";
+export type { AppStatCardProps } from "./display/app-stat-card";
 
-export { AppTable } from "./display/AppTable";
-export type { AppTableProps, AppTableColumn } from "./display/AppTable";
+export { AppTable } from "./display/app-table";
+export type { AppTableProps, AppTableColumn } from "./display/app-table";
 
 // Overlay
 export { AppModal } from "./overlay/AppModal";

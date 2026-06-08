@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppCard } from './AppCard';
+import { AppCard } from './app-card';
 import { cn } from '@/lib/utils';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 
