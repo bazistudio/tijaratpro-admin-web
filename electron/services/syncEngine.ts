@@ -4,12 +4,16 @@ import { syncLogger } from './logger';
 import { memoryCache } from '../cache/memoryCache';
 
 class SyncEngine {
-  private isOnline = true; // Replace with actual network listener check
+  private isOnline = true;
   private isSyncing = false;
   private timer: NodeJS.Timeout | null = null;
 
   constructor() {
-    // Start interval-based backup polling
+    // Do NOT auto-start here — main.ts must call start() after initDb()
+  }
+
+  // Called explicitly from main.ts after app.whenReady() and initDb()
+  start() {
     this.startPolling();
   }
 

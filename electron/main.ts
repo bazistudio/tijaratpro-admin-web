@@ -4,6 +4,7 @@ import { createWindow } from "./window";
 import { setupSecurity } from "./security";
 import { initDb } from "./db/index";
 import { setupIpcHandlers } from "./ipc/handlers";
+import { syncEngine } from "./services/syncEngine";
 
 // --------------------------------------------------------------------------
 // Environment helpers
@@ -20,9 +21,10 @@ app.whenReady().then(async () => {
   // 1. Harden security before any window opens
   setupSecurity();
 
-  // 1.5 Init Local Database & IPC
+  // 1.5 Init Local Database, IPC and Sync Engine
   initDb();
   setupIpcHandlers();
+  syncEngine.start(); // MUST be called after initDb()
 
   // 2. Create the main window
   mainWindow = createWindow();

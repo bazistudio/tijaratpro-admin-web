@@ -41,8 +41,12 @@ export function createWindow(): BrowserWindow {
     title: "Tijarat Pro – Admin",
     backgroundColor: "#0a0a0a",          // matches your dark theme bg
     show: false,                          // avoid flicker; show after ready
-    titleBarStyle: "hidden",             // clean, frameless-style look
-    trafficLightPosition: { x: 16, y: 16 }, // macOS traffic lights inset
+
+    // Windows: frame:true gives native min/max/close controls.
+    // macOS: titleBarStyle:'hidden' keeps traffic lights but hides the bar.
+    frame: true,
+    titleBarStyle: process.platform === "darwin" ? "hidden" : "default",
+    trafficLightPosition: { x: 16, y: 16 }, // macOS traffic lights inset (ignored on Windows)
 
     // ── Security ─────────────────────────────────────────────────────────
     webPreferences: {
