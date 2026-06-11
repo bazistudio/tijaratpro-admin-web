@@ -12,12 +12,12 @@ import {
   Pill, 
   Building
 } from "lucide-react";
-import { useAuthStore } from "@/store/auth.store";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 export default function OrganizationPage() {
-  const { user, shops, activeShopId, setActiveShop } = useAuthStore();
+  const { user, shops, activeShopId, setActiveShop } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 

@@ -14,12 +14,12 @@ import {
   ChevronRight,
   X
 } from "lucide-react";
-import { useAuthStore } from "@/store/auth.store";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 
 export default function ShopsManagementPage() {
-  const { user, shops, initialize } = useAuthStore();
+  const { user, shops, initialize } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

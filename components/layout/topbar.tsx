@@ -15,14 +15,14 @@ import {
   ShoppingCart
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/auth.store";
+import { useAuth } from "@/lib/auth/AuthContext";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { NotificationDropdown } from "@/components/layout/notification-dropdown";
 import { useQueryClient } from "@tanstack/react-query";
 
 export function Topbar() {
-  const { user, shops, activeShopId, setActiveShop } = useAuthStore();
+  const { user, shops, activeShopId, setActiveShop } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();

@@ -14,7 +14,7 @@ import { useUiStore } from "@/store";
 import { usePermission } from "@/hooks/use-permissions";
 
 import { getSidebar } from "@/lib/sidebarConfig";
-import { useAuthStore } from "@/store/auth.store";
+import { useAuth } from "@/lib/auth/AuthContext";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -24,7 +24,7 @@ export function Sidebar() {
   
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
-  const { clearAuth, shops, activeShopId, user: authUser } = useAuthStore();
+  const { clearAuth, shops, activeShopId, user: authUser } = useAuth();
 
   const handleLogout = () => {
     clearAuth();

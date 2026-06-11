@@ -2,10 +2,10 @@
 
 import React from 'react';
 import NavbarClient from './navbar-client';
-import { useAuthStore } from '@/store/auth.store';
+import { useAuth } from "@/lib/auth/AuthContext";
 
 export const Header = () => {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuth();
 
   return (
     <NavbarClient isAuthenticated={isAuthenticated} />

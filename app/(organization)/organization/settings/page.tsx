@@ -10,11 +10,11 @@ import {
   Check,
   Save
 } from "lucide-react";
-import { useAuthStore } from "@/store/auth.store";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { Button } from "@/components/ui/button";
 
 export default function OrgSettingsPage() {
-  const { user } = useAuthStore();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 

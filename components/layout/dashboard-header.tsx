@@ -15,13 +15,13 @@ import {
 import { useRouter } from 'next/navigation';
 import { useUiStore } from "@/store";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { useAuthStore } from "@/store/auth.store";
+import { useAuth } from "@/lib/auth/AuthContext";
 
 export function DashboardHeader() {
   const router = useRouter();
   const { toggleMobileNav } = useUiStore();
 
-  const { clearAuth } = useAuthStore();
+  const { clearAuth } = useAuth();
 
   const handleLogout = () => {
     clearAuth();

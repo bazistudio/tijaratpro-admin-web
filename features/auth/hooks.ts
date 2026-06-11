@@ -2,13 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { queryKeys, ROUTES } from "@/lib/constants";
-import { useAuthStore } from "@/store";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { loginUser, registerUser, getMe } from "./api";
 import type { LoginPayload, RegisterPayload } from "@/types";
 
 // ─── useLogin ─────────────────────────────────────────────────────────────────
 export function useLogin() {
-  const { setAuth } = useAuthStore();
+  const { setAuth } = useAuth();
   const router = useRouter();
 
   return useMutation({
@@ -27,7 +27,7 @@ export function useLogin() {
 
 // ─── useRegister ──────────────────────────────────────────────────────────────
 export function useRegister() {
-  const { setAuth } = useAuthStore();
+  const { setAuth } = useAuth();
   const router = useRouter();
 
   return useMutation({
@@ -47,7 +47,7 @@ export function useRegister() {
 // ─── useMe ────────────────────────────────────────────────────────────────────
 // Hydrates/refreshes the logged-in user from the server.
 export function useMe() {
-  const { setUser, isAuthenticated } = useAuthStore();
+  const { setUser, isAuthenticated } = useAuth();
 
   return useQuery({
     queryKey: queryKeys.auth.me(),
@@ -63,7 +63,7 @@ export function useMe() {
 
 // ─── useLogout ────────────────────────────────────────────────────────────────
 export function useLogout() {
-  const { clearAuth } = useAuthStore();
+  const { clearAuth } = useAuth();
   const queryClient = useQueryClient();
   const router = useRouter();
 

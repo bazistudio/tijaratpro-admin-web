@@ -29,19 +29,15 @@ export function authMiddleware(request: NextRequest) {
   const isAuthRoute = AUTH_ROUTES.includes(pathname);
   const isProtectedRoute = PROTECTED_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 
+  // 1. If trying to access protected route without cookie -> redirect to login
   if (isProtectedRoute && !token) {
     const url = new URL("/login", request.url);
     url.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(url);
   }
 
+  // 2. If trying to access auth route with cookie -> redirect to dashboard
   if (isAuthRoute && token) {
-    if (request.nextUrl.searchParams.get("clearSession") === "true") {
-      const response = NextResponse.next();
-      response.cookies.delete("tp_token");
-      response.cookies.delete("tp_shopId");
-      return response;
-    }
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 

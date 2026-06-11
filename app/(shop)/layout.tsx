@@ -5,7 +5,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
 import { Omnisearch } from "@/components/omnisearch";
 import { usePathname, useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/auth.store";
+import { useAuth } from "@/lib/auth/AuthContext";
 
 export default function DashboardLayout({
   children,
@@ -15,7 +15,7 @@ export default function DashboardLayout({
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuthenticated, initialize, user, shops, activeShopId, hasCapability } = useAuthStore();
+  const { isAuthenticated, initialize, user, shops, activeShopId, hasCapability } = useAuth();
   const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {

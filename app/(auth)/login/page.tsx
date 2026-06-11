@@ -17,7 +17,7 @@ import {
   ShieldCheck
 } from "lucide-react";
 import axiosInstance, { setStoredToken } from "@/lib/api/axios";
-import { useAuthStore } from "@/store";
+import { useAuth } from "@/lib/auth/AuthContext";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,7 +37,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const setAuth = useAuthStore((state) => state.setAuth);
+  const { setAuth } = useAuth();
 
   const {
     register,

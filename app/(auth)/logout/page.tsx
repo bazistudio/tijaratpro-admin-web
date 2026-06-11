@@ -2,12 +2,12 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/lib/auth/auth.store";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { clearStoredToken } from "@/lib/api/axios";
 
 export default function LogoutPage() {
   const router = useRouter();
-  const logout = useAuthStore((state) => state.logout);
+  const { logout } = useAuth();
 
   useEffect(() => {
     // Clear Zustand store and cookies

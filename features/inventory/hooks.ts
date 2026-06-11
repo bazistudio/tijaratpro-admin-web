@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/constants";
-import { useAuthStore } from "@/store";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { getInventorySummary, getStockMovements } from "./api";
 import type { StockMovementFilter } from "@/types";
 
 function useShopId() {
-  return useAuthStore((s) => s.user?.shopId ?? "");
+  const { user } = useAuth();
+  return user?.shopId ?? "";
 }
 
 export function useInventorySummary() {

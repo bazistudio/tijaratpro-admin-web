@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuthStore } from "@/store";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { canVisit } from "@/lib/rbac";
 import type { Role } from "@/types";
 
@@ -16,7 +16,7 @@ interface RoleGateProps {
 }
 
 export function RoleGate({ children, fallback = null, allowedRoles, route }: RoleGateProps) {
-  const { user } = useAuthStore();
+  const { user } = useAuth();
   
   if (!user) return <>{fallback}</>;
 

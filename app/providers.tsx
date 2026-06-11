@@ -34,6 +34,7 @@ function makeQueryClient() {
 }
 
 import { ThemeProvider } from "next-themes";
+import { AuthProvider } from "@/lib/auth/AuthContext";
 
 export default function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(makeQueryClient);
@@ -41,7 +42,9 @@ export default function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
         <Toaster
           position="bottom-right"
           richColors

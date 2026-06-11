@@ -13,10 +13,10 @@ import {
   Wrench,
   Pill
 } from "lucide-react";
-import { useAuthStore } from "@/store/auth.store";
+import { useAuth } from "@/lib/auth/AuthContext";
 
 export default function OrganizationAnalyticsPage() {
-  const { shops } = useAuthStore();
+  const { shops } = useAuth();
 
   return (
     <div className="space-y-8">

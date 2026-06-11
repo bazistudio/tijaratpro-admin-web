@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
 import { usePathname, useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/auth.store";
+import { useAuth } from "@/lib/auth/AuthContext";
 
 export default function SuperAdminLayout({
   children,
@@ -13,7 +13,7 @@ export default function SuperAdminLayout({
 }) {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
-  const { user, isAuthenticated } = useAuthStore();
+  const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
     setMounted(true);

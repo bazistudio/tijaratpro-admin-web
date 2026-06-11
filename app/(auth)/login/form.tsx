@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { loginSchema, LoginFormData } from '@/lib/auth/auth.schema';
-import { useAuthStore } from '@/store';
+import { useAuth } from "@/lib/auth/AuthContext";
 import { authService } from '@/lib/auth/auth.service';
 import axiosInstance, { setStoredToken } from '@/lib/api/axios';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,7 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const setAuth = useAuthStore((state) => state.setAuth);
+  const { setAuth } = useAuth();
 
   const {
     register,

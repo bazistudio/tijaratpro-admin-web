@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useAuthStore } from "@/store";
+import { useAuth } from "@/lib/auth/AuthContext";
 import {
   getSuppliers, getSupplier, createSupplier, updateSupplier, deleteSupplier,
 } from "./api";
@@ -13,7 +13,8 @@ const keys = {
 };
 
 function useShopId() {
-  return useAuthStore((s) => s.user?.shopId ?? "");
+  const { user } = useAuth();
+  return user?.shopId ?? "";
 }
 
 export function useSuppliers() {

@@ -11,11 +11,11 @@ import {
   X,
   UserCheck
 } from "lucide-react";
-import { useAuthStore } from "@/store/auth.store";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { Button } from "@/components/ui/button";
 
 export default function EmployeesRosterPage() {
-  const { user, shops } = useAuthStore();
+  const { user, shops } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   

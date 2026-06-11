@@ -1,12 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { queryKeys } from "@/lib/constants";
-import { useAuthStore } from "@/store";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { getOrders, getOrder, createOrder, updateOrderStatus, cancelOrder } from "./api";
 import type { CreateOrderPayload, UpdateOrderStatusPayload, OrderFilter } from "@/types";
 
 function useShopId() {
-  return useAuthStore((s) => s.user?.shopId ?? "");
+  const { user } = useAuth();
+  return user?.shopId ?? "";
 }
 
 export function useOrders(filters?: OrderFilter) {

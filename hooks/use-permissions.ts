@@ -3,7 +3,7 @@
  * Synchronized with Backend Permission Registry.
  */
 
-import { useAuthStore, type Capabilities } from "@/store/auth.store";
+import { useAuth, type Capabilities } from "@/lib/auth/AuthContext";
 export type { Capabilities };
 
 export type UserRole = "SUPER_ADMIN" | "ADMIN" | "MANAGER" | "CASHIER" | "STAFF" | "DEMO_USER";
@@ -34,7 +34,7 @@ const defaultCapabilities: Capabilities = {
 };
 
 export function usePermission() {
-  const { user, capabilities, hasCapability, rawPermissions } = useAuthStore();
+  const { user, capabilities, hasCapability, rawPermissions } = useAuth();
   
   return {
     user,
