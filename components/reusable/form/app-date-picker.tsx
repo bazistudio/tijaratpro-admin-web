@@ -68,7 +68,7 @@ export function AppDatePicker({
             mode="single"
             selected={date}
             onSelect={setDate}
-            initialFocus
+            {...({ initialFocus: true } as any)}
           />
         </PopoverContent>
       </Popover>

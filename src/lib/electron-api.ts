@@ -29,6 +29,7 @@ export const localDb = {
 // Next.js types for window.electron
 declare global {
   interface Window {
+    // @ts-ignore
     electron: {
       db: {
         mutate: (entityType: string, operation: 'CREATE' | 'UPDATE' | 'DELETE', payload: any) => Promise<{ success: boolean; opId: string }>;
