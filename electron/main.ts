@@ -2,6 +2,8 @@ import { app, BrowserWindow, shell, ipcMain } from "electron";
 import path from "path";
 import { createWindow } from "./window";
 import { setupSecurity } from "./security";
+import { initDb } from "./db/index";
+import { setupIpcHandlers } from "./ipc/handlers";
 
 // --------------------------------------------------------------------------
 // Environment helpers
@@ -17,6 +19,10 @@ let mainWindow: BrowserWindow | null = null;
 app.whenReady().then(async () => {
   // 1. Harden security before any window opens
   setupSecurity();
+
+  // 1.5 Init Local Database & IPC
+  initDb();
+  setupIpcHandlers();
 
   // 2. Create the main window
   mainWindow = createWindow();

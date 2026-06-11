@@ -25,6 +25,12 @@ export interface ElectronAPI {
 
   /** Unsubscribe from a named main-process event */
   off: (channel: string, listener: (...args: unknown[]) => void) => void;
+
+  db: {
+    mutate: (entityType: string, operation: 'CREATE'|'UPDATE'|'DELETE', payload: any) => Promise<{ success: boolean; opId: string }>;
+    query: (entityType: string, id: string) => Promise<any>;
+    queryAll: (entityType: string) => Promise<any[]>;
+  };
 }
 
 // --------------------------------------------------------------------------
@@ -59,6 +65,12 @@ const electronAPI: ElectronAPI = {
     if (!isAllowedChannel(channel)) return;
     ipcRenderer.off(channel, listener as never);
   },
+
+  db: {
+    mutate: (entityType, operation, payload) => ipcRenderer.invoke('db:mutate', entityType, operation, payload),
+    query: (entityType, id) => ipcRenderer.invoke('db:query', entityType, id),
+    queryAll: (entityType) => ipcRenderer.invoke('db:queryAll', entityType),
+  }
 };
 
 contextBridge.exposeInMainWorld("electron", electronAPI);
